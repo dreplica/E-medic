@@ -1,5 +1,5 @@
 
-# import cs50
+from cs50 import SQL
 from flask import Flask, render_template,redirect,session,request
 import csv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -11,7 +11,7 @@ app = Flask(__name__)
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 # you need to import sql to give it to a database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:////medic.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:///medic.db'
 #commence app with database
 db = SQLAlchemy(app)
 
@@ -66,7 +66,7 @@ def login():
             doc = session.query(users,info) 
             return render_template('home.html',id=session['user_id'])
       return apology("username and password does not match",400)
-   return render_template('login.html')
+   return render_template("login.html")
 
 @app.route('/logout',methods=['GET','POST'])
 def logout():
@@ -77,9 +77,9 @@ def logout():
 
 @app.route('/register',methods=['GET',"POST"])
 def register():
-   #  file = open('states.csv','r')
-   #  reader = csv.reader(file)
-   #  states = list(reader)
+    file = open('states.csv','r')
+    reader = csv.reader(file)
+    states = list(reader)
     if request.method == 'POST':
        user_id = request.form.get('username')
        email = request.form.get('email')
