@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 # you need to import sql to give it to a database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:////emedic.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:////medic.db'
 #commence app with database
 db = SQLAlchemy(app)
 
@@ -26,4 +26,22 @@ class info(db.model):
     user_id = db.column()
     def __repr__(self):
         return '<users %r>' % info.user_id
+
+class user(db.model):
+    id = db.column()
+    user_id = db.column()
+    email = db.column()
+    type = db.column()
+    password = db.column()
+    def __repr__(self):
+        return '<user %r>' % self.user_id
+
+class med_his(db.model):
+    id = db.column()
+    user_id = db.column()
+    b_type = db.column()
+    g_type = db.column()
+    Med_cond = db.column()
+    def __repr__(self):
+        return '<med_his %r>' % self.b_type
 
