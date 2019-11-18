@@ -29,11 +29,11 @@ def apology(issue,code):
 #         return '<users %r>' % info.user_id
 
 class users(db.Model):
-    id = db.column( db.Integer, primary_key = True)
-    user_id = db.column(db.string(100))
-    email = db.column(db.string(100))
-    typ = db.column(db.string(10))
-    password = db.column(db.string(100))
+    id = db.Column( db.Integer,primary_key = True)
+    user_id = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    typ = db.Column(db.String(10))
+    password = db.Column(db.String(100))
     def __repr__(self):
         return '<user %r>' % self.user_id
 
