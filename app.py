@@ -19,7 +19,7 @@ def apology(issue,code):
     html = "<div><p>"+code+"</p>"+"<p>"+issue+"</p></div>"
     return render_template('apology.html',html)
 
-class info(db.model):
+class info(db.Model):
     id = db.column()
     user_id = db.column()
     user_id = db.column()
@@ -28,7 +28,7 @@ class info(db.model):
     def __repr__(self):
         return '<users %r>' % info.user_id
 
-class users(db.model):
+class users(db.Model):
     id = db.column()
     user_id = db.column()
     email = db.column()
@@ -37,7 +37,7 @@ class users(db.model):
     def __repr__(self):
         return '<user %r>' % self.user_id
 
-class med_his(db.model):
+class med_his(db.Model):
     id = db.column()
     user_id = db.column()
     b_type = db.column()
