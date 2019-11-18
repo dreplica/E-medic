@@ -11,7 +11,7 @@ app = Flask(__name__)
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 # you need to import sql to give it to a database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:////medic.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///medic.db'
 #commence app with database
 db = SQLAlchemy(app)
 
