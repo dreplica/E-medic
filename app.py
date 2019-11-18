@@ -86,3 +86,20 @@ def register():
        return render_template('index.html')
     return render_template('register.html',states=states)
 
+
+# out of the context
+def errorhandler(e):
+    """Handle error"""
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return apology(e.name, e.code)
+
+
+# Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)
+
+if __name__ == "__main__":
+   db.create_all()
+   app.run(debug = True)
+
