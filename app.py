@@ -1,6 +1,7 @@
 
 # import cs50
 from flask import Flask, render_template,redirect,session,request
+import csv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 # alchemy is the connection we are to use btw sqlite and python 
@@ -18,7 +19,7 @@ def apology(issue,code):
     html = "<div><p>"+code+"</p>"+"<p>"+issue+"</p></div>"
     return render_template('apology.html',html)
 
-class info(db.model):
+class info(db.Model):
     id = db.column()
     user_id = db.column()
     user_id = db.column()
@@ -27,7 +28,7 @@ class info(db.model):
     def __repr__(self):
         return '<users %r>' % info.user_id
 
-class users(db.model):
+class users(db.Model):
     id = db.column()
     user_id = db.column()
     email = db.column()
@@ -36,7 +37,7 @@ class users(db.model):
     def __repr__(self):
         return '<user %r>' % self.user_id
 
-class med_his(db.model):
+class med_his(db.Model):
     id = db.column()
     user_id = db.column()
     b_type = db.column()
@@ -51,7 +52,7 @@ def index():
 
 @app.route('/login',methods=['GET','POST'])
 def login():
-   if request.methods == 'POST':
+   if request.method == 'POST':
       name = request.form['username']
       password = request.form['password']
       if not name and not password:
@@ -74,3 +75,14 @@ def logout():
       session.clear()
       return redirect('index.html')
    return apology('sorry you"re not on this service',400)
+
+@app.route('/register',methods=['GET',"POST"])
+def register():
+    file = open('states.csv','r')
+    reader = csv.reader(file)
+    states = list(reader)
+    if request.method == 'POST':
+       session['user_id'] = request.form.get['username']
+       return render_template('index.html')
+    return render_template('register.html',states=states)
+
