@@ -67,7 +67,10 @@
                 <div class="form-group">
                     <label for="phone">States</label>
                     <select class="custom-select" name="states">
-                        <option disabled selected>Choose</option>
+                        <option disabled selected>Choose state..</option>
+                        {% for state in states %}
+                        <option value={{state[2]}}>{{ state[2] }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="form-group">

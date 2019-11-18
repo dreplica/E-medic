@@ -75,21 +75,22 @@ def logout():
       return redirect('index.html')
    return apology('sorry you"re not on this service',400)
 
-@app.route('/register',methods=['GET',"POST"])
+@app.route('/register', methods=['GET',"POST"])
 def register():
-   #  file = open('states.csv','r')
-   #  reader = csv.reader(file)
-   #  states = list(reader)
-    if request.method == 'POST':
-       user_id = request.form.get('username')
-       email = request.form.get('email')
-       passw = request.form.get('password')
-       typ = request.form.get('type')
-       session['user_id'] = request.form.get['username']
-       user = users(user_id,)
-       db.session.add(users,email,typ,passw)
-       return render_template('index.html')
-    return render_template('register.html',states=states) 
+   file = open('states.csv','r')
+   reader = csv.reader(file)
+   states = list(reader)
+   if request.method == 'POST':
+      user_id = request.form.get('username')
+      email = request.form.get('email')
+      passw = request.form.get('password')
+      typ = request.form.get('type')
+      session['user_id'] = request.form.get['username']
+      user = users(user_id,)
+      db.session.add(users,email,typ,passw)
+      return render_template('index.html')
+   else:
+      return render_template('register.html', states=states) 
 
 # out of the context
 def errorhandler(e):
