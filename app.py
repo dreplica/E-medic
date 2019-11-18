@@ -1,6 +1,7 @@
 
 # import cs50
 from flask import Flask, render_template,redirect,session,request
+import csv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 # alchemy is the connection we are to use btw sqlite and python 
@@ -51,7 +52,7 @@ def index():
 
 @app.route('/login',methods=['GET','POST'])
 def login():
-   if request.methods == 'POST':
+   if request.method == 'POST':
       name = request.form['username']
       password = request.form['password']
       if not name and not password:
@@ -74,3 +75,10 @@ def logout():
       session.clear()
       return redirect('index.html')
    return apology('sorry you"re not on this service',400)
+
+@app.route('/register',methods=['GET',"POST"])
+def register():
+    file = open('states.csv',r)
+   if request.method == 'POST':
+      session['user_id'] = request.form.get['username']
+      return render_template('index.html')
