@@ -1,1 +1,117 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <form action="">
+            <h3>Personal Information</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstname">First Name</label>
+                    <input type="text" name="firstname" class="form-control" placeholder="Enter first name">
+                </div>
+                <div class="form-group">
+                    <label for="lasttname">Last Name</label>
+                    <input type="text" name="lastname" class="form-control" placeholder="Enter last name">
+                </div>        
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter email address">
+            </div>
+            <div class="form-group">
+                <label for="gender">Marital status</label>
+                <select class="custom-select" name="marital">
+                    <option disabled selected>Choose</option>
+                    <option value="single">Single</option>
+                    <option value="married">Maarried</option>
+                    <option value="divorce">Divorce</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="phone" name="number" class="form-control" placeholder="Enter phone number">
+            </div>
+            <div class="form-group">
+                <label for="phone">Home address</label>
+                <textarea name="number" class="form-control" placeholder="Enter home address"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="phone">States</label>
+                <select class="custom-select" name="states">
+                    <option disabled selected>Choose</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select class="custom-select" name="gender">
+                    <option disabled selected>Choose</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of birth</label>
+                <input type="date" name="dob" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="valid">Valid id</label>
+                <input type="text" name="valid" class="form-control" placeholder="Enter valid id">
+            </div>
+            <div class="form-group">
+                <label for="valid">Upload photo</label>
+                <input type="file" name="photo" class="form-control">
+            </div>    
+        </form>
+    </div>
+    <div>
+        <form action="">
+            <h3>Medical Information</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstname">Year of licence</label>
+                    <input type="date" name="year1" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="lasttname">Expiring year</label>
+                    <input type="date" name="year2" class="form-control">
+                </div>        
+            </div>
+            <div class="form-group">
+                <label for="email">Speciality</label>
+                <input type="text" name="speciality" class="form-control" placeholder="Enter Speciality">
+            </div>
+            <div class="form-group">
+                <label for="phone">Hospital Affiliation</label>
+                <input type="text" name="hospital" class="form-control" placeholder="Hospital Affiliation">
+            </div>
+            <div class="form-group">
+                <label for="gender">Certification</label>                
+                <input type="text" name="certificate" class="form-control" placeholder="Enter Certificate">
+            </div>
+            <div class="form-group">
+                <label for="dob">Link to published medical research</label>
+                <input type="text" name="link" class="form-control" placeholder="Add link">
+            </div>
+            <div class="form-group">
+                <label for="valid">Country of practice</label>
+                <input type="text" name="country" class="form-control" placeholder="Country Of practice">
+            </div>
+            <div class="form-group">
+                <label for="valid">Medical school</label>
+                <input type="text" name="school" class="form-control" placeholder="Enter school">
+            </div>   
+            <div class="form-group">
+                <label for="valid">Board certified</label>
+                <input type="text" name="board" class="form-control" placeholder="Board certified">
+            </div> 
+        </form>
+    </div>    
+</body>
+</html>
