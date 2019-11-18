@@ -45,3 +45,8 @@ class med_his(db.model):
     def __repr__(self):
         return '<med_his %r>' % self.b_type
 
+@app.route('/')
+def index():
+   return render_template("index.html",name="david")
+
+   
