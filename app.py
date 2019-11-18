@@ -1,6 +1,6 @@
 
-import cs50
-from flask import FLask, render_template,redirect,sessions,request
+# import cs50
+from flask import Flask, render_template,redirect,session,request
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 # alchemy is the connection we are to use btw sqlite and python 
@@ -27,7 +27,7 @@ class info(db.model):
     def __repr__(self):
         return '<users %r>' % info.user_id
 
-class user(db.model):
+class users(db.model):
     id = db.column()
     user_id = db.column()
     email = db.column()
@@ -51,15 +51,15 @@ def index():
 
 @app.route('/login',methods=['GET','POST'])
 def login():
-   if methods == 'POST':
+   if request.methods == 'POST':
       name = request.form['username']
       password = request.form['password']
       if not name and not password:
          user = user.query.filter_by(user_id=name).first()
       if len(user) != 0:
-         if check_password_hash(user[0][password],hashed):
+         if check_password_hash(user[0][password],password):
             #to save user's session
-            session['user_id'] = user[0][user_id]
+            session['user_id'] = user[0]['user_id']
             # need the history session to query for current doc and current treatment
             history = history.query.filter_by(user_id=name).first()
             # to get current doc info
