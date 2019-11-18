@@ -68,3 +68,9 @@ def login():
       return apology("username and password does not match",400)
    return render_template('login.html')
 
+@app.route('/logout',methods=['GET','POST'])
+def logout():
+   if session["user_id"]:
+      session.clear()
+      return redirect('index.html')
+   return apology('sorry you"re not on this service',400)
