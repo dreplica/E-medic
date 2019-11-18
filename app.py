@@ -11,7 +11,11 @@ app = Flask(__name__)
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 # you need to import sql to give it to a database
+<<<<<<< HEAD
 app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:///medic.db'
+=======
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///medic.db'
+>>>>>>> 91dc7b4d575feb96aa7baf8e0bcac16363b281ee
 #commence app with database
 db = SQLAlchemy(app)
 
@@ -75,8 +79,9 @@ def logout():
       return redirect('index.html')
    return apology('sorry you"re not on this service',400)
 
-@app.route('/register',methods=['GET',"POST"])
+@app.route('/register', methods=['GET',"POST"])
 def register():
+<<<<<<< HEAD
     file = open('states.csv','r')
     reader = csv.reader(file)
     states = list(reader)
@@ -90,6 +95,22 @@ def register():
        db.session.add(users,email,typ,passw)
        return render_template('index.html')
     return render_template('register.html',states=states) 
+=======
+   file = open('states.csv','r')
+   reader = csv.reader(file)
+   states = list(reader)
+   if request.method == 'POST':
+      user_id = request.form.get('username')
+      email = request.form.get('email')
+      passw = request.form.get('password')
+      typ = request.form.get('type')
+      session['user_id'] = request.form.get['username']
+      user = users(user_id,)
+      db.session.add(users,email,typ,passw)
+      return render_template('index.html')
+   else:
+      return render_template('register.html', states=states) 
+>>>>>>> 91dc7b4d575feb96aa7baf8e0bcac16363b281ee
 
 # out of the context
 def errorhandler(e):
