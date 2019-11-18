@@ -1,6 +1,6 @@
 
 import cs50
-from flask import FLask, render_template,redirect,sessions
+from flask import FLask, render_template,redirect,sessions,request
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 # alchemy is the connection we are to use btw sqlite and python 
@@ -49,4 +49,22 @@ class med_his(db.model):
 def index():
    return render_template("index.html",name="david")
 
-   
+@app.route('/login',methods=['GET','POST'])
+def login():
+   if methods == 'POST':
+      name = request.form['username']
+      password = request.form['password']
+      if not name and not password:
+         user = user.query.filter_by(user_id=name).first()
+      if len(user) != 0:
+         if check_password_hash(user[0][password],hashed):
+            #to save user's session
+            session['user_id'] = user[0][user_id]
+            # need the history session to query for current doc and current treatment
+            history = history.query.filter_by(user_id=name).first()
+            # to get current doc info
+            doc = session.query(users,info) 
+            return render_template('home.html',id=session['user_id'])
+      return apology("username and password does not match",400)
+   return render_template('login.html')
+
