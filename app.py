@@ -78,7 +78,11 @@ def logout():
 
 @app.route('/register',methods=['GET',"POST"])
 def register():
-    file = open('states.csv',r)
-   if request.method == 'POST':
-      session['user_id'] = request.form.get['username']
-      return render_template('index.html')
+    file = open('states.csv','r')
+    reader = csv.reader(file)
+    states = list(reader)
+    if request.method == 'POST':
+       session['user_id'] = request.form.get['username']
+       return render_template('index.html')
+    return render_template('register.html',states=states)
+
