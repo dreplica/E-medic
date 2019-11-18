@@ -19,30 +19,30 @@ def apology(issue,code):
     html = "<div><p>"+code+"</p>"+"<p>"+issue+"</p></div>"
     return render_template('apology.html',html)
 
-class info(db.Model):
-    id = db.column()
-    user_id = db.column()
-    user_id = db.column()
-    user_id = db.column()
-    user_id = db.column()
-    def __repr__(self):
-        return '<users %r>' % info.user_id
+# class info(db.Model):
+#     id = db.column( db.Integer, primary_key = True)
+#     user_id = db.column()
+#     user_id = db.column()
+#     user_id = db.column()
+#     user_id = db.column()
+#     def __repr__(self):
+#         return '<users %r>' % info.user_id
 
 class users(db.Model):
-    id = db.column()
-    user_id = db.column()
-    email = db.column()
-    type = db.column()
-    password = db.column()
+    id = db.Column( db.Integer,primary_key = True)
+    user_id = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    typ = db.Column(db.String(10))
+    password = db.Column(db.String(100))
     def __repr__(self):
         return '<user %r>' % self.user_id
 
 class med_his(db.Model):
-    id = db.column()
-    user_id = db.column()
-    b_type = db.column()
-    g_type = db.column()
-    Med_cond = db.column()
+    id = db.column(db.Integer, primary_key = True)
+    user_id = db.column(db.string(100))
+    b_type = db.column(db.string(10))
+    g_type = db.column(db.string(10))
+    Med_cond = db.column(db.string(250))
     def __repr__(self):
         return '<med_his %r>' % self.b_type
 
@@ -82,7 +82,30 @@ def register():
     reader = csv.reader(file)
     states = list(reader)
     if request.method == 'POST':
+       user_id = request.form.get('username')
+       email = request.form.get('email')
+       passw = request.form.get('password')
+       typ = request.form.get('type')
        session['user_id'] = request.form.get['username']
+       user = users(user_id,)
+       db.session.add(users,email,typ,passw)
        return render_template('index.html')
     return render_template('register.html',states=states)
+
+
+# out of the context
+def errorhandler(e):
+    """Handle error"""
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return apology(e.name, e.code)
+
+
+# Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)
+
+if __name__ == "__main__":
+   db.create_all()
+   app.run(debug = True)
 
