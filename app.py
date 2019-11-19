@@ -51,7 +51,7 @@ def login():
       password = request.form['password']
       if not name and not password:
          return "please go back and enter appropriate details"
-      user = user.query.filter_by(user_id=name).first()
+      user = db.execute("")
       if len(user) != 0:
          if check_password_hash(user[0][password],password):
             #to save user's session
@@ -71,6 +71,7 @@ def logout():
       return redirect('index.html')
    return apology('sorry you"re not on this service',400)
 
+# registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
 def p_register():
     file = open('states.csv','r')
@@ -114,6 +115,50 @@ def p_register():
                    u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('index.html')
     return render_template('p_register.html',states=states) 
+
+#registration for doctors
+@app.route('/d_register',methods=['GET',"POST"])
+def d_register():
+    file = open('states.csv','r')
+    reader = csv.reader(file)
+    states = list(reader)
+    if request.method == 'POST':
+       userid = request.form.get('username')
+       email = request.form.get('email')
+       passw = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
+       typ = request.form.get('type')
+       date = datetime.datetime.now()
+       fname = request.form.get('fname')
+       lname = request.form.get('lname')
+       dob = request.form.get('dob')
+       sex = request.form.get('sex')
+       state = request.form.get('states')
+       addr = request.form.get('address')
+       pnum = request.form.get('pnum')
+       status = request.form.get('mstat')
+       l = request.form.get('year1')
+       e = request.form.get('year2')
+       sp = request.form.get('speciality')
+       hf = request.form.get('hospital')
+       cert = request.form.get('certificate')
+       lp = request.form.get('link')
+       cp = request.form.get('country')
+       ms = request.form.get('school')
+       bc = request.form.get('board')
+       us = request.form.get('idnum')
+       fille = request.files['photo']
+       session['user_id'] = request.form.get('username')
+      #  user = users(userid)
+       if fille.filename == '':
+          fille.filename = 'none'
+       fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
+       db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
+       db.execute("INSERT INTO doc_info (lic_yr,exp_yr,specialty,hos_aff,cert,link_pub,con_prac,med_sch,b_cert,user_id) VALUES(:l,:e,:sp,:hf,:cert,:lp,:cp,:ms,:bc,:us)",
+                   l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
+       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
+                   u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+       return render_template('index.html')
+    return render_template('d_register.html',states=states)
 
 # out of the context
 def errorhandler(e):
