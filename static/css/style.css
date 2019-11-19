@@ -1,7 +1,20 @@
-nav{
-    position: fixed;
+img{
+    max-width:100%;
+    max-height: auto;
 }
-footer{
-    bottom: 0px;
-    width: 100vh;
+.bg{
+    height: 20%;
+}
+.img{
+    width:100%;
+    height:20%;
+    position: absolute;
+}
+
+.br{
+    position: fixed;
+    font-weight: bold;
+    top:20%;
+    left:25%;
+    width:50%;
 }

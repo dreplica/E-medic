@@ -1,12 +1,11 @@
 {% extends "layout.html" %}
 {% block main %} 
-<div class="container col-md-5">     
+<div class="container col-md-5" style="margin-bottom: 320px;margin-top: 50px;">     
     <form action="/p_register" method="post" enctype="multipart/form-data">        
         <div id='ffirst'>
             <hr> 
             <h3>Fill out the form</h3>
-            <input type="hidden" name="type" value="pat">
-            <input type="hidden" name="date" value="" id='date'>             
+            <input type="hidden" name="type" value="pat">             
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="phone" name="username" class="form-control" placeholder="Enter username">
