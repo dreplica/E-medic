@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block main %} 
-    <div class="container col-md-5" style="margin-bottom: 320px;margin-top: 50px;">         
+    <div class="container col-md-5" style="margin-top: 70px;">         
         <form action="/d_register" method="post" enctype="multipart/form-data"> 
             <div id="ffirst">
                 <hr>
@@ -89,7 +89,8 @@
                     <label for="photo">Upload photo</label>
                     <input type="file" name="photo" class="form-control">
                 </div>
-                <input type="submit" class="btn btn-success" value="Submit" id="sec">    
+                <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
+            </div>       
             <div id="fthird" style="display: none;">
                 <hr> 
                 <h3>Medical Information</h3>
@@ -135,12 +136,16 @@
                 <hr>
             </div>
             
-            <div id="ffourth" style="display: none;">
+            <div id="ffourth" style="display: none;">                    
                 <hr>
+                <div id='fmain'>
                 <h3>Work Experience</h3>
                 <div class="form-group">
                     <label>Where have you worked with (Please specify with date)</label>
                     <textarea class="form-control" name="work"></textarea>
+                </div> 
+                <button class="btn btn-danger" id='add'>add</button>                
+                <div class="form-group"> 
                     <label>Date</label>
                     <input type="date" name="date" class="form-control">
                 </div>
@@ -156,12 +161,39 @@
                     <label for="contact">Contact</label>
                     <input type="text" name="contact" class="form-control" placeholder="Enter phone number">
                 </div>
+                </div> 
                 <input type="submit" class="btn btn-success" value="Submit" id="all">
-                <hr> 
+                <hr>
             </div>             
         </form> 
          
         <script>
+
+            document.getElementById('add').onclick = (e)=>{
+                e.preventDefault()
+                let html1 = '<hr>'+
+                    '<h3>Add work experience</h3>'+
+                    '<div class="form-group">'+
+                    '<label>Where have you worked with (Please specify with date)</label>'+                    
+                    '<textarea class="form-control" name="work"></textarea>'+
+                    '</div>'+
+                    '<label>Date</label>'+
+                    '<input type="date" name="date" class="form-control">'+
+                    '</div>'+
+                    '<div class="form-group">'+
+                    '<label for="sperior">Name of Superior</label>'+
+                    '<input type="text" name="superior" class="form-control" placeholder="Superior name">'+
+                    '</div>'+
+                    '<div class="form-group">'+
+                    '<label for="address">Address</label>'+
+                    '<input type="text" name="address" class="form-control" placeholder="Enter address">'+
+                    '</div>'+
+                    '<div class="form-group">'+
+                    '<label for="contact">Contact</label>'+
+                    '<input type="text" name="contact" class="form-control" placeholder="Enter phone number">'+
+                    '</div>'
+                document.getElementById('fmain').insertAdjacentHTML('beforeend', html1);
+            }
             document.getElementById('first').onclick=(e)=>{
                 e.preventDefault();
                 ffirst.style.display = 'none';
