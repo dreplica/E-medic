@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-UPLOAD_FOLDER = '/uploads'
+UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
@@ -100,19 +100,18 @@ def p_register():
        status = request.form.get('mstat')
        idn = request.form.get('idname')
        nid = request.form.get('idnum')
-       file = request.file['photo']
+       fille = request.files['photo']
        pic = request.form.get('photo')
        session['user_id'] = request.form.get('username')
       #  user = users(userid)
-       file = secure_filename(file.filename)
-       if file.filename == '':
-          file.filename = 'none'
-       file.save(os.path.join(app.config['UPLOAD_FOLDER'], file))
+       if fille.filename == '':
+          fille.filename = 'none'
+       fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
        db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
        db.execute("INSERT INTO pat_info (b_gr,g_gr,med_iss,kin_fn,kin_ln,kin_phone,kin_email,kin_loc,user_id) VALUES(:b,:g,:md,:kfn,:kln,:kp,:ke,:kl,:us)",
                    b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
-       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,idn,pic)",
-                   u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=file)
+       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
+                   u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('index.html')
     return render_template('p_register.html',states=states) 
 
