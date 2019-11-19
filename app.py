@@ -47,20 +47,22 @@ def index():
 @app.route('/login',methods=['GET','POST'])
 def login():
    if request.method == 'POST':
-      name = request.form['username']
-      password = request.form['password']
+      name = request.form.get('username')
+      password = request.form.get('password')
+
       if not name and not password:
          return "please go back and enter appropriate details"
-      user = db.execute("")
+
+      user = db.execute("Select * from users")
+
       if len(user) != 0:
          if check_password_hash(user[0][password],password):
-            #to save user's session
             session['user_id'] = user[0]['user_id']
-            # need the history session to query for current doc and current treatment
-            history = history.query.filter_by(user_id=name).first()
-            # to get current doc info
-            doc = session.query(users,info) 
-            return render_template('home.html',id=session['user_id'])
+            consult = db.execute('Select * from consultation')
+
+            if len(consult) == 0:
+               return render_template('index.html',user=user)
+            return render_template('index.html',user = user,history = consult)
       return apology("username and password does not match",400)
    return render_template("login.html")
 
