@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block main %} 
-    <hr> 
-    <div class="container col-md-5">
-       <h3>Login here</h3>
+     
+    <div class="container col-md-5">       
        <form action="/login" method="post">
+            <h3>Login here</h3>
+            <hr>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" placeholder="Enter Username">
