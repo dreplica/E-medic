@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block main %} 
-    <div class="container col-md-5">
-        <hr> 
-        <div>
-            <form action="/d_register" method="post"> 
+    <div class="container col-md-5">         
+        <form action="/d_register" method="post" enctype="multipart/form-data"> 
+            <div id="ffirst">
+                <hr>
                 <h3>Fill out the form</h3>
                 <input type="hidden" name="type" value="doc">                
                 <div class="form-group">
@@ -13,7 +13,6 @@
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" name="email" class="form-control" placeholder="Enter email address">
-                    <input type='hidden' value='' name="date" id='date'>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -23,15 +22,12 @@
                     <label for="confirm">Confirm Password</label>
                     <input type="confirm" name="confirm" class="form-control" placeholder="Enter Password">
                 </div>
-                <input type="submit" class="btn btn-success" value="Submit">
-            </form>
-            <script>
-                document.getElementById('date').value = new Date().toDateString()
-            </script>
-        </div>
-        <hr> 
-        <div>
-            <form action="/d_register" method="post">
+                <input type="submit" class="btn btn-success" value="Submit" id="first">
+                <hr>
+            </div>
+             
+            <div id="fsec" style="display: none;">
+                <hr> 
                 <h3>Personal Information</h3>
                 <div class="form-row">
                     <div class="col">
@@ -44,11 +40,11 @@
                     </div>        
                 </div>            
                 <div class="form-group">
-                    <label for="gender">Marital status</label>
+                    <label for="marital">Marital status</label>
                     <select class="custom-select" name="marital">
                         <option disabled selected>Choose</option>
                         <option value="single">Single</option>
-                        <option value="married">Maarried</option>
+                        <option value="married">Married</option>
                         <option value="divorce">Divorce</option>
                     </select>
                 </div>
@@ -57,11 +53,11 @@
                     <input type="phone" name="number" class="form-control" placeholder="Enter phone number">
                 </div>
                 <div class="form-group">
-                    <label for="phone">Home address</label>
-                    <textarea name="number" class="form-control" placeholder="Enter home address"></textarea>
+                    <label for="address">Home address</label>
+                    <textarea name="home" class="form-control" placeholder="Enter home address"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="phone">States</label>
+                    <label for="state">States</label>
                     <select class="custom-select" name="states">
                         <option disabled selected>Choose state..</option>
                         {% for state in states %}
@@ -82,69 +78,66 @@
                     <input type="date" name="dob" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Valid id name</label>
+                    <label for="validname">Valid id name</label>
                     <input type="text" name="idname" class="form-control" placeholder="Enter valid id name">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Valid id Number</label>
+                    <label for="id">Valid id Number</label>
                     <input type="text" name="idnumber" class="form-control" placeholder="Enter valid id number">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Upload photo</label>
+                    <label for="photo">Upload photo</label>
                     <input type="file" name="photo" class="form-control">
                 </div>
-                <input type="submit" class="btn btn-success" value="Submit">    
-            </form>
-        </div>
-        <hr> 
-        <div>
-            <form action="/d_register" method="post">
+                <input type="submit" class="btn btn-success" value="Submit" id="sec">    
+            <div id="fthird" style="display: none;">
+                <hr> 
                 <h3>Medical Information</h3>
                 <div class="form-row">
                     <div class="col">
-                        <label for="firstname">Year of licence</label>
+                        <label for="licence">Year of licence</label>
                         <input type="date" name="year1" class="form-control">
                     </div>
                     <div class="col">
-                        <label for="lasttname">Expiring year</label>
+                        <label for="expire">Expiring year</label>
                         <input type="date" name="year2" class="form-control">
                     </div>        
                 </div>
                 <div class="form-group">
-                    <label for="email">Speciality</label>
+                    <label for="speciality">Speciality</label>
                     <input type="text" name="speciality" class="form-control" placeholder="Enter Speciality">
                 </div>
                 <div class="form-group">
-                    <label for="phone">Hospital Affiliation</label>
+                    <label for="hospital">Hospital Affiliation</label>
                     <input type="text" name="hospital" class="form-control" placeholder="Hospital Affiliation">
                 </div>
                 <div class="form-group">
-                    <label for="gender">Certification</label>                
+                    <label for="cert">Certification</label>                
                     <input type="text" name="certificate" class="form-control" placeholder="Enter Certificate">
                 </div>
                 <div class="form-group">
-                    <label for="dob">Link to published medical research</label>
+                    <label for="link">Link to published medical research</label>
                     <input type="text" name="link" class="form-control" placeholder="Add link">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Country of practice</label>
+                    <label for="practice">Country of practice</label>
                     <input type="text" name="country" class="form-control" placeholder="Country Of practice">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Medical school</label>
+                    <label for="med">Medical school</label>
                     <input type="text" name="school" class="form-control" placeholder="Enter school">
                 </div>   
                 <div class="form-group">
-                    <label for="valid">Board certified</label>
+                    <label for="board">Board certified</label>
                     <input type="text" name="board" class="form-control" placeholder="Board certified">
                 </div> 
-                <input type="submit" class="btn btn-success" value="Submit">
-            </form>
-        </div>
-        <hr> 
-        <div>
-            <h3>Work Experience</h3>
-            <form action="/d_register" method="post">
+                <input type="submit" class="btn btn-success" value="Submit" id="third">
+                <hr>
+            </div>
+            
+            <div id="ffourth" style="display: none;">
+                <hr>
+                <h3>Work Experience</h3>
                 <div class="form-group">
                     <label>Where have you worked with (Please specify with date)</label>
                     <textarea class="form-control" name="work"></textarea>
@@ -152,20 +145,39 @@
                     <input type="date" name="date" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Name of Superior</label>
-                    <input type="text" name="board" class="form-control" placeholder="Superior name">
+                    <label for="sperior">Name of Superior</label>
+                    <input type="text" name="superior" class="form-control" placeholder="Superior name">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Address</label>
-                    <input type="text" name="board" class="form-control" placeholder="Enter address">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" class="form-control" placeholder="Enter address">
                 </div>
                 <div class="form-group">
-                    <label for="valid">Contact</label>
-                    <input type="text" name="board" class="form-control" placeholder="Enter phone number">
+                    <label for="contact">Contact</label>
+                    <input type="text" name="contact" class="form-control" placeholder="Enter phone number">
                 </div>
-                <input type="submit" class="btn btn-success" value="Submit">            
-            </form>
-        </div>  
-        <hr>         
+                <input type="submit" class="btn btn-success" value="Submit" id="all">
+                <hr> 
+            </div>             
+        </form> 
+         
+        <script>
+            document.getElementById('first').onclick=(e)=>{
+                e.preventDefault();
+                ffirst.style.display = 'none';
+                document.getElementById('fsec').style.display = 'block'
+
+                document.getElementById('sec').onclick=(e)=>{
+                    e.preventDefault();
+                    fsec.style.display = 'none';
+                    document.getElementById('fthird').style.display = 'block'
+                }
+                document.getElementById('third').onclick=(e)=>{
+                    e.preventDefault();
+                    fthird.style.display = 'none';
+                    document.getElementById('ffourth').style.display = 'block'
+                }
+            }      
+        </script>       
     </div> 
 {% endblock %}    

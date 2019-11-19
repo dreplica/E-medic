@@ -23,9 +23,11 @@
                 <input type="confirm" name="confirm" class="form-control" placeholder="Enter Password">
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id='first'>
+            <hr>
         </div>
-        <hr> 
-        <div id="fsec" style='display:none;'>            
+         
+        <div id="fsec" style='display:none;'>
+            <hr>            
             <h3>Personal Information</h3>
             <input type="hidden" name="type" value="pat"> 
             <div class="form-row">
@@ -39,11 +41,11 @@
                 </div>        
             </div>            
             <div class="form-group">
-                <label for="gender">Marital status</label>
+                <label for="marital">Marital status</label>
                 <select class="custom-select" name="mstat">
                     <option disabled selected>Choose</option>
                     <option value="single">Single</option>
-                    <option value="married">Maarried</option>
+                    <option value="married">Married</option>
                     <option value="divorce">Divorce</option>
                 </select>
             </div>
@@ -52,11 +54,11 @@
                 <input type="phone" name="pnum" class="form-control" placeholder="Enter phone number">
             </div>
             <div class="form-group">
-                <label for="phone">Home address</label>
+                <label for="address">Home address</label>
                 <textarea name="address" class="form-control" placeholder="Enter home address"></textarea>
             </div>
             <div class="form-group">
-                <label for="phone">States</label>
+                <label for="state">States</label>
                 <select class="custom-select" name="states">
                     <option disabled selected>Choose</option>
                     {% for state in states %}
@@ -77,24 +79,31 @@
                 <input type="date" name="dob" class="form-control">
             </div>
             <div class="form-group">
-                <label for="valid">Valid id name</label>
+                <label for="validname">Valid id name</label>
                 <input type="text" name="idname" class="form-control" placeholder="Enter valid id">
             </div>
             <div class="form-group">
-                <label for="valid">Valid id number</label>
+                <label for="id">Valid id number</label>
                 <input type="text" name="idnum" class="form-control" placeholder="Enter valid id nume">
             </div>
             <div class="form-group">
+<<<<<<< HEAD
                 <label for="valid">Upload photo</label>
                 <input type="file" name="photo" class="form-control" id='photo'>
+=======
+                <label for="photo">Upload photo</label>
+                <input type="file" name="photo" class="form-control">
+>>>>>>> 003336a4a6459cea8066e38dcabef18a15057ca7
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
+            <hr> 
         </div>
-        <hr>     
+            
         <div id="fthird" style='display:none;'>
+            <hr>
             <h3>Medical History</h3>
             <div class="form-group">
-                <label for="gender">Blood Group</label>
+                <label for="group">Blood Group</label>
                 <select class="custom-select" name="blood">
                     <option disabled selected>Choose</option>
                     <option value="o">O+</option>
@@ -104,7 +113,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="gender">Genotype</label>
+                <label for="gene">Genotype</label>
                 <select class="custom-select" name="gene">
                     <option disabled selected>Choose</option>
                     <option value="aa">AA</option>
@@ -129,7 +138,7 @@
                 </div>        
             </div>
             <div class="form-group">
-                <label for="firstname">Phone number</label>
+                <label for="number">Phone number</label>
                 <input type="text" name="knumber" class="form-control" placeholder="Enter phone number">
             </div>
             <div class="form-group">
@@ -137,14 +146,15 @@
                 <input type="kemail" name="kemail" class="form-control" placeholder="Enter email address">
             </div> 
             <div class="form-group">
-                <label for="lasttname">Home Address</label>
+                <label for="address">Home Address</label>
                 <textarea name="kadd" class="form-control" placeholder="Enter home address"></textarea>
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id='all'>
-        </div> 
+            <hr>
+        </div>         
     </form>       
     <script>
-         document.getElementById('first').onclick=(e)=>{
+        document.getElementById('first').onclick=(e)=>{
             e.preventDefault();
             ffirst.style.display = 'none';
             document.getElementById('fsec').style.display = 'block'
@@ -153,11 +163,16 @@
                 e.preventDefault();
                 fsec.style.display = 'none';
                 document.getElementById('fthird').style.display = 'block'
+<<<<<<< HEAD
             }    
         }
         document.getElementById('photo').onchange =()=>{
             this.name = document.getElementById('username').value
         }
+=======
+            }
+        }     
+>>>>>>> 003336a4a6459cea8066e38dcabef18a15057ca7
     </script>
 </div>                
 {% endblock %} 
