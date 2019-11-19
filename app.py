@@ -4,16 +4,16 @@ from flask import Flask, render_template,redirect,session,request
 import csv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-# alchemy is the connection we are to use btw sqlite and python 
-from flask_sqlalchemy import SQLAlchemy
-# from import the function to encrypt and decrypt password 
+# alchemy is the connection we are to use b
+# from flask_sqlalchemy import SQLAlchemy
+# # from import the function to encrypt and decrypt password 
 app = Flask(__name__)
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-# you need to import sql to give it to a database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:////medic.db'
-#commence app with database
-db = SQLAlchemy(app)
+# # you need to import sql to give it to a database
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:///medic.db'
+# #commence app with database
+# db = SQLAlchemy(app)
 
 def apology(issue,code):
     return (str(issue)+"is to this code"+str(code))
@@ -27,23 +27,23 @@ def apology(issue,code):
 #     def __repr__(self):
 #         return '<users %r>' % info.user_id
 
-class users(db.Model):
-    id = db.Column( db.Integer,primary_key = True)
-    user_id = db.Column(db.String(100))
-    email = db.Column(db.String(100))
-    typ = db.Column(db.String(10))
-    password = db.Column(db.String(100))
-    def __repr__(self):
-        return '<user %r>' % self.user_id
+# class users(db.Model):
+#     id = db.Column( db.Integer,primary_key = True)
+#     user_id = db.Column(db.String(100))
+#     email = db.Column(db.String(100))
+#     typ = db.Column(db.String(10))
+#     password = db.Column(db.String(100))
+#     def __repr__(self):
+#         return '<user %r>' % self.user_id
 
-class med_his(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.String(100))
-    b_type = db.Column(db.String(10))
-    g_type = db.Column(db.String(10))
-    Med_cond = db.Column(db.String(250))
-    def __repr__(self):
-        return '<med_his %r>' % self.b_type
+# class med_his(db.Model):
+#     id = db.Column(db.Integer, primary_key = True)
+#     user_id = db.Column(db.String(100))
+#     b_type = db.Column(db.String(10))
+#     g_type = db.Column(db.String(10))
+#     Med_cond = db.Column(db.String(250))
+#     def __repr__(self):
+#         return '<med_his %r>' % self.b_type
 
 @app.route('/')
 def index():
