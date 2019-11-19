@@ -4,6 +4,7 @@ import csv
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session,url_for
 from flask_session import Session
+import folium
 from werkzeug.utils import secure_filename
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -12,6 +13,8 @@ UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
+map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
+folium.Marker([6.4488294999999995,3.5306864],popup='<strong>Decagon</strong>',tooltip="Decagon").add_to(map)
 
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -56,12 +59,12 @@ def login():
       user = db.execute("Select * from users")
 
       if len(user) != 0:
-         if check_password_hash(user[0][password],password):
+         if check_password_hash(user[0]['password'],password):
             session['user_id'] = user[0]['user_id']
             consult = db.execute('Select * from consultation')
 
             if len(consult) == 0:
-               return render_template('index.html',user=user)
+               return session['user_id']
             return render_template('index.html',user = user,history = consult)
       return apology("username and password does not match",400)
    return render_template("login.html")
@@ -163,7 +166,7 @@ def d_register():
                    u=userid,f=fname,l=lname,m=status,p=pnum,s =states, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('index.html')
     return render_template('d_register.html',states=states)
-
+map.save('map.html')
 # out of the context
 def errorhandler(e):
     """Handle error"""
