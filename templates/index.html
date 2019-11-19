@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 {% block main %}    
     <!--jumbotron-->
-    <div class="bg">
-        <div class="img"><img src='../static/css/francisco-venancio-M4Xloxsg0Gw-unsplash.jpg'></div>
+    <div class="img">
+        <img src='../static/css/francisco-venancio-M4Xloxsg0Gw-unsplash.jpg'>
         <div class="br">
             <h1 class="display-4"><em>Welcome to <strong>E.. Medicals</strong></em></h1>
             <p class="lead">Get access to quality health care without hassle!!!</p>
-            <hr class="my-4">
+            <hr class="my-4">            
             <p>We provide access to highly qualified doctors around you, connect with specialists and consultants from the comfort of your home.</p>
-            <a href="/d_register" id="doctor" class="btn btn-success btn-lg" href="#" role="button">Are you a doctor ?</a>
-            <a href="/p_register" id="patient" class="btn btn-success btn-lg" href="#" role="button">Do you need a Doctor ?</a>
+            <a href="/d_register" id="doctor" class="btn btn-success btn-lg" role="button"><span class="spinner-grow spinner-grow-sm"></span>Are you a doctor ?</a>
+            <a href="/p_register" id="patient" class="btn btn-success btn-lg" role="button"><span class="spinner-grow spinner-grow-sm"></span>Do you need a Doctor ?</a>
         </div>
-    </div>
+    </div> 
     
 {% endblock %}   
