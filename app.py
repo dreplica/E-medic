@@ -104,7 +104,7 @@ def p_register():
        db.execute("INSERT INTO info (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,idn,pic)",
                    u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=pic)
        return render_template('index.html')
-    return render_template('register.html',states=states) 
+    return render_template('p_register.html',states=states) 
 
 # out of the context
 def errorhandler(e):
