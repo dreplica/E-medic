@@ -1,0 +1,216 @@
+{% extends "layout.html" %}
+{% block main %} 
+    <div class="container col-md-5" style="margin-top: 70px;">         
+        <form action="/d_register" method="post" enctype="multipart/form-data"> 
+            <div id="ffirst">
+                <hr>
+                <h3>Fill out the form</h3>
+                <input type="hidden" name="type" value="doc">                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="phone" name="username" class="form-control" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter Password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm">Confirm Password</label>
+                    <input type="confirm" name="confirm" class="form-control" placeholder="Enter Password">
+                </div>
+                <input type="submit" class="btn btn-success" value="Submit" id="first">
+                <hr>
+            </div>
+             
+            <div id="fsec" style="display: none;">
+                <hr> 
+                <h3>Personal Information</h3>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="firstname">First Name</label>
+                        <input type="text" name="firstname" class="form-control" placeholder="Enter first name">
+                    </div>
+                    <div class="col">
+                        <label for="lasttname">Last Name</label>
+                        <input type="text" name="lastname" class="form-control" placeholder="Enter last name">
+                    </div>        
+                </div>            
+                <div class="form-group">
+                    <label for="marital">Marital status</label>
+                    <select class="custom-select" name="marital">
+                        <option disabled selected>Choose</option>
+                        <option value="single">Single</option>
+                        <option value="married">Married</option>
+                        <option value="divorce">Divorce</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="phone" name="number" class="form-control" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label for="address">Home address</label>
+                    <textarea name="home" class="form-control" placeholder="Enter home address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="state">States</label>
+                    <select class="custom-select" name="states">
+                        <option disabled selected>Choose state..</option>
+                        {% for state in states %}
+                        <option value={{state[2]}}>{{ state[2] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select class="custom-select" name="gender">
+                        <option disabled selected>Choose</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of birth</label>
+                    <input type="date" name="dob" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="validname">Valid id name</label>
+                    <input type="text" name="idname" class="form-control" placeholder="Enter valid id name">
+                </div>
+                <div class="form-group">
+                    <label for="id">Valid id Number</label>
+                    <input type="text" name="idnumber" class="form-control" placeholder="Enter valid id number">
+                </div>
+                <div class="form-group">
+                    <label for="photo">Upload photo</label>
+                    <input type="file" name="photo" class="form-control">
+                </div>
+                <input type="submit" class="btn btn-success" value="Submit" id="sec">
+            </div>        
+
+            <div id="fthird" style="display: none;">
+                <hr> 
+                <h3>Medical Information</h3>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="licence">Year of licence</label>
+                        <input type="date" name="year1" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label for="expire">Expiring year</label>
+                        <input type="date" name="year2" class="form-control">
+                    </div>        
+                </div>
+                <div class="form-group">
+                    <label for="speciality">Speciality</label>
+                    <input type="text" name="speciality" class="form-control" placeholder="Enter Speciality">
+                </div>
+                <div class="form-group">
+                    <label for="hospital">Hospital Affiliation</label>
+                    <input type="text" name="hospital" class="form-control" placeholder="Hospital Affiliation">
+                </div>
+                <div class="form-group">
+                    <label for="cert">Certification</label>                
+                    <input type="text" name="certificate" class="form-control" placeholder="Enter Certificate">
+                </div>
+                <div class="form-group">
+                    <label for="link">Link to published medical research</label>
+                    <input type="text" name="link" class="form-control" placeholder="Add link">
+                </div>
+                <div class="form-group">
+                    <label for="practice">Country of practice</label>
+                    <input type="text" name="country" class="form-control" placeholder="Country Of practice">
+                </div>
+                <div class="form-group">
+                    <label for="med">Medical school</label>
+                    <input type="text" name="school" class="form-control" placeholder="Enter school">
+                </div>   
+                <div class="form-group">
+                    <label for="board">Board certified</label>
+                    <input type="text" name="board" class="form-control" placeholder="Board certified">
+                </div> 
+                <input type="submit" class="btn btn-success" value="Submit" id="third">
+                <hr>
+            </div>
+            
+            <div id="ffourth" style="display: none;">                    
+                <hr>
+                <div id='fmain'>
+                <h3>Work Experience</h3>
+                <div class="form-group">
+                    <label>Where have you worked with (Please specify with date)</label>
+                    <textarea class="form-control" name="work"></textarea>
+                </div> 
+                <button class="btn btn-danger" id='add'>add</button>                
+                <div class="form-group"> 
+                    <label>Date</label>
+                    <input type="date" name="date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="sperior">Name of Superior</label>
+                    <input type="text" name="superior" class="form-control" placeholder="Superior name">
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" class="form-control" placeholder="Enter address">
+                </div>
+                <div class="form-group">
+                    <label for="contact">Contact</label>
+                    <input type="text" name="contact" class="form-control" placeholder="Enter phone number">
+                </div>
+                </div> 
+                <input type="submit" class="btn btn-success" value="Submit" id="all">
+                <hr>
+            </div>             
+        </form> 
+         
+        <script>
+
+            document.getElementById('add').onclick = (e)=>{
+                e.preventDefault()
+                let html1 = '<hr>'+
+                    '<h3>Add work experience</h3>'+
+                    '<div class="form-group">'+
+                    '<label>Where have you worked with (Please specify with date)</label>'+                    
+                    '<textarea class="form-control" name="work"></textarea>'+
+                    '</div>'+
+                    '<label>Date</label>'+
+                    '<input type="date" name="date" class="form-control">'+
+                    '</div>'+
+                    '<div class="form-group">'+
+                    '<label for="sperior">Name of Superior</label>'+
+                    '<input type="text" name="superior" class="form-control" placeholder="Superior name">'+
+                    '</div>'+
+                    '<div class="form-group">'+
+                    '<label for="address">Address</label>'+
+                    '<input type="text" name="address" class="form-control" placeholder="Enter address">'+
+                    '</div>'+
+                    '<div class="form-group">'+
+                    '<label for="contact">Contact</label>'+
+                    '<input type="text" name="contact" class="form-control" placeholder="Enter phone number">'+
+                    '</div>'
+                document.getElementById('fmain').insertAdjacentHTML('beforeend', html1);
+            }
+            document.getElementById('first').onclick=(e)=>{
+                e.preventDefault();
+                ffirst.style.display = 'none';
+                document.getElementById('fsec').style.display = 'block'
+
+                document.getElementById('sec').onclick=(e)=>{
+                    e.preventDefault();
+                    fsec.style.display = 'none';
+                    document.getElementById('fthird').style.display = 'block'
+                }
+                document.getElementById('third').onclick=(e)=>{
+                    e.preventDefault();
+                    fthird.style.display = 'none';
+                    document.getElementById('ffourth').style.display = 'block'
+                }
+            }      
+        </script>       
+    </div> 
+{% endblock %}    

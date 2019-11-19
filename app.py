@@ -45,7 +45,7 @@ def index():
    #    treat = db.execute("SELECT * from consultation where user_id =: user",user = session['user_id'])
    #    if len(treat) != 0:
    #       doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
-   return render_template("index.html")#,treat = treat[0],doc =doc)
+   return render_template("index.html",person = ['type','name'])#,treat = treat[0],doc =doc)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
