@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 {% block main %} 
-<div class="container col-md-5">
-    <hr> 
-    <form action="/p_register" method="post"> 
-        <div  id='ffirst'>
+<div class="container col-md-5">     
+    <form action="/p_register" method="post" enctype="multipart/form-data">        
+        <div id='ffirst'>
+            <hr> 
             <h3>Fill out the form</h3>
-            <input type="hidden" name="type" value="doc">                
+            <input type="hidden" name="type" value="pat">
+            <input type="hidden" name="date" value="" id='date'>             
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="phone" name="username" class="form-control" placeholder="Enter username">
@@ -23,13 +24,11 @@
                 <input type="confirm" name="confirm" class="form-control" placeholder="Enter Password">
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id='first'>
+            <hr>
         </div>
-        <hr> 
-<<<<<<< HEAD
-        <div id="fsec" style='display:hidden'>            
-=======
-        <div id="fsec" style='display:none;'>            
->>>>>>> a53c498c981e680b97f61e71f561510b15247641
+         
+        <div id="fsec" style='display:none;'>
+            <hr>            
             <h3>Personal Information</h3>
             <input type="hidden" name="type" value="pat"> 
             <div class="form-row">
@@ -43,7 +42,7 @@
                 </div>        
             </div>            
             <div class="form-group">
-                <label for="gender">Marital status</label>
+                <label for="marital">Marital status</label>
                 <select class="custom-select" name="mstat">
                     <option disabled selected>Choose</option>
                     <option value="single">Single</option>
@@ -56,11 +55,11 @@
                 <input type="phone" name="pnum" class="form-control" placeholder="Enter phone number">
             </div>
             <div class="form-group">
-                <label for="phone">Home address</label>
+                <label for="address">Home address</label>
                 <textarea name="address" class="form-control" placeholder="Enter home address"></textarea>
             </div>
             <div class="form-group">
-                <label for="phone">States</label>
+                <label for="state">States</label>
                 <select class="custom-select" name="states">
                     <option disabled selected>Choose</option>
                     {% for state in states %}
@@ -81,24 +80,26 @@
                 <input type="date" name="dob" class="form-control">
             </div>
             <div class="form-group">
-                <label for="valid">Valid id name</label>
+                <label for="validname">Valid id name</label>
                 <input type="text" name="idname" class="form-control" placeholder="Enter valid id">
             </div>
             <div class="form-group">
-                <label for="valid">Valid id number</label>
+                <label for="id">Valid id number</label>
                 <input type="text" name="idnum" class="form-control" placeholder="Enter valid id nume">
             </div>
             <div class="form-group">
-                <label for="valid">Upload photo</label>
+                <label for="photo">Upload photo</label>
                 <input type="file" name="photo" class="form-control">
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
+            <hr> 
         </div>
-        <hr>     
+            
         <div id="fthird" style='display:none;'>
+            <hr>
             <h3>Medical History</h3>
             <div class="form-group">
-                <label for="gender">Blood Group</label>
+                <label for="group">Blood Group</label>
                 <select class="custom-select" name="blood">
                     <option disabled selected>Choose</option>
                     <option value="o">O+</option>
@@ -108,7 +109,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="gender">Genotype</label>
+                <label for="gene">Genotype</label>
                 <select class="custom-select" name="gene">
                     <option disabled selected>Choose</option>
                     <option value="aa">AA</option>
@@ -133,22 +134,23 @@
                 </div>        
             </div>
             <div class="form-group">
-                <label for="firstname">Phone number</label>
+                <label for="number">Phone number</label>
                 <input type="text" name="knumber" class="form-control" placeholder="Enter phone number">
             </div>
             <div class="form-group">
-                <label for="lasttname">Email</label>
-                <input type="kemail" name="lastname" class="form-control" placeholder="Enter email address">
+                <label for="email">Email</label>
+                <input type="kemail" name="kemail" class="form-control" placeholder="Enter email address">
             </div> 
             <div class="form-group">
-                <label for="lasttname">Home Address</label>
+                <label for="address">Home Address</label>
                 <textarea name="kadd" class="form-control" placeholder="Enter home address"></textarea>
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id='all'>
-        </div> 
+            <hr>
+        </div>         
     </form>       
     <script>
-         document.getElementById('first').onclick=(e)=>{
+        document.getElementById('first').onclick=(e)=>{
             e.preventDefault();
             ffirst.style.display = 'none';
             document.getElementById('fsec').style.display = 'block'
@@ -157,18 +159,8 @@
                 e.preventDefault();
                 fsec.style.display = 'none';
                 document.getElementById('fthird').style.display = 'block'
-            }    
-
-        }
-        let first = document.getElementById('first')
-        let sec = document.getElementById('sec')
-        let third = document.getElementById('all')
-
-        third.addEventListener('click',(e)=>{
-            first.submit()
-            sec.submit()
-            this.submit()
-        },false)
+            }
+        }     
     </script>
 </div>                
 {% endblock %} 
