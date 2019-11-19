@@ -1,11 +1,11 @@
-{% extends "layout.html" %}
-{% block main %} 
-<div class="container col-md-5">
-    <hr> 
-    <form action="/p_register" method="post" enctype="multipart/form-data"> 
-        <div  id='ffirst'>
+
+<div class="container col-md-5" style="margin-bottom: 320px;margin-top: 50px;">     
+    <form action="/p_register" method="post" enctype="multipart/form-data">        
+        <div id='ffirst'>
+            <hr> 
             <h3>Fill out the form</h3>
-            <input type="hidden" name="type" value="pat">                
+            <input type="hidden" name="type" value="pat">             
+
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="phone" name="username" class="form-control" placeholder="Enter username" id='us'>
@@ -87,13 +87,9 @@
                 <input type="text" name="idnum" class="form-control" placeholder="Enter valid id nume">
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <label for="valid">Upload photo</label>
-                <input type="file" name="photo" class="form-control" id='photo'>
-=======
                 <label for="photo">Upload photo</label>
                 <input type="file" name="photo" class="form-control">
->>>>>>> 003336a4a6459cea8066e38dcabef18a15057ca7
+
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
             <hr> 
@@ -163,16 +159,10 @@
                 e.preventDefault();
                 fsec.style.display = 'none';
                 document.getElementById('fthird').style.display = 'block'
-<<<<<<< HEAD
+
             }    
         }
-        document.getElementById('photo').onchange =()=>{
-            this.name = document.getElementById('username').value
-        }
-=======
-            }
-        }     
->>>>>>> 003336a4a6459cea8066e38dcabef18a15057ca7
+
     </script>
 </div>                
 {% endblock %} 
