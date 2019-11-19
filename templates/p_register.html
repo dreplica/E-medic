@@ -1,14 +1,14 @@
-{% extends "layout.html" %}
-{% block main %} 
+
 <div class="container col-md-5" style="margin-bottom: 320px;margin-top: 50px;">     
     <form action="/p_register" method="post" enctype="multipart/form-data">        
         <div id='ffirst'>
             <hr> 
             <h3>Fill out the form</h3>
             <input type="hidden" name="type" value="pat">             
+
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="phone" name="username" class="form-control" placeholder="Enter username">
+                <input type="phone" name="username" class="form-control" placeholder="Enter username" id='us'>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
@@ -89,6 +89,7 @@
             <div class="form-group">
                 <label for="photo">Upload photo</label>
                 <input type="file" name="photo" class="form-control">
+
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
             <hr> 
@@ -158,8 +159,10 @@
                 e.preventDefault();
                 fsec.style.display = 'none';
                 document.getElementById('fthird').style.display = 'block'
-            }
-        }     
+
+            }    
+        }
+
     </script>
 </div>                
 {% endblock %} 
