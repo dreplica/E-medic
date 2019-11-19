@@ -112,7 +112,7 @@ def p_register():
        db.execute("INSERT INTO pat_info (b_gr,g_gr,med_iss,kin_fn,kin_ln,kin_phone,kin_email,kin_loc,user_id) VALUES(:b,:g,:md,:kfn,:kln,:kp,:ke,:kl,:us)",
                    b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
-                   u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+                   u=userid,f=fname,l=lname,m=status,p=pnum,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('index.html')
     return render_template('p_register.html',states=states) 
 
@@ -138,6 +138,8 @@ def d_register():
        status = request.form.get('mstat')
        l = request.form.get('year1')
        e = request.form.get('year2')
+       idn = request.form.get('idname')
+       nid = request.form.get('idnum')
        sp = request.form.get('speciality')
        hf = request.form.get('hospital')
        cert = request.form.get('certificate')
@@ -156,7 +158,7 @@ def d_register():
        db.execute("INSERT INTO doc_info (lic_yr,exp_yr,specialty,hos_aff,cert,link_pub,con_prac,med_sch,b_cert,user_id) VALUES(:l,:e,:sp,:hf,:cert,:lp,:cp,:ms,:bc,:us)",
                    l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
-                   u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+                   u=userid,f=fname,l=lname,m=status,p=pnum,s =states, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('index.html')
     return render_template('d_register.html',states=states)
 
