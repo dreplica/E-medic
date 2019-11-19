@@ -2,10 +2,10 @@
 {% block main %} 
 <div class="container col-md-5">
     <hr> 
-    <form action="/p_register" method="post"> 
+    <form action="/p_register" method="post" enctype="multipart/form-data"> 
         <div  id='ffirst'>
             <h3>Fill out the form</h3>
-            <input type="hidden" name="type" value="doc">                
+            <input type="hidden" name="type" value="pat">                
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="phone" name="username" class="form-control" placeholder="Enter username">
@@ -133,8 +133,8 @@
                 <input type="text" name="knumber" class="form-control" placeholder="Enter phone number">
             </div>
             <div class="form-group">
-                <label for="lasttname">Email</label>
-                <input type="kemail" name="lastname" class="form-control" placeholder="Enter email address">
+                <label for="email">Email</label>
+                <input type="kemail" name="kemail" class="form-control" placeholder="Enter email address">
             </div> 
             <div class="form-group">
                 <label for="lasttname">Home Address</label>
@@ -156,15 +156,6 @@
             }    
 
         }
-        let first = document.getElementById('first')
-        let sec = document.getElementById('sec')
-        let third = document.getElementById('all')
-
-        third.addEventListener('click',(e)=>{
-            first.submit()
-            sec.submit()
-            this.submit()
-        },false)
     </script>
 </div>                
 {% endblock %} 
