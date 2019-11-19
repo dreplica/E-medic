@@ -3,12 +3,9 @@
     <div class="container col-md-5">
         <hr> 
         <div>
-            <form action="/register" method="post"> 
+            <form action="/d_register" method="post"> 
                 <h3>Fill out the form</h3>
-                <div class="form-group">
-                    <label for="type">Who are you?</label>
-                    <input type="text" name="type" id="input" class="form-control">
-                </div>
+                <input type="hidden" name="type" value="doc">                
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="phone" name="username" class="form-control" placeholder="Enter username">
@@ -34,7 +31,7 @@
         </div>
         <hr> 
         <div>
-            <form action="/register" method="post">
+            <form action="/d_register" method="post">
                 <h3>Personal Information</h3>
                 <div class="form-row">
                     <div class="col">
@@ -101,7 +98,7 @@
         </div>
         <hr> 
         <div>
-            <form action="/register" method="post">
+            <form action="/d_register" method="post">
                 <h3>Medical Information</h3>
                 <div class="form-row">
                     <div class="col">
@@ -147,7 +144,7 @@
         <hr> 
         <div>
             <h3>Work Experience</h3>
-            <form action="/register" method="post">
+            <form action="/d_register" method="post">
                 <div class="form-group">
                     <label>Where have you worked with (Please specify with date)</label>
                     <textarea class="form-control" name="work"></textarea>
@@ -169,128 +166,6 @@
                 <input type="submit" class="btn btn-success" value="Submit">            
             </form>
         </div>  
-        <hr> 
-        <div>
-            <form action="/register" method="post">
-                <h3>Personal Information</h3>
-                <div class="form-row">
-                    <div class="col">
-                        <label for="firstname">First Name</label>
-                        <input type="text" name="firstname" class="form-control" placeholder="Enter first name">
-                    </div>
-                    <div class="col">
-                        <label for="lasttname">Last Name</label>
-                        <input type="text" name="lastname" class="form-control" placeholder="Enter last name">
-                    </div>        
-                </div>            
-                <div class="form-group">
-                    <label for="gender">Marital status</label>
-                    <select class="custom-select" name="marital">
-                        <option disabled selected>Choose</option>
-                        <option value="single">Single</option>
-                        <option value="married">Maarried</option>
-                        <option value="divorce">Divorce</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="phone" name="number" class="form-control" placeholder="Enter phone number">
-                </div>
-                <div class="form-group">
-                    <label for="phone">Home address</label>
-                    <textarea name="number" class="form-control" placeholder="Enter home address"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="phone">States</label>
-                    <select class="custom-select" name="states">
-                        <option disabled selected>Choose</option>
-                        {% for state in states %}
-                        <option value={{state[2]}}>{{ state[2] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    <select class="custom-select" name="gender">
-                        <option disabled selected>Choose</option>
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="dob">Date of birth</label>
-                    <input type="date" name="dob" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="valid">Valid id name</label>
-                    <input type="text" name="idname" class="form-control" placeholder="Enter valid id">
-                </div>
-                <div class="form-group">
-                    <label for="valid">Valid id number</label>
-                    <input type="text" name="idnumber" class="form-control" placeholder="Enter valid id nume">
-                </div>
-                <div class="form-group">
-                    <label for="valid">Upload photo</label>
-                    <input type="file" name="photo" class="form-control">
-                </div>
-                <input type="submit" class="btn btn-success" value="Submit">    
-            </form>
-        </div>
-        <hr> 
-        <div>
-            <form action="/register" method="post">
-                <h3>Medical History</h3>
-                <div class="form-group">
-                    <label for="gender">Blood Group</label>
-                    <select class="custom-select" name="blood">
-                        <option disabled selected>Choose</option>
-                        <option value="o">O+</option>
-                        <option value="a">A</option>
-                        <option value="b">B</option>
-                        <option value="ab">AB</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="gender">Genotype</label>
-                    <select class="custom-select" name="gene">
-                        <option disabled selected>Choose</option>
-                        <option value="aa">AA</option>
-                        <option value="as">AS</option>
-                        <option value="ss">SS</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Describe known medical issues</label>
-                    <textarea name="issues" class="form-control" placeholder="Describe issues here"></textarea>
-                </div>
-                <input type="submit" class="btn btn-success" value="Submit"> 
-                <hr> 
-                <h4>Next of kin</h4>
-                <div class="form-row">
-                    <div class="col">
-                        <label for="firstname">First Name</label>
-                        <input type="text" name="firstname" class="form-control" placeholder="Enter first name">
-                    </div>
-                    <div class="col">
-                        <label for="lasttname">Last Name</label>
-                        <input type="text" name="lastname" class="form-control" placeholder="Enter last name">
-                    </div>        
-                </div>
-                <div class="form-group">
-                    <label for="firstname">Phone number</label>
-                    <input type="text" name="number" class="form-control" placeholder="Enter phone number">
-                </div>
-                <div class="form-group">
-                    <label for="lasttname">Email</label>
-                    <input type="email" name="lastname" class="form-control" placeholder="Enter email address">
-                </div> 
-                <div class="form-group">
-                    <label for="lasttname">Home Address</label>
-                    <textarea name="address" class="form-control" placeholder="Enter home address"></textarea>
-                </div>
-                <input type="submit" class="btn btn-success" value="Submit">    
-            </form>
-        </div> 
-        <hr>            
+        <hr>         
     </div> 
 {% endblock %}    
