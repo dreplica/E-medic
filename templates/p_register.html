@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+{% block main %} 
+<div class="container col-md-5">
+    <hr> 
+    <form action="/p_register" method="post"> 
+        <div  id='ffirst'>
+            <h3>Fill out the form</h3>
+            <input type="hidden" name="type" value="doc">                
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="phone" name="username" class="form-control" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter email address">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter Password">
+            </div>
+            <div class="form-group">
+                <label for="confirm">Confirm Password</label>
+                <input type="confirm" name="confirm" class="form-control" placeholder="Enter Password">
+            </div>
+            <input type="submit" class="btn btn-success" value="Submit" id='first'>
+        </div>
+        <hr> 
+        <div id="fsec" style='visibility:hidden'>            
+            <h3>Personal Information</h3>
+            <input type="hidden" name="type" value="pat"> 
+            <div class="form-row">
+                <div class="col">
+                    <label for="firstname">First Name</label>
+                    <input type="text" name="fname" class="form-control" placeholder="Enter first name">
+                </div>
+                <div class="col">
+                    <label for="lasttname">Last Name</label>
+                    <input type="text" name="lname" class="form-control" placeholder="Enter last name">
+                </div>        
+            </div>            
+            <div class="form-group">
+                <label for="gender">Marital status</label>
+                <select class="custom-select" name="mstat">
+                    <option disabled selected>Choose</option>
+                    <option value="single">Single</option>
+                    <option value="married">Maarried</option>
+                    <option value="divorce">Divorce</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="phone" name="pnum" class="form-control" placeholder="Enter phone number">
+            </div>
+            <div class="form-group">
+                <label for="phone">Home address</label>
+                <textarea name="address" class="form-control" placeholder="Enter home address"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="phone">States</label>
+                <select class="custom-select" name="states">
+                    <option disabled selected>Choose</option>
+                    {% for state in states %}
+                    <option value={{state[2]}}>{{ state[2] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select class="custom-select" name="sex">
+                    <option disabled selected>Choose</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of birth</label>
+                <input type="date" name="dob" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="valid">Valid id name</label>
+                <input type="text" name="idname" class="form-control" placeholder="Enter valid id">
+            </div>
+            <div class="form-group">
+                <label for="valid">Valid id number</label>
+                <input type="text" name="idnum" class="form-control" placeholder="Enter valid id nume">
+            </div>
+            <div class="form-group">
+                <label for="valid">Upload photo</label>
+                <input type="file" name="photo" class="form-control">
+            </div>
+            <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
+        </div>
+        <hr>     
+        <div id="fthird" style='visibility:hidden'>
+            <h3>Medical History</h3>
+            <div class="form-group">
+                <label for="gender">Blood Group</label>
+                <select class="custom-select" name="blood">
+                    <option disabled selected>Choose</option>
+                    <option value="o">O+</option>
+                    <option value="a">A</option>
+                    <option value="b">B</option>
+                    <option value="ab">AB</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="gender">Genotype</label>
+                <select class="custom-select" name="gene">
+                    <option disabled selected>Choose</option>
+                    <option value="aa">AA</option>
+                    <option value="as">AS</option>
+                    <option value="ss">SS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Describe known medical issues</label>
+                <textarea name="issues" class="form-control" placeholder="Describe issues here"></textarea>
+            </div>
+            <hr> 
+            <h4>Next of kin</h4>
+            <div class="form-row">
+                <div class="col">
+                    <label for="firstname">First Name</label>
+                    <input type="text" name="firstname" class="form-control" placeholder="Enter first name">
+                </div>
+                <div class="col">
+                    <label for="lasttname">Last Name</label>
+                    <input type="text" name="lastname" class="form-control" placeholder="Enter last name">
+                </div>        
+            </div>
+            <div class="form-group">
+                <label for="firstname">Phone number</label>
+                <input type="text" name="knumber" class="form-control" placeholder="Enter phone number">
+            </div>
+            <div class="form-group">
+                <label for="lasttname">Email</label>
+                <input type="kemail" name="lastname" class="form-control" placeholder="Enter email address">
+            </div> 
+            <div class="form-group">
+                <label for="lasttname">Home Address</label>
+                <textarea name="kadd" class="form-control" placeholder="Enter home address"></textarea>
+            </div>
+            <input type="submit" class="btn btn-success" value="Submit" id='all'>
+        </div> 
+    </form>       
+    <script>
+         document.getElementById('first').onclick=()=>{
+            preventDefault();
+            ffirst.style.visibility = 'hidden';
+            document.getElementById('fsec').visibility = 'visible'
+
+            document.getElementById('sec').onclick=()=>{
+                preventDefault();
+                fsec.style.visibility = 'hidden';
+                document.getElementById('fthird').visibility = 'visible'
+            }    
+
+        }
+        let first = document.getElementById('first')
+        let sec = document.getElementById('sec')
+        let third = document.getElementById('all')
+
+        third.addEventListener('click',(e)=>{
+            first.submit()
+            sec.submit()
+            this.submit()
+        },false)
+    </script>
+</div>                
+{% endblock %} 
