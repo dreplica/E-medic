@@ -1,57 +1,44 @@
-
-from cs50 import SQL
-from flask import Flask, render_template,redirect,session,request
+import os
 import csv
+from cs50 import SQL
+from flask import Flask, flash, jsonify, redirect, render_template, request, session
+from flask_session import Session
+from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-# alchemy is the connection we are to use btw sqlite and python 
-from flask_sqlalchemy import SQLAlchemy
-# from import the function to encrypt and decrypt password 
+
+# Configure application
 app = Flask(__name__)
+
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-# you need to import sql to give it to a database
-<<<<<<< HEAD
-app.config['SQLALCHEMY_DATABASE_URI'] = 'splite:///medic.db'
-=======
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///medic.db'
->>>>>>> 91dc7b4d575feb96aa7baf8e0bcac16363b281ee
-#commence app with database
-db = SQLAlchemy(app)
 
 def apology(issue,code):
-    return (str(issue)+"is to this code"+str(code))
+   return (str(issue)+"is to this code"+str(code))
+# Ensure responses aren't cached
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
 
-# class info(db.Model):
-#     id = db.column( db.Integer, primary_key = True)
-#     user_id = db.column()
-#     user_id = db.column()
-#     user_id = db.column()
-#     user_id = db.column()
-#     def __repr__(self):
-#         return '<users %r>' % info.user_id
+# Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_FILE_DIR"] = mkdtemp()
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
-class users(db.Model):
-    id = db.Column( db.Integer,primary_key = True)
-    user_id = db.Column(db.String(100))
-    email = db.Column(db.String(100))
-    typ = db.Column(db.String(10))
-    password = db.Column(db.String(100))
-    def __repr__(self):
-        return '<user %r>' % self.user_id
-
-class med_his(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.String(100))
-    b_type = db.Column(db.String(10))
-    g_type = db.Column(db.String(10))
-    Med_cond = db.Column(db.String(250))
-    def __repr__(self):
-        return '<med_his %r>' % self.b_type
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///emedic.db")
 
 @app.route('/')
 def index():
-   return render_template("index.html",name="david")
+   if session['user_id']:
+      treat = db.execute("SELECT * from consultation where user_id =: user",user = session['user_id'])
+      if len(treat) != 0:
+         doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
+   return render_template("index.html",treat = treat[0],doc =doc)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -79,38 +66,45 @@ def logout():
       return redirect('index.html')
    return apology('sorry you"re not on this service',400)
 
-@app.route('/register', methods=['GET',"POST"])
-def register():
-<<<<<<< HEAD
+@app.route('/p_register',methods=['GET',"POST"])
+def p_register():
     file = open('states.csv','r')
     reader = csv.reader(file)
     states = list(reader)
     if request.method == 'POST':
-       user_id = request.form.get('username')
+       userid = request.form.get('username')
        email = request.form.get('email')
        passw = request.form.get('password')
        typ = request.form.get('type')
-       session['user_id'] = request.form.get['username']
-       user = users(user_id,)
-       db.session.add(users,email,typ,passw)
+       date = request.form.get('date')
+       blood = request.form.get('blood')
+       geno = request.form.get('gene')
+       med = request.form.get('issues')
+       k_fn = request.form.get('firstname')
+       k_ln = request.form.get('lastname')
+       kp = request.form.get('number')
+       ke = request.form.get('kemail')
+       k_loc = request.form.get('kadd')
+       fname = request.form.get('fname')
+       lname = request.form.get('lname')
+       dob = request.form.get('dob')
+       sex = request.form.get('sex')
+       state = request.form.get('states')
+       addr = request.form.get('address')
+       pnum = request.form.get('pnum')
+       status = request.form.get('mstat')
+       idn = request.form.get('idname')
+       nid = request.form.get('idnum')
+       pic = request.form.get('photo')
+       session['user_id'] = request.form.get('username')
+      #  user = users(userid)
+       db.execute("INSERT INTO users (user_id,password,email,type,date) values(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
+       db.execute("INSERT INTO pat_info (b_gr,g_gr,med_iss,kin_fn,kin_ln,kin_ph,kin_email,kin_loc) values(:b,:g,:md,:kfn,:kln,:kp,:ke,:kl,:us)",
+                   b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp = kphone,ke = kem,kl=k_loc,us = userid)
+       db.execute("INSERT INTO info (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,idn,pic)",
+                   u=userid,f=fname,l=lname,m=med,p=pnum,s =status, sx=sex,dob=dob,id=idn,idn=nid,pic=pic)
        return render_template('index.html')
     return render_template('register.html',states=states) 
-=======
-   file = open('states.csv','r')
-   reader = csv.reader(file)
-   states = list(reader)
-   if request.method == 'POST':
-      user_id = request.form.get('username')
-      email = request.form.get('email')
-      passw = request.form.get('password')
-      typ = request.form.get('type')
-      session['user_id'] = request.form.get['username']
-      user = users(user_id,)
-      db.session.add(users,email,typ,passw)
-      return render_template('index.html')
-   else:
-      return render_template('register.html', states=states) 
->>>>>>> 91dc7b4d575feb96aa7baf8e0bcac16363b281ee
 
 # out of the context
 def errorhandler(e):
@@ -124,7 +118,4 @@ def errorhandler(e):
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
-if __name__ == "__main__":
-   db.create_all()
-   app.run(debug = True)
 
