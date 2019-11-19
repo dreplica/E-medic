@@ -51,7 +51,7 @@ def login():
       password = request.form['password']
       if not name and not password:
          return "please go back and enter appropriate details"
-      user = user.query.filter_by(user_id=name).first()
+      user = db.execute("")
       if len(user) != 0:
          if check_password_hash(user[0][password],password):
             #to save user's session
@@ -71,6 +71,7 @@ def logout():
       return redirect('index.html')
    return apology('sorry you"re not on this service',400)
 
+# registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
 def p_register():
     file = open('states.csv','r')
