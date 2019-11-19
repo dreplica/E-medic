@@ -8,7 +8,7 @@
             <input type="hidden" name="type" value="pat">                
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="phone" name="username" class="form-control" placeholder="Enter username">
+                <input type="phone" name="username" class="form-control" placeholder="Enter username" id='us'>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
@@ -86,7 +86,7 @@
             </div>
             <div class="form-group">
                 <label for="valid">Upload photo</label>
-                <input type="file" name="photo" class="form-control">
+                <input type="file" name="photo" class="form-control" id='photo'>
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
         </div>
@@ -154,7 +154,9 @@
                 fsec.style.display = 'none';
                 document.getElementById('fthird').style.display = 'block'
             }    
-
+        }
+        document.getElementById('photo').onchange =()=>{
+            this.name = document.getElementById('username').value
         }
     </script>
 </div>                
