@@ -81,12 +81,12 @@ def logout():
    session.clear()
    return redirect('/')
 
-# @app.route('/doctor')
-# def doctor(): 
-#    if 'user_id' in session:
-#       user_id = session.get("user_id")  
-#       return render_template('doctor.html', user=user_id)
-#    return redirect('/') 
+@app.route('/doctor')
+def doctor(): 
+   if 'user_id' in session: 
+      user_id = session.get("user_id")  
+      return render_template('doctor.html', user=user_id)
+   return redirect('/') 
 
 @app.route('/patient',methods=['GET','POST'])
 def patient():
