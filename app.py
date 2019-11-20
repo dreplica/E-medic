@@ -90,6 +90,13 @@ def patient():
       return render_template('patient.html', user=user_id)    
    return redirect('/') 
 
+@app.route('/chats')
+def chats():
+   if 'user_id' in session:
+      user_id = session.get("user_id")
+   return render_template("chats.html", user=user_id)
+
+
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
 def p_register():
