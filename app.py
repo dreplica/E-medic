@@ -218,7 +218,7 @@ def loc():
          loc1 = request.argv.get('loc1')
          loc2 = request.argv.get('loc2')
          db.execute("insert into loc (lat,long,user) values(:la,:lo:us)",la = loc1,lo=loc2,us=session['user_id'])
-         folium.Marker([loc1,loc2],popup='<strong>'+session['user_id']+'</strong>',tooltip="doc").add_to(map)
+         folium.Marker([loc2,loc1],popup='<strong>'+session['user_id']+'</strong>',tooltip="doc").add_to(map)
    return render_template('/')
 
 
