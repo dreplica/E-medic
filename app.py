@@ -15,6 +15,8 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask(__name__)
 map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
 folium.Marker([6.4488294999999995,3.5306864],popup='<strong>Decagon</strong>',tooltip="Decagon").add_to(map)
+folium.Marker([6.9999995,4.5306864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
+folium.Marker([6.995,2.06864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
 
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -37,7 +39,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///emed.db")
+db = SQL("sqlite:///medic.db")
 
 @app.route('/')
 def index():
@@ -166,6 +168,17 @@ def d_register():
                    u=userid,f=fname,l=lname,m=status,p=pnum,s =states, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('index.html')
     return render_template('d_register.html',states=states)
+
+@app.route('/message',methods=['GET','POST'])
+def message():
+   if request.method == 'POST':
+      if session['user_id']:
+         current = request.form.get('message')
+         user = db.execute('select user_id from message where user_id =:sess',sess = session['user_id'])
+         if len(user) != 0:
+            db.execute('insert into messge (sender,reciever,mess) values(:se,re,me)',se=:cu)
+            mess = db.execute('select sender,reciever, message from message where sender =:sess or reciever =: sess order by date',sess = session['user_id'])
+
 map.save('map.html')
 # out of the context
 def errorhandler(e):
