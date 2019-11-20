@@ -38,16 +38,23 @@
         e.preventDefault();
         let msg = document.getElementById('msg').value
         console.log("this is message :"+msg)
-        let user = $('.user').attr('value');
+        let user = document.getElementById('user').getAttribute('value')
         console.log("this is user :"+user)
         $.ajax({
             type:'POST',
-            url:'messsage.html',
+            url:'/message',
             data:{
-                reciever:'dreplica',
-                message:'james'
+                reciever:user,
+                message:msg
             },
             success:()=>console.log("success")
+        })
+        $.ajax({
+            type:'GET',
+            url:'/message',
+            success:(data)=>{
+                $
+            }
         })
 })
     
