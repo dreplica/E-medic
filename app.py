@@ -14,10 +14,6 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
 map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
-<<<<<<< HEAD
-
-=======
->>>>>>> 12744c96f6e499e6937d86c71993c2228aed22bc
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -66,10 +62,10 @@ def login():
          return apology("username and password does not match",400)
          
       session['user_id'] = user[0]['user_id']
-      if user[0]['type']:
+      if user[0]['type'] == 'pat':
          print(user[0]['type'])
          return redirect('patient')#,history = consult)
-      elif user[0]['type']:
+      else:
          return redirect('doctor')
    return render_template("login.html")
 
@@ -141,7 +137,7 @@ def p_register():
                    b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
                    u=userid,f=fname,l=lname,m=status,p=pnum,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return render_template('index.html')
+       return render_template('patient.html')
     return render_template('p_register.html',states=states) 
 
 #registration for doctors
@@ -187,7 +183,7 @@ def d_register():
                    l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                    u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return render_template('index.html')
+       return redirect('doctor')
     return render_template('d_register.html',states=states)
 
 #message box side
