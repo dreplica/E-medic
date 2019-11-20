@@ -21,7 +21,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def apology(issue,code):
-   return (str(issue)+"is to this code"+str(code))
+   return (str(issue)+" "+str(code))
 # Ensure responses aren't cached
 @app.after_request
 def after_request(response):
@@ -45,36 +45,50 @@ def index():
    #    treat = db.execute("SELECT * from consultation where user_id =: user",user = session['user_id'])
    #    if len(treat) != 0:
    #       doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
+   session.clear()
    return render_template("index.html")#,treat = treat[0],doc =doc)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
+   session.clear()
    if request.method == 'POST':
       name = request.form.get('username')
       password = request.form.get('password')
 
       if not name and not password:
-         return "please go back and enter appropriate details"
+         return apology("please go back and enter appropriate details",404)
 
-      user = db.execute("Select * from users")
-
-      if len(user) != 0:
-         if check_password_hash(user[0]['password'],password):
-            session['user_id'] = user[0]['user_id']
-            consult = db.execute('Select * from consultation')
-
-            if len(consult) == 0:
-               return session['user_id']
-            return render_template('index.html',user = user,history = consult)
-      return apology("username and password does not match",400)
+      user = db.execute("Select * from users where user_id=:us", us=name)
+      
+      if len(user) != 1 or not check_password_hash(user[0]['password'], password):
+         return apology("username and password does not match",400)
+         
+      session['user_id'] = user[0]['user_id']
+      if user[0]['type']:
+         print(user[0]['type'])
+         return redirect('patient')#,history = consult)
+      elif user[0]['type']:
+         return redirect('doctor')
    return render_template("login.html")
 
-@app.route('/logout',methods=['GET','POST'])
+@app.route('/logout')
 def logout():
-   if session["user_id"]:
-      session.clear()
-      return redirect('index.html')
-   return apology('sorry you"re not on this service',400)
+   session.clear()
+   return redirect('/')
+
+@app.route('/doctor')
+def doctor(): 
+   if 'user_id' in session:
+      user_id = session.get("user_id")  
+      return render_template('doctor.html', user=user_id)
+   return redirect('/') 
+
+@app.route('/patient',methods=['GET','POST'])
+def patient():
+   if 'user_id' in session:
+      user_id = session.get("user_id")
+      return render_template('patient.html', user=user_id)    
+   return redirect('/') 
 
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
