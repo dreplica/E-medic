@@ -66,10 +66,10 @@ def login():
          return apology("username and password does not match",400)
          
       session['user_id'] = user[0]['user_id']
-      if user[0]['type']:
+      if user[0]['type'] == 'pat':
          print(user[0]['type'])
          return redirect('patient')#,history = consult)
-      elif user[0]['type']:
+      else:
          return redirect('doctor')
    return render_template("login.html")
 
@@ -82,14 +82,16 @@ def logout():
 def doctor(): 
    if 'user_id' in session: 
       user_id = session.get("user_id")  
-      return render_template('doctor.html', user=user_id)
+      user = db.execute('select * from users where user_id=:us',us = user_id)
+      return render_template('doctor.html', user=user)
    return redirect('/')
 
 @app.route('/patient',methods=['GET','POST'])
 def patient():
    if 'user_id' in session:
       user_id = session.get("user_id")
-      return render_template('patient.html', user=user_id)    
+      user = db.execute('select * from users where user_id=:us',us = user_id)
+      return render_template('patient.html', user=user)    
    return redirect('/') 
 
 @app.route('/chats')
@@ -141,7 +143,7 @@ def p_register():
                    b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
                    u=userid,f=fname,l=lname,m=status,p=pnum,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return render_template('index.html')
+       return render_template('patient.html')
     return render_template('p_register.html',states=states) 
 
 #registration for doctors
@@ -187,7 +189,7 @@ def d_register():
                    l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                    u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return render_template('index.html')
+       return redirect('doctor')
     return render_template('d_register.html',states=states)
 
 #message box side
@@ -218,7 +220,7 @@ def loc():
          loc2 = request.argv.get('loc2')
          db.execute("insert into loc (lat,long,user) values(:la,:lo:us)",la = loc1,lo=loc2,us=session['user_id'])
          folium.Marker([loc2,loc1],popup='<strong>'+session['user_id']+'</strong>',tooltip="doc").add_to(map)
-   return render_template('/')
+   return render_template('map.html')
 
 
 map.save('templates/map.html')
