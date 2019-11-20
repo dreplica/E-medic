@@ -1,7 +1,7 @@
 {% extends "client_layout.html" %}
 {% block main %}
 <!--from here-->
-        <div class="jumbotron jumbotron-fluid" style='text-align: left !important; padding-top: 30px;'>
+        <div class="jumbotron jumbotron-fluid" style='text-align: left !important;'>
           <div class="container text-primary">
               <h1 class="display-4"><em>E - Medicals</em></h1>
               <p class="lead">This is your online work environment..</p>
@@ -65,6 +65,25 @@
                     </div>
                 </div>
             </div>
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script>
+                let location = [];
+                window.onload = ()=>{
+                    window.navigator.geolocation.getCurrentPosition((pos)=>{
+                        location[0] = pos.coords.longitude;
+                        location[1] = pos.coords.latitude;
+                    })
+                }
+                $.ajax({
+                    type:'POST',
+                    url:'/location',
+                    data:{
+                        loc1:location[0],
+                        loc2:location[1]
+                    },
+                    success:()=> location
+                })
+            </script>
         </section>
         <!--to here-->       
 

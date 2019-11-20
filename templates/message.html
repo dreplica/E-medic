@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+          <div class="col-lg-5 message" style="width:30%;height:400px;border:2px solid darkgrey">
+              {% for msg in mess %}
+                 {% if msg['send'] == 'david' %}
+                       <h2>{{msg['msg']}}</h2>
+                 {% endif %}
+                 {% if msg['recieve'] == 'david' %}
+                       <h1>{{msg['msg']}}</h1>
+                 {% endif %}
+              {% endfor %}
+          </div>
+             <div class="col-lg-5 chat" style='width:10%;height:400px;'></div>
+                <div class="mform">
+                    <form action="/message" method="POST">
+                    <input type="hidden" id='user' value='userr'>
+                    <textarea col='5' row='8' id="msg"></textarea>
+                    <input type="submit" value="send" id="send">
+                    </form>
+                </div>
+                {{mess}}
+         </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+
+    $('#send').click((e)=>{
+        e.preventDefault();
+        let msg = document.getElementById('msg').value
+        console.log("this is message :"+msg)
+        let user = document.getElementById('user').getAttribute('value')
+        console.log("this is user :"+user)
+        $.ajax({
+            type:'POST',
+            url:'/message',
+            data:{
+                reciever:user,
+                message:msg
+            },
+            success:()=>console.log("success")
+        })
+        $.get("/message",(data)=>{
+            $('.message').append(data[0])
+        })
+})
+    
+</script>
+</body>
+</html>
