@@ -41,7 +41,7 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///emed.db")
 db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id VARCHAR(255) NOT NULL,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,date datetime default current_timestamp )")
-db.execute("INSERT INTO message (user_id,msg,send,recieve) VALUES('dreplica','hello','dreplica','correct')")
+
 @app.route('/')
 def index():
    # if session['user_id']:
@@ -173,6 +173,7 @@ def d_register():
        return render_template('index.html')
     return render_template('d_register.html',states=states)
 
+#message box side
 @app.route('/message',methods=['GET','POST'])
 def message():
    if request.method == 'POST':
