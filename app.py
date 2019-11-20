@@ -128,7 +128,6 @@ def p_register():
        idn = request.form.get('idname')
        nid = request.form.get('idnum')
        fille = request.files['photo']
-       pic = request.form.get('photo')
        session['user_id'] = request.form.get('username')
       #  user = users(userid)
        if fille.filename == '':
@@ -137,8 +136,8 @@ def p_register():
        db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
        db.execute("INSERT INTO pat_info (b_gr,g_gr,med_iss,kin_fn,kin_ln,kin_phone,kin_email,kin_loc,user_id) VALUES(:b,:g,:md,:kfn,:kln,:kp,:ke,:kl,:us)",
                    b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
-       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
-                   u=userid,f=fname,l=lname,m=status,p=pnum,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
+                   u=userid,f=fname,l=lname,m=status,p=pnum, loc=addr, s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('patient.html')
     return render_template('p_register.html',states=states) 
 
@@ -173,7 +172,7 @@ def d_register():
        cp = request.form.get('country')
        ms = request.form.get('school')
        bc = request.form.get('board')
-       us = request.form.get('idnum')
+      #  us = request.form.get('idnum')
        fille = request.files['photo']
        session['user_id'] = request.form.get('username')
       #  user = users(userid)
