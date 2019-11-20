@@ -14,10 +14,6 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
 map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
-folium.Marker([6.4488294999999995,3.5306864],popup='<a href="www.decagonhq.com">decagon office</a>',tooltip="Decagon").add_to(map)
-folium.Marker([6.9999995,4.5306864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
-folium.Marker([6.995,2.06864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
-
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -199,7 +195,7 @@ def message():
       mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
       return render_template('message.html',mess = mess)
 
-@app.route('/location',methods=['GET','POST'])
+@app.route('/map',methods=['GET','POST'])
 def loc():
    if 'user_id' in session:
       if request.method == 'POST':
@@ -214,7 +210,7 @@ def loc():
    return render_template('/')
 
 
-map.save('map.html')
+map.save('templates/map.html')
 # out of the context
 def errorhandler(e):
     """Handle error"""
