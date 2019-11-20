@@ -16,4 +16,15 @@
             <input type="submit" class="btn btn-success" value="Submit"> 
        </form>
     </div> 
+    <script>
+        let loc=[]    
+            if(loc.length == 0){
+                setInterval(()=>{
+                    window.navigator.geolocation.getCurrentPosition((cord)=>{
+                        loc[0] = cord.coords.longitude
+                        loc[1] = cord.coords.latitude
+                    })
+                }),10
+            }
+    </script>
 {% endblock %}  
