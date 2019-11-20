@@ -62,10 +62,10 @@ def login():
          return apology("username and password does not match",400)
          
       session['user_id'] = user[0]['user_id']
-      if user[0]['type']:
+      if user[0]['type'] == 'pat':
          print(user[0]['type'])
          return redirect('patient')#,history = consult)
-      elif user[0]['type']:
+      else:
          return redirect('doctor')
    return render_template("login.html")
 
@@ -87,6 +87,13 @@ def patient():
       user_id = session.get("user_id")
       return render_template('patient.html', user=user_id)    
    return redirect('/') 
+
+@app.route('/chats')
+def chats():
+   if 'user_id' in session:
+      user_id = session.get("user_id")
+   return render_template("chats.html", user=user_id)
+
 
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
@@ -130,7 +137,7 @@ def p_register():
                    b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
                    u=userid,f=fname,l=lname,m=status,p=pnum,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return render_template('index.html')
+       return render_template('patient.html')
     return render_template('p_register.html',states=states) 
 
 #registration for doctors
@@ -174,9 +181,9 @@ def d_register():
        db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
        db.execute("INSERT INTO doc_info (lic_yr,exp_yr,specialty,hos_aff,cert,link_pub,con_prac,med_sch,b_cert,user_id) VALUES(:l,:e,:sp,:hf,:cert,:lp,:cp,:ms,:bc,:us)",
                    l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
-       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
-                   u=userid,f=fname,l=lname,m=status,p=pnum,s =states, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return render_template('index.html')
+       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
+                   u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+       return redirect('doctor')
     return render_template('d_register.html',states=states)
 
 #message box side
