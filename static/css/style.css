@@ -1,0 +1,26 @@
+.img img{
+    width:100%;
+}
+.img{
+    width:100%;
+    height: auto;
+    position: absolute;
+}
+.br{
+    position: fixed;
+    font-weight: bold;
+    top:20%;
+    left:25%;
+    width:50%;
+}
+@media only screen and (max-width: 953px) {
+    .br a {
+      margin-top: 5px;  
+      display: block;
+    }
+    .br{
+        position: relative;
+        font-weight: bold;
+        padding: 30px 30px;
+    }
+  }
