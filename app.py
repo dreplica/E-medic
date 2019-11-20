@@ -94,7 +94,8 @@ def patient():
 def chats():
    if 'user_id' in session:
       user_id = session.get("user_id")
-   return render_template("chats.html", user=user_id)
+      user = db.execute('select * from users where user_id=:us',us = user_id)
+   return render_template("chats.html", user=user)
 
 
 # registration for patients
