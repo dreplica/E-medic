@@ -14,7 +14,6 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
 map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
-
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -186,13 +185,8 @@ def d_register():
        db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
        db.execute("INSERT INTO doc_info (lic_yr,exp_yr,specialty,hos_aff,cert,link_pub,con_prac,med_sch,b_cert,user_id) VALUES(:l,:e,:sp,:hf,:cert,:lp,:cp,:ms,:bc,:us)",
                    l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
-<<<<<<< HEAD
-       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:l,:s,:sx,:dob,:id,:idn,:pic)",
-                   u=userid,f=fname,l=lname,m=status,p=pnum,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-=======
        db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                    u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
->>>>>>> e8c17e18ac463648586e51598aa769371b0fd61a
        return render_template('index.html')
     return render_template('d_register.html',states=states)
 
@@ -212,7 +206,7 @@ def message():
       mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
       return render_template('message.html',mess = mess)
 
-@app.route('/location',methods=['GET','POST'])
+@app.route('/map',methods=['GET','POST'])
 def loc():
    if 'user_id' in session:
       if request.method == 'POST':
