@@ -78,14 +78,16 @@ def logout():
 def doctor(): 
    if 'user_id' in session: 
       user_id = session.get("user_id")  
-      return render_template('doctor.html', user=user_id)
+      user = db.execute('select * from users where user_id=:us',us = user_id)
+      return render_template('doctor.html', user=user)
    return redirect('/')
 
 @app.route('/patient',methods=['GET','POST'])
 def patient():
    if 'user_id' in session:
       user_id = session.get("user_id")
-      return render_template('patient.html', user=user_id)    
+      user = db.execute('select * from users where user_id=:us',us = user_id)
+      return render_template('patient.html', user=user)    
    return redirect('/') 
 
 @app.route('/chats')
@@ -214,7 +216,7 @@ def loc():
          loc2 = request.argv.get('loc2')
          db.execute("insert into loc (lat,long,user) values(:la,:lo:us)",la = loc1,lo=loc2,us=session['user_id'])
          folium.Marker([loc2,loc1],popup='<strong>'+session['user_id']+'</strong>',tooltip="doc").add_to(map)
-   return render_template('/')
+   return render_template('map.html')
 
 
 map.save('templates/map.html')
