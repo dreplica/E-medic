@@ -14,7 +14,7 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
 map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
-folium.Marker([6.4488294999999995,3.5306864],popup='<strong>Decagon</strong>',tooltip="Decagon").add_to(map)
+folium.Marker([6.4488294999999995,3.5306864],popup='<a href="www.decagonhq.com">decagon office</a>',tooltip="Decagon").add_to(map)
 folium.Marker([6.9999995,4.5306864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
 folium.Marker([6.995,2.06864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
 
@@ -34,13 +34,14 @@ def after_request(response):
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///medic.db")
-
+db = SQL("sqlite:///emed.db")
+db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id VARCHAR(255) NOT NULL,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,date datetime default current_timestamp )")
+db.execute("INSERT INTO message (user_id,msg,send,recieve) VALUES('dreplica','hello','dreplica','correct')")
 @app.route('/')
 def index():
    # if session['user_id']:
@@ -48,6 +49,9 @@ def index():
    #    if len(treat) != 0:
    #       doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
    return render_template("index.html",person = ['type','name'])#,treat = treat[0],doc =doc)
+@app.route('/doctor')
+def doctor():
+   return render_template('doctor.html')
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -172,12 +176,20 @@ def d_register():
 @app.route('/message',methods=['GET','POST'])
 def message():
    if request.method == 'POST':
-      if session['user_id']:
+      if 'user_id' in session:
          current = request.form.get('message')
-         user = db.execute('select user_id from message where user_id =:sess',sess = session['user_id'])
+         print(current)
+         rec = request.form.get('reciever')
+         user = db.execute('select * from message where user_id =:sess',sess = session['user_id'])
          if len(user) != 0:
-            db.execute('insert into messge (sender,reciever,mess) values(:se,re,me)',se=:cu)
-            mess = db.execute('select sender,reciever, message from message where sender =:sess or reciever =: sess order by date',sess = session['user_id'])
+           db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
+           mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
+           print(mess)
+           return render_template('message.html',mess = mess)
+   if 'user_id' in session:
+      mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
+      return render_template('message.html',mess = mess)
+   return render_template('message.html',mess="you have no msg")
 
 map.save('map.html')
 # out of the context
