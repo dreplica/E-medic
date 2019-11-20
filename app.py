@@ -47,6 +47,14 @@ def index():
    #       doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
    return render_template("index.html")#,treat = treat[0],doc =doc)
 
+@app.route('/doctor',methods=['GET','POST'])
+def doctor():
+   return render_template('doctor.html')
+
+@app.route('/chats',methods=['GET','POST'])
+def chat():
+   return render_template('chats.html')  
+
 @app.route('/login',methods=['GET','POST'])
 def login():
    if request.method == 'POST':
