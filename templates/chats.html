@@ -33,7 +33,11 @@
     <div class="container">
         <div class="row">
             <div class="col-2">
-                <a class="btn btn-secondary" href="">Dashboard</a>           
+                {% if user[0]['type'] == 'pat' %}
+                <a class="btn btn-secondary" href="/patient">Dashboard</a>
+                {% else %}
+                <a class="btn btn-secondary" href="/doctor">Dashboard</a>
+                {% endif %}           
             </div>
             <div class="col-10">
                 <div id="frame">
