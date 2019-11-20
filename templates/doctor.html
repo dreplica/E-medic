@@ -65,6 +65,25 @@
                     </div>
                 </div>
             </div>
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script>
+                let location = [];
+                window.onload = ()=>{
+                    window.navigator.geolocation.getCurrentPosition((pos)=>{
+                        location[0] = pos.coords.longitude;
+                        location[1] = pos.coords.latitude;
+                    })
+                }
+                $.ajax({
+                    type:'POST',
+                    url:'/location',
+                    data:{
+                        loc1:location[0],
+                        loc2:location[1]
+                    },
+                    success:()= location
+                })
+            </script>
         </section>
         <!--to here-->       
 

@@ -49,9 +49,6 @@ def index():
    #    if len(treat) != 0:
    #       doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
    return render_template("index.html",person = ['type','name'])#,treat = treat[0],doc =doc)
-@app.route('/doctor')
-def doctor():
-   return render_template('doctor.html')
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -86,7 +83,7 @@ def doctor():
    if 'user_id' in session: 
       user_id = session.get("user_id")  
       return render_template('doctor.html', user=user_id)
-   return redirect('/') 
+   return redirect('/')
 
 @app.route('/patient',methods=['GET','POST'])
 def patient():
@@ -193,18 +190,29 @@ def message():
       if 'user_id' in session:
          current = request.form.get('message')
          rec = request.form.get('reciever')
-         user = db.execute('select * from message where user_id =:sess',sess = session['user_id'])
+         user = db.execute('select * from users where user_id =:sess',sess = session['user_id'])
          if len(user) != 0:
            db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
            mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
-           print(mess)
            return render_template('message.html',mess = mess)
-      db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
    else:
-      if 'user_id' in session:
-         mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
-         return render_template('message.html',mess = mess)
-   return render_template('message.html',mess="you have no msg")
+      mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
+      return render_template('message.html',mess = mess)
+
+@app.route('/location',methods=['GET','POST'])
+def loc():
+   if 'user_id' in session:
+      if request.method == 'POST':
+         db.execute("CREATE TABLE IF NOT EXISTS loc (id INTEGER AUTOINCREMENT PRIMARY KEY, lat TEXT NOT NULL, long TEXT NOT NULL,user TEXT")
+         cord = db.execute("select * from loc where user =:us", us = session['user_id'])
+         if len(cord) != 0:
+            folium.Marker([cord[0]['lat'],cord[0]['loc']],popup='<strong>'+cord[0]['user']+'</strong>',tooltip="doc").add_to(map)
+         loc1 = request.argv.get('loc1')
+         loc2 = request.argv.get('loc2')
+         db.execute("insert into loc (lat,long,user) values(:la,:lo:us)",la = loc1,lo=loc2,us=session['user_id'])
+         folium.Marker([loc1,loc2],popup='<strong>'+session['user_id']+'</strong>',tooltip="doc").add_to(map)
+   return render_template('/')
+
 
 map.save('map.html')
 # out of the context
