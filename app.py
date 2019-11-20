@@ -14,14 +14,16 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
 map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
-folium.Marker([6.4488294999999995,3.5306864],popup='<strong>Decagon</strong>',tooltip="Decagon").add_to(map)
+folium.Marker([6.4488294999999995,3.5306864],popup='<a href="www.decagonhq.com">decagon office</a>',tooltip="Decagon").add_to(map)
+folium.Marker([6.9999995,4.5306864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
+folium.Marker([6.995,2.06864],popup='<strong>Decagon</strong>',tooltip="dragon").add_to(map)
 
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def apology(issue,code):
-   return (str(issue)+"is to this code"+str(code))
+   return (str(issue)+" "+str(code))
 # Ensure responses aren't cached
 @app.after_request
 def after_request(response):
@@ -32,12 +34,13 @@ def after_request(response):
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///emed.db")
+db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id VARCHAR(255) NOT NULL,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,date datetime default current_timestamp )")
 
 @app.route('/')
 def index():
@@ -45,7 +48,7 @@ def index():
    #    treat = db.execute("SELECT * from consultation where user_id =: user",user = session['user_id'])
    #    if len(treat) != 0:
    #       doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
-   return render_template("index.html")#,treat = treat[0],doc =doc)
+   return render_template("index.html",person = ['type','name'])#,treat = treat[0],doc =doc)
 
 @app.route('/doctor',methods=['GET','POST'])
 def doctor():
@@ -57,32 +60,45 @@ def chat():
 
 @app.route('/login',methods=['GET','POST'])
 def login():
+   session.clear()
    if request.method == 'POST':
       name = request.form.get('username')
       password = request.form.get('password')
 
       if not name and not password:
-         return "please go back and enter appropriate details"
+         return apology("please go back and enter appropriate details",404)
 
-      user = db.execute("Select * from users")
-
-      if len(user) != 0:
-         if check_password_hash(user[0]['password'],password):
-            session['user_id'] = user[0]['user_id']
-            consult = db.execute('Select * from consultation')
-
-            if len(consult) == 0:
-               return session['user_id']
-            return render_template('index.html',user = user,history = consult)
-      return apology("username and password does not match",400)
+      user = db.execute("Select * from users where user_id=:us", us=name)
+      
+      if len(user) != 1 or not check_password_hash(user[0]['password'], password):
+         return apology("username and password does not match",400)
+         
+      session['user_id'] = user[0]['user_id']
+      if user[0]['type']:
+         print(user[0]['type'])
+         return redirect('patient')#,history = consult)
+      elif user[0]['type']:
+         return redirect('doctor')
    return render_template("login.html")
 
-@app.route('/logout',methods=['GET','POST'])
+@app.route('/logout')
 def logout():
-   if session["user_id"]:
-      session.clear()
-      return redirect('index.html')
-   return apology('sorry you"re not on this service',400)
+   session.clear()
+   return redirect('/')
+
+@app.route('/doctor')
+def doctor(): 
+   if 'user_id' in session: 
+      user_id = session.get("user_id")  
+      return render_template('doctor.html', user=user_id)
+   return redirect('/')
+
+@app.route('/patient',methods=['GET','POST'])
+def patient():
+   if 'user_id' in session:
+      user_id = session.get("user_id")
+      return render_template('patient.html', user=user_id)    
+   return redirect('/') 
 
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
@@ -174,6 +190,38 @@ def d_register():
                    u=userid,f=fname,l=lname,m=status,p=pnum,s =states, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return render_template('index.html')
     return render_template('d_register.html',states=states)
+
+#message box side
+@app.route('/message',methods=['GET','POST'])
+def message():
+   if request.method == 'POST':
+      if 'user_id' in session:
+         current = request.form.get('message')
+         rec = request.form.get('reciever')
+         user = db.execute('select * from users where user_id =:sess',sess = session['user_id'])
+         if len(user) != 0:
+           db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
+           mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
+           return render_template('message.html',mess = mess)
+   else:
+      mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
+      return render_template('message.html',mess = mess)
+
+@app.route('/location',methods=['GET','POST'])
+def loc():
+   if 'user_id' in session:
+      if request.method == 'POST':
+         db.execute("CREATE TABLE IF NOT EXISTS loc (id INTEGER AUTOINCREMENT PRIMARY KEY, lat TEXT NOT NULL, long TEXT NOT NULL,user TEXT")
+         cord = db.execute("select * from loc where user =:us", us = session['user_id'])
+         if len(cord) != 0:
+            folium.Marker([cord[0]['lat'],cord[0]['loc']],popup='<strong>'+cord[0]['user']+'</strong>',tooltip="doc").add_to(map)
+         loc1 = request.argv.get('loc1')
+         loc2 = request.argv.get('loc2')
+         db.execute("insert into loc (lat,long,user) values(:la,:lo:us)",la = loc1,lo=loc2,us=session['user_id'])
+         folium.Marker([loc1,loc2],popup='<strong>'+session['user_id']+'</strong>',tooltip="doc").add_to(map)
+   return render_template('/')
+
+
 map.save('map.html')
 # out of the context
 def errorhandler(e):
