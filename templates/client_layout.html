@@ -54,17 +54,19 @@
       document.getElementById("main").style.marginLeft= "0";
       document.body.style.backgroundColor = "white";
     }
+
+    
     document.getElementById('update').onclick=(e)=>{
       e.preventDefault();
-      profile.style.display = 'none';
+      document.getElementById('profile').style.display = 'none';
       document.getElementById('show').style.display = 'block'
-
-      document.getElementById('cancel').onclick=(e)=>{
-        e.preventDefault();
-        show.style.display = 'none';
-        document.getElementById('update').style.display = 'block'
-      }
     }
+    document.getElementById('cancel').onclick=(e)=>{
+      e.preventDefault();
+      document.getElementById('show').style.display = 'none';
+      document.getElementById('profile').style.display = 'block'
+    }
+    
     </script>
    
 </body>
