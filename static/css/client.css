@@ -51,6 +51,17 @@ body {
 
 .formcard {
     background-color: white;
+}
+
+.sidenav a:hover {
+    color: gray;
+}
+
+#main {
+    transition: margin-left .8s;
+}
+
+.formcard {
     top: 10%;
     margin-bottom: 50px;
     padding: 10px;
