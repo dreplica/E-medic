@@ -13,7 +13,6 @@ UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
-map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -37,14 +36,12 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///emed.db")
 db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id VARCHAR(255) NOT NULL,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,date datetime default current_timestamp )")
+db.execute("create table if not exists map(id integer primary key autoincrement, user_id varchar(255),coord1 text not null, coord2 text not null)")
 
 @app.route('/')
 def index():
-   # if session['user_id']:
-   #    treat = db.execute("SELECT * from consultation where user_id =: user",user = session['user_id'])
-   #    if len(treat) != 0:
-   #       doc = db.execute("SELECT doc,issue,photo,specialty, from consultation where user_id =: user",user = treat[0]['doc'])
-   return render_template("index.html",person = ['type','name'])#,treat = treat[0],doc =doc)
+
+   return render_template("index.html",person = ['type','name'])
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -69,26 +66,46 @@ def login():
          return redirect('doctor')
    return render_template("login.html")
 
+
 @app.route('/logout')
 def logout():
    session.clear()
    return redirect('/')
 
-@app.route('/doctor')
+
+@app.route('/doctor',methods=['GET','POST'])
 def doctor(): 
-   if 'user_id' in session: 
-      user_id = session.get("user_id")  
+   if request.method == 'GET':
+      if 'user_id' in session:
+         lat = request.args.get('lat')
+         user_id = session['user_id']
+         if lat:
+            user_id = session.get("user_id")
+            lng = request.args.get('lng')
+            check_map = db.execute("select user_id from map where user_id =:us",us=user_id)
+
+            if len(check_map) != 0: 
+               db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,coord1 = lat,coord2 = lng)
+            db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
+
       user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template('doctor.html', user=user)
-   return redirect('/')
+      return render_template('doctor.html',user=user)
+
+   user_id = session['user_id']
+   user = db.execute('select * from users where user_id=:us',us = user_id)
+   return render_template('doctor.html',user=user)
+
 
 @app.route('/patient',methods=['GET','POST'])
 def patient():
    if 'user_id' in session:
+
       user_id = session.get("user_id")
       user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template('patient.html', user=user)    
+      return render_template('patient.html', user=user)   
+
    return redirect('/') 
+
 
 @app.route('/chats')
 def chats():
@@ -101,9 +118,11 @@ def chats():
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
 def p_register():
+
     file = open('states.csv','r')
     reader = csv.reader(file)
     states = list(reader)
+
     if request.method == 'POST':
        userid = request.form.get('username')
        email = request.form.get('email')
@@ -133,6 +152,7 @@ def p_register():
       #  user = users(userid)
        if fille.filename == '':
           fille.filename = 'none'
+
        fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
        db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
        db.execute("INSERT INTO pat_info (b_gr,g_gr,med_iss,kin_fn,kin_ln,kin_phone,kin_email,kin_loc,user_id) VALUES(:b,:g,:md,:kfn,:kln,:kp,:ke,:kl,:us)",
@@ -142,12 +162,15 @@ def p_register():
        return render_template('patient.html')
     return render_template('p_register.html',states=states) 
 
+
 #registration for doctors
 @app.route('/d_register',methods=['GET',"POST"])
 def d_register():
+
     file = open('states.csv','r')
     reader = csv.reader(file)
     states = list(reader)
+
     if request.method == 'POST':
        userid = request.form.get('username')
        email = request.form.get('email')
@@ -179,6 +202,7 @@ def d_register():
       #  user = users(userid)
        if fille.filename == '':
           fille.filename = 'none'
+
        fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
        db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
        db.execute("INSERT INTO doc_info (lic_yr,exp_yr,specialty,hos_aff,cert,link_pub,con_prac,med_sch,b_cert,user_id) VALUES(:l,:e,:sp,:hf,:cert,:lp,:cp,:ms,:bc,:us)",
@@ -187,6 +211,7 @@ def d_register():
                    u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
        return redirect('doctor')
     return render_template('d_register.html',states=states)
+
 
 #message box side
 @app.route('/message',methods=['GET','POST'])
@@ -204,23 +229,19 @@ def message():
       mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
       return render_template('message.html',mess = mess)
 
+
 @app.route('/map',methods=['GET','POST'])
 def loc():
-   if 'user_id' in session:
-      if request.method == 'POST':
-         db.execute("CREATE TABLE IF NOT EXISTS loc (id INTEGER AUTOINCREMENT PRIMARY KEY, lat TEXT NOT NULL, long TEXT NOT NULL,user TEXT")
-         cord = db.execute("select * from loc where user =:us", us = session['user_id'])
-         if len(cord) != 0:
-            folium.Marker([cord[0]['lat'],cord[0]['loc']],popup='<strong>'+cord[0]['user']+'</strong>',tooltip="doc").add_to(map)
-         loc1 = request.argv.get('loc1')
-         loc2 = request.argv.get('loc2')
-         db.execute("insert into loc (lat,long,user) values(:la,:lo:us)",la = loc1,lo=loc2,us=session['user_id'])
-         folium.Marker([loc2,loc1],popup='<strong>'+session['user_id']+'</strong>',tooltip="doc").add_to(map)
+   map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
+   loc = db.execute("select * from map")
+
+   for ma in loc:
+      folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile'+ma['user_id']+'">Dr'+ma['user_id']+'</strong>',tooltip="request consult").add_to(map)
+   
+   map.save('templates/map.html')
    return render_template('map.html')
 
 
-map.save('templates/map.html')
-# out of the context
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
