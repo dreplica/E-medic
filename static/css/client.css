@@ -40,6 +40,21 @@ body {
   #main {
     transition: margin-left .5s;
   }
+  .formcard{
+    background-color: white; 
+    top: 10%;
+    margin-bottom: 50px;
+    padding: 10px;
+    width: 35%;
+    box-shadow: 10px 10px 5px  #aaaaaa;
+}
+.formcard h3{
+    text-align: center;
+    margin-top: 20px;
+}
+.formcard .btn{
+    margin-bottom:20px;
+}
   
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
