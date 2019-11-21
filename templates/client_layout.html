@@ -10,7 +10,11 @@
 
 <nav id="mySidenav" class="sidenav">    
   <a><h6 class="text-light" id="i"><strong><em>Welcome {{ user[0]['user_id'] }}</em></strong></h6></a> 
-  <a href="">Home</a>
+  {% if user[0]['type'] == 'pat' %}
+    <a href="/patient">Home</a>
+  {% else %}
+    <a href="/doctor">Home</a> 
+  {% endif %}
   <a href="">History</a>
   <a href="/chats">Chats</a>
   {% if user[0]['type'] == 'pat' %}

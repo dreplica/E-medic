@@ -49,8 +49,10 @@
             },
             success:()=>console.log("success")
         })
-        $.get("/message",(data)=>{
-            $('.message').append(data[0])
+        $.ajax({
+            type:'GET',
+            url:'/message',
+            success:()=>console.log("success")
         })
 })
     

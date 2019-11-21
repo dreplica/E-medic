@@ -206,9 +206,10 @@ def message():
            db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
            mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
            return render_template('message.html',mess = mess)
-   else:
+   if request.method == 'GET':
       mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
       return render_template('message.html',mess = mess)
+
 
 @app.route('/map',methods=['GET','POST'])
 def loc():

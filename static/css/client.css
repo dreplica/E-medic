@@ -1,7 +1,6 @@
 body {
     font-family: "Lato", sans-serif;
     transition: background-color .8s;
-    color: white;
   }
   #mySidenav{
       width:250px;
@@ -35,20 +34,10 @@ body {
   .sidenav a:hover {
     color:gray;
   }
-  
-  .sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-  }
-  
   #main {
     transition: margin-left .8s;
   }
   .formcard{
-    background-color: white; 
     top: 10%;
     margin-bottom: 50px;
     padding: 10px;
