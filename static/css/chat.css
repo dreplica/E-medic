@@ -445,7 +445,6 @@ body {
 }
 
 #frame .content .messages ul li {
-    display: inline-block;
     clear: both;
     float: left;
     margin: 15px 15px 5px 15px;
