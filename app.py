@@ -118,12 +118,21 @@ def chats():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
+#    if request.method == 'GET':
+#          print(session['user_id'])
+#          user_id = request.args.get('user')
+#          user = db.execute('select * from users where user_id=:us',us = user_id)
+#          row = db.execute("select * from info where user_id=:us", us=user_id)
+#          print(row)
+#          print("this is session 2: ",session['user_id'])
+#          return render_template("profile.html", user=user, row=row)
    if 'user_id' in session:
-      user_id = session.get("user_id")
-      user = db.execute('select * from users where user_id=:us',us = user_id)
+      user_id = session['user_id']
+      print("this is session 3: ",session['user_id'])
+      user = db.execute('select * from users where user_id=:us',us =user_id)
       row = db.execute("select * from info where user_id=:us", us=user_id)
-      print(row)
-      return render_template("profile.html", user=user, row=row) 
+      print("this is session 4: ",session['user_id'])
+      return render_template("profile.html", user=user, row=row)
    return redirect("/")   
 
 # registration for patients
@@ -247,7 +256,7 @@ def loc():
    loc = db.execute("select * from map")
 
    for ma in loc:
-      folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile'+ma['user_id']+'">Dr'+ma['user_id']+'</strong>',tooltip="request consult").add_to(map)
+      folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</strong>',tooltip="click").add_to(map)
    
    map.save('templates/map.html')
    return render_template('map.html')
