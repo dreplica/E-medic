@@ -1,0 +1,61 @@
+{% extends "client_layout.html" %}
+{% block main %}
+    <div class="jumbotron jumbotron-fluid" style='text-align: left !important;'>
+        <div class="container text-success">
+            <h1 class="display-4"><em>E - Medicals</em></h1>
+            <p class="lead">This is your online work environment..</p>
+        </div>
+    </div>
+    <div class="container formcard" id="profile" style="display: block;">            
+        <div class="profile">
+            <div style="text-align: center;">
+                <img src="../static/css/gray-beddings-3201761.jpg" style="border-radius: 50%;" width="200" height="200">
+            </div>
+            <div style="text-align: center;"> 
+                <div>  
+                    <p class="name">{{ row[0].f_name }} {{ row[0].l_name }}</p>
+                </div>   
+                <div> 
+                {% if user[0].type == 'pat' %}
+                    <p>PATIENT</p>
+                {% else %}
+                    <p>DOCTOR</p>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="">           
+            <p>Email: {{ user[0].email }}</p>
+            <p>Sex: {{ row[0].sex }}</p>
+            <p>Address: {{ row[0].location }}</p>
+            <p>Phone Number: {{ row[0].phone }}</p>
+            <p>Date of Birth: {{ row[0].dob }}</p>
+            <p>Marital Status: {{ row[0].m_stat }}</p>
+            <p>State: {{ row[0].state }}</p>
+        </div> 
+        <button class="btn btn-success" id="update">Update profile</button>           
+    </div>
+    <div class="container formcard" style="display: none;" id="show">
+        <h3>Update your profile</h3>
+        <form action="/update" method="POST">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" name="email" class="form-control" placeholder="New email address">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" name="num" class="form-control" placeholder="New phone numbeer">
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea type="text" name="loc" class="form-control" placeholder="New home address"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="picture">Picture Upload</label>
+                <input type="file" name="picture" class="form-control">
+            </div>
+            <input type="submit" value="Update" class="btn btn-success">
+            <input type="submit" value="Cancel" class="btn btn-danger" id="cancel">
+        </form>
+    </div>
+{% endblock %}

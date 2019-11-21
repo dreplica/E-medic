@@ -9,21 +9,24 @@
 <body>
 
 <nav id="mySidenav" class="sidenav">    
-  <a><h6 class="text-light" id="i"><strong><em>Welcome {{ user[0]['user_id'] }}</em></strong></h6></a>    
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="">Home</a>
+  <a><h6 class="text-light" id="i"><strong><em>Welcome {{ user[0]['user_id'] }}</em></strong></h6></a> 
+  {% if user[0]['type'] == 'pat' %}
+    <a href="/patient">Home</a>
+  {% else %}
+    <a href="/doctor">Home</a> 
+  {% endif %}
   <a href="">History</a>
   <a href="/chats">Chats</a>
   {% if user[0]['type'] == 'pat' %}
     <a href="/map">Find Doc</a>
   {% endif %}
-  <a href="">Update</a>
+  <a href="/profile">Profile</a>
   <a href="/logout" class="text-light"><strong><em></em>Log out</a>
 </nav>
 
 <div id="main">
-    <nav class="navbar navbar-inverse bg-dark" style="position:fixed;top:0; width: 100%;z-index:1;">
-        <span style="font-size:30px;cursor:pointer;color: white;" onclick="openNav()">&#9776;  
+    <nav class="navbar navbar-inverse bg-dark" style="position:fixed;top:0; width: 100%;">
+        <span> 
             <a class="navbar-brand" href="">
                 <img src="../static/css/white.png" width="100" height="30" alt="">
             </a>
@@ -31,21 +34,40 @@
     </nav>
 
 {% block main %}{% endblock %} 
-</div>
 
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
-function openNav() {
-  document.getElementById("mySidenav").style.width = "250px";
-  document.getElementById("main").style.marginLeft = "250px";
-  document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-}
+    $(".his").click(function(){
+        $(".hisdrop").toggle()
+    })
+    $(".prog").click(function(){
+        $(".progdrop").toggle()
+    })
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+      document.getElementById("main").style.marginLeft = "250px";
+      document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    }
 
-function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
-  document.getElementById("main").style.marginLeft= "0";
-  document.body.style.backgroundColor = "white";
-}
-</script>
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+      document.getElementById("main").style.marginLeft= "0";
+      document.body.style.backgroundColor = "white";
+    }
+
+    
+    document.getElementById('update').onclick=(e)=>{
+      e.preventDefault();
+      document.getElementById('profile').style.display = 'none';
+      document.getElementById('show').style.display = 'block'
+    }
+    document.getElementById('cancel').onclick=(e)=>{
+      e.preventDefault();
+      document.getElementById('show').style.display = 'none';
+      document.getElementById('profile').style.display = 'block'
+    }
+    
+    </script>
    
 </body>
 </html> 
