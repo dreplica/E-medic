@@ -96,14 +96,18 @@ def chats():
    if 'user_id' in session:
       user_id = session.get("user_id")
       user = db.execute('select * from users where user_id=:us',us = user_id)
-   return render_template("chats.html", user=user)
+      return render_template("chats.html", user=user)
+   return redirect("/")   
 
-@app.route('/update')
-def update():
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
    if 'user_id' in session:
       user_id = session.get("user_id")
       user = db.execute('select * from users where user_id=:us',us = user_id)
-   return render_template("update.html", user=user) 
+      row = db.execute("select * from info where user_id=:us", us=user_id)
+      print(row)
+      return render_template("profile.html", user=user, row=row) 
+   return redirect("/")   
 
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])

@@ -20,7 +20,7 @@
   {% if user[0]['type'] == 'pat' %}
     <a href="/map">Find Doc</a>
   {% endif %}
-  <a href="/update">Update</a>
+  <a href="/profile">Profile</a>
   <a href="/logout" class="text-light"><strong><em></em>Log out</a>
 </nav>
 
@@ -53,6 +53,17 @@
       document.getElementById("mySidenav").style.width = "0";
       document.getElementById("main").style.marginLeft= "0";
       document.body.style.backgroundColor = "white";
+    }
+    document.getElementById('update').onclick=(e)=>{
+      e.preventDefault();
+      profile.style.display = 'none';
+      document.getElementById('show').style.display = 'block'
+
+      document.getElementById('cancel').onclick=(e)=>{
+        e.preventDefault();
+        show.style.display = 'none';
+        document.getElementById('update').style.display = 'block'
+      }
     }
     </script>
    
