@@ -8,35 +8,33 @@
                 <input type="hidden" name="type" value="doc">                
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="phone" name="username" class="form-control" placeholder="Enter username">
+                    <input type="phone" name="username" class="form-control" placeholder="Enter username" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" name="email" class="form-control" placeholder="Enter email address">
+                    <input type="email" name="email" class="form-control" placeholder="Enter email address" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" name="password" class="form-control" placeholder="Enter Password">
+                    <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
                 </div>
                 <div class="form-group">
                     <label for="confirm">Confirm Password</label>
-                    <input type="password" name="confirm" class="form-control" placeholder="Enter Password">
+                    <input type="password" name="confirm" class="form-control" placeholder="Enter Password" required>
                 </div>
-                <input type="submit" class="btn btn-success" value="Submit" id="first">
-                
+                <input type="submit" class="btn btn-success" value="Submit" id="first">                
             </div>
              
-            <div id="fsec" style="display: none;">
-                 
+            <div id="fsec" style="display: none;">                 
                 <h3>Personal Information</h3>
                 <div class="form-row">
                     <div class="col">
                         <label for="firstname">First Name</label>
-                        <input type="text" name="fname" class="form-control" placeholder="Enter first name">
+                        <input type="text" name="fname" class="form-control" placeholder="Enter first name" required>
                     </div>
                     <div class="col">
                         <label for="lasttname">Last Name</label>
-                        <input type="text" name="lname" class="form-control" placeholder="Enter last name">
+                        <input type="text" name="lname" class="form-control" placeholder="Enter last name" required>
                     </div>     
                 </div>            
                 <div class="form-group">
@@ -50,10 +48,11 @@
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="phone" name="pnum" class="form-control" placeholder="Enter phone number"></div>
+                    <input type="phone" name="pnum" class="form-control" placeholder="Enter phone number" required>
+                </div>
                 <div class="form-group">
                     <label for="address">Home address</label>
-                    <textarea name="home" class="form-control" placeholder="Enter home address"></textarea>
+                    <textarea name="home" class="form-control" placeholder="Enter home address" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="state">States</label>
@@ -74,100 +73,94 @@
                 </div>
                 <div class="form-group">
                     <label for="dob">Date of birth</label>
-                    <input type="date" name="dob" class="form-control">
+                    <input type="date" name="dob" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label for="validname">Valid id name</label>
-                    <input type="text" name="idname" class="form-control" placeholder="Enter valid id name">
+                    <input type="text" name="idname" class="form-control" placeholder="Enter valid id name" required>
                 </div>
                 <div class="form-group">
                     <label for="id">Valid id Number</label>
-                    <input type="text" name="idnum" class="form-control" placeholder="Enter valid id number">
+                    <input type="text" name="idnum" class="form-control" placeholder="Enter valid id number" required>
                 </div>    
                 <div class="form-group">
                     <label for="photo">Upload photo</label>
-                    <input type="file" name="photo" class="form-control"></div>
-                <input type="submit" class="btn btn-success" value="Submit" id="sec">
-            
-            </div>
-            <div id="fthird" style="display: none;">
-                 
+                    <input type="file" name="photo" class="form-control" required>
+                </div>    
+                    <input type="submit" class="btn btn-success" value="Submit" id="sec">
+            </div>  
+            <div id="fthird" style="display: none;">                 
                 <h3>Medical Information</h3>
                 <div class="form-row">
                     <div class="col">
                         <label for="licence">Year of licence</label>
-                        <input type="date" name="year1" class="form-control">
+                        <input type="date" name="year1" class="form-control" required>
                     </div>
                     <div class="col">
                         <label for="expire">Expiring year</label>
-                        <input type="date" name="year2" class="form-control">
+                        <input type="date" name="year2" class="form-control" required>
                     </div>        
                 </div>
                 <div class="form-group">
                     <label for="speciality">Speciality</label>
-                    <input type="text" name="speciality" class="form-control" placeholder="Enter Speciality">
+                    <input type="text" name="speciality" class="form-control" placeholder="Enter Speciality" required>
                 </div>
                 <div class="form-group">
                     <label for="hospital">Hospital Affiliation</label>
-                    <input type="text" name="hospital" class="form-control" placeholder="Hospital Affiliation">
+                    <input type="text" name="hospital" class="form-control" placeholder="Hospital Affiliation" required>
                 </div>
                 <div class="form-group">
                     <label for="cert">Certification</label>                
-                    <input type="text" name="certificate" class="form-control" placeholder="Enter Certificate">
+                    <input type="text" name="certificate" class="form-control" placeholder="Enter Certificate" required>
                 </div>
                 <div class="form-group">
                     <label for="link">Link to published medical research</label>
-                    <input type="text" name="link" class="form-control" placeholder="Add link">
+                    <input type="text" name="link" class="form-control" placeholder="Add link" required>
                 </div>
                 <div class="form-group">
                     <label for="practice">Country of practice</label>
-                    <input type="text" name="country" class="form-control" placeholder="Country Of practice">
+                    <input type="text" name="country" class="form-control" placeholder="Country Of practice" required>
                 </div>
                 <div class="form-group">
                     <label for="med">Medical school</label>
-                    <input type="text" name="school" class="form-control" placeholder="Enter school">
+                    <input type="text" name="school" class="form-control" placeholder="Enter school" required>
                 </div>   
                 <div class="form-group">
                     <label for="board">Board certified</label>
-                    <input type="text" name="board" class="form-control" placeholder="Board certified">
+                    <input type="text" name="board" class="form-control" placeholder="Board certified" required>
                 </div> 
-                <input type="submit" class="btn btn-success" value="Submit" id="third">
-                
+                <input type="submit" class="btn btn-success" value="Submit" id="third">                
             </div>
             
-            <div id="ffourth" style="display: none;">                    
-                
+            <div id="ffourth" style="display: none;">               
                 <div id='fmain'>
                 <h3>Work Experience</h3>
                 <div class="form-group">
                     <label>Where have you worked with (Please specify with date)</label>
-                    <textarea class="form-control" name="work"></textarea>
+                    <textarea class="form-control" name="work" required></textarea>
                 </div> 
                 <button class="btn btn-danger" id='add'>add</button>                
                 <div class="form-group"> 
                     <label>Date</label>
-                    <input type="date" name="date" class="form-control">
+                    <input type="date" name="date" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label for="sperior">Name of Superior</label>
-                    <input type="text" name="superior" class="form-control" placeholder="Superior name">
+                    <input type="text" name="superior" class="form-control" placeholder="Superior name" required>
                 </div>
                 <div class="form-group">
                     <label for="address">Address</label>
-                    <input type="text" name="address" class="form-control" placeholder="Enter address">
+                    <input type="text" name="address" class="form-control" placeholder="Enter address" required>
                 </div>
                 <div class="form-group">
                     <label for="contact">Contact</label>
-                    <input type="text" name="contact" class="form-control" placeholder="Enter phone number">
-                </div>
+                    <input type="text" name="contact" class="form-control" placeholder="Enter phone number" required>
                 </div> 
-                <input type="submit" class="btn btn-success" value="Submit" id="all">
-                
+                <input type="submit" class="btn btn-success" value="Submit" id="all">                
             </div>             
         </form> 
          
         <script>
-
             document.getElementById('add').onclick = (e)=>{
                 e.preventDefault()
                 let html1 = ''+
