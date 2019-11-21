@@ -43,6 +43,7 @@ def index():
 
    return render_template("index.html",person = ['type','name'])
 
+
 @app.route('/login',methods=['GET','POST'])
 def login():
    session.clear()
@@ -112,8 +113,18 @@ def chats():
    if 'user_id' in session:
       user_id = session.get("user_id")
       user = db.execute('select * from users where user_id=:us',us = user_id)
-   return render_template("chats.html", user=user)
+      return render_template("chats.html", user=user)
+   return redirect("/")   
 
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+   if 'user_id' in session:
+      user_id = session.get("user_id")
+      user = db.execute('select * from users where user_id=:us',us = user_id)
+      row = db.execute("select * from info where user_id=:us", us=user_id)
+      print(row)
+      return render_template("profile.html", user=user, row=row) 
+   return redirect("/")   
 
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
@@ -225,7 +236,7 @@ def message():
            db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
            mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
            return render_template('message.html',mess = mess)
-   else:
+   if request.method == 'GET':
       mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
       return render_template('message.html',mess = mess)
 

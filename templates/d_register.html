@@ -1,10 +1,9 @@
 
 {% extends "layout.html" %}
 {% block main %} 
-    <div class="container col-md-5" style="margin-top: 70px;">         
+    <div class="container formcard col-md-5" style="margin-top: 150px;">         
         <form action="/d_register" method="post" enctype="multipart/form-data"> 
             <div id="ffirst">
-                <hr>
                 <h3>Fill out the form</h3>
                 <input type="hidden" name="type" value="doc">                
                 <div class="form-group">
@@ -24,11 +23,11 @@
                     <input type="password" name="confirm" class="form-control" placeholder="Enter Password">
                 </div>
                 <input type="submit" class="btn btn-success" value="Submit" id="first">
-                <hr>
+                
             </div>
              
             <div id="fsec" style="display: none;">
-                <hr> 
+                 
                 <h3>Personal Information</h3>
                 <div class="form-row">
                     <div class="col">
@@ -38,7 +37,7 @@
                     <div class="col">
                         <label for="lasttname">Last Name</label>
                         <input type="text" name="lname" class="form-control" placeholder="Enter last name">
-                    </div>        
+                    </div>     
                 </div>            
                 <div class="form-group">
                     <label for="marital">Marital status</label>
@@ -51,8 +50,7 @@
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="phone" name="pnum" class="form-control" placeholder="Enter phone number">
-                </div>
+                    <input type="phone" name="pnum" class="form-control" placeholder="Enter phone number"></div>
                 <div class="form-group">
                     <label for="address">Home address</label>
                     <textarea name="home" class="form-control" placeholder="Enter home address"></textarea>
@@ -85,16 +83,13 @@
                 <div class="form-group">
                     <label for="id">Valid id Number</label>
                     <input type="text" name="idnum" class="form-control" placeholder="Enter valid id number">
-                </div>
                 <div class="form-group">
                     <label for="photo">Upload photo</label>
                     <input type="file" name="photo" class="form-control">
-                </div>
                 <input type="submit" class="btn btn-success" value="Submit" id="sec">
-            </div>        
-
+            </div>  
             <div id="fthird" style="display: none;">
-                <hr> 
+                 
                 <h3>Medical Information</h3>
                 <div class="form-row">
                     <div class="col">
@@ -135,11 +130,11 @@
                     <input type="text" name="board" class="form-control" placeholder="Board certified">
                 </div> 
                 <input type="submit" class="btn btn-success" value="Submit" id="third">
-                <hr>
+                
             </div>
             
             <div id="ffourth" style="display: none;">                    
-                <hr>
+                
                 <div id='fmain'>
                 <h3>Work Experience</h3>
                 <div class="form-group">
@@ -165,7 +160,7 @@
                 </div>
                 </div> 
                 <input type="submit" class="btn btn-success" value="Submit" id="all">
-                <hr>
+                
             </div>             
         </form> 
          
@@ -173,7 +168,7 @@
 
             document.getElementById('add').onclick = (e)=>{
                 e.preventDefault()
-                let html1 = '<hr>'+
+                let html1 = ''+
                     '<h3>Add work experience</h3>'+
                     '<div class="form-group">'+
                     '<label>Where have you worked with (Please specify with date)</label>'+                    
@@ -214,4 +209,4 @@
             }      
         </script>       
     </div> 
-{% endblock %} 
+{% endblock %}    
