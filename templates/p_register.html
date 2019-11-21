@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 {% block main %} 
-<div class="container col-md-5" style="margin-top: 70px;">     
+<div class="container formcard col-md-5" style="margin-top: 150px;">     
     <form action="/p_register" method="post" enctype="multipart/form-data">        
         <div id='ffirst'>
-            <hr> 
             <h3>Fill out the form</h3>
             <input type="hidden" name="type" value="pat">             
 
@@ -24,11 +23,9 @@
                 <input type="password" name="confirm" class="form-control" placeholder="Enter Password">
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id='first'>
-            <hr>
         </div>
          
-        <div id="fsec" style='display:none;'>
-            <hr>            
+        <div id="fsec" style='display:none;'>         
             <h3>Personal Information</h3>
             <input type="hidden" name="type" value="pat"> 
             <div class="form-row">
@@ -93,11 +90,10 @@
 
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id="sec"> 
-            <hr> 
+            
         </div>
             
         <div id="fthird" style='display:none;'>
-            <hr>
             <h3>Medical History</h3>
             <div class="form-group">
                 <label for="group">Blood Group</label>
@@ -122,7 +118,7 @@
                 <label>Describe known medical issues</label>
                 <textarea name="issues" class="form-control" placeholder="Describe issues here"></textarea>
             </div>
-            <hr> 
+            
             <h4>Next of kin</h4>
             <div class="form-row">
                 <div class="col">
@@ -147,7 +143,7 @@
                 <textarea name="kadd" class="form-control" placeholder="Enter home address"></textarea>
             </div>
             <input type="submit" class="btn btn-success" value="Submit" id='all'>
-            <hr>
+            
         </div>         
     </form>       
     <script>

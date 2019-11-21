@@ -23,7 +23,7 @@
 span {
     font-weight: bold;
 }
-.container{
+.formcard{
     background-color: white; 
     top: 10%;
     margin-bottom: 50px;
@@ -31,11 +31,11 @@ span {
     width: 35%;
     box-shadow: 10px 10px 5px  #aaaaaa;
 }
-.container h3{
+.formcard h3{
     text-align: center;
     margin-top: 20px;
 }
-.container .btn{
+.formcard .btn{
     margin-bottom:20px;
 }
 
