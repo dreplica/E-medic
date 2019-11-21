@@ -2,89 +2,43 @@
 {% block main %}
 <!--from here-->
         <div class="jumbotron jumbotron-fluid" style='text-align: left !important;'>
-          <div class="container text-primary">
+          <div class="container text-success">
               <h1 class="display-4"><em>E - Medicals</em></h1>
               <p class="lead">This is your online work environment..</p>
           </div>
         </div>
 
-        <section class="mt-30px mb-30px">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                        <!-- Recent Updates Widget          -->
-                        <div id="new-updates" class="card updates recent-updated">
-                            <div id="updates-header" class="card-header d-flex justify-content-between align-items-center">
-                                <h2 class="h5 display"><a data-toggle="collapse" data-parent="#new-updates" href="#updates-box" aria-expanded="true" aria-controls="updates-box">History</a></h2><a data-toggle="collapse" data-parent="#new-updates" href="#updates-box" aria-expanded="true" aria-controls="updates-box"><i class="fa fa-angle-down"></i></a>
-                            </div>
-                            <div id="updates-box" role="tabpanel" class="collapse show">
-                                <ul class="news list-unstyled">
-                                    <!-- Item-->
-                                    <li class="d-flex justify-content-between">
-                                        <div class="left-col d-flex">
-                                            <div class="icon"><i class="icon-rss-feed"></i></div>
-                                            <div class="title">
-                                                <strong>...</strong>
-                                                <p>.....</p>
-                                            </div>
-                                        </div>
-                                        <div class="right-col text-right">
-                                            <div class="update-date">...<span class="month">...</span></div> <!--date-->
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Recent Updates Widget End-->
+                    <div class="col-lg-6 col-md-6">
+                        <!-- Recent Activities Widget      -->
+                        <button class="btn btn-success btn-lg his" style="width:100%;" type="button">
+                            History
+                        </button>
+                        <ul class="list-group hisdrop" style="width:100%;">
+                            <li class="list-group-item">Cras justo odio</li>
+                            <li class="list-group-item">Dapibus ac facilisis in</li>
+                            <li class="list-group-item">Morbi leo risus</li>
+                            <li class="list-group-item">Porta ac consectetur ac</li>
+                            <li class="list-group-item">Vestibulum at eros</li>
+                        </ul>
                     </div>
                     
                     <div class="col-lg-6 col-md-6">
                         <!-- Recent Activities Widget      -->
-                        <div id="recent-activities-wrapper" class="card updates activities">
-                            <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
-                                <h2 class="h5 display"><a data-toggle="collapse" data-parent="#recent-activities-wrapper" href="#activities-box" aria-expanded="true" aria-controls="activities-box">In Progress</a></h2><a data-toggle="collapse" data-parent="#recent-activities-wrapper" href="#activities-box" aria-expanded="true" aria-controls="activities-box"><i class="fa fa-angle-down"></i></a>
-                            </div>
-                            <div id="activities-box" role="tabpanel" class="collapse show">
-                                <ul class="activities list-unstyled">
-                                    <!-- Item-->
-                                    <li>
-                                        <div class="row">
-                                            <div class="col-4 date-holder text-right">
-                                                <div class="icon"><i class="icon-clock"></i></div>
-                                                <div class="date"> <span>...</span><span class="text-info">...</span></div>
-                                            </div>
-                                            <div class="col-8 content">
-                                                <strong>...</strong>
-                                                <p>...</p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        <button class="btn btn-success btn-lg prog" style="width:100%;" type="button">
+                            In progress
+                        </button>
+                        <ul class="list-group progdrop" style="width:100%;">
+                            <li class="list-group-item">Cras justo odio</li>
+                            <li class="list-group-item">Dapibus ac facilisis in</li>
+                            <li class="list-group-item">Morbi leo risus</li>
+                            <li class="list-group-item">Porta ac consectetur ac</li>
+                            <li class="list-group-item">Vestibulum at eros</li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script>
-                let location = [];
-                window.onload = ()=>{
-                    window.navigator.geolocation.getCurrentPosition((pos)=>{
-                        location[0] = pos.coords.longitude;
-                        location[1] = pos.coords.latitude;
-                    })
-                }
-                $.ajax({
-                    type:'POST',
-                    url:'/location',
-                    data:{
-                        loc1:location[0],
-                        loc2:location[1]
-                    },
-                    success:()=> location
-                })
-            </script>
-        </section>
+            </div>            
         <!--to here-->       
 
 {% endblock %}
