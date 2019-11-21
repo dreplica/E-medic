@@ -1,6 +1,13 @@
 body {
     font-family: "Lato", sans-serif;
-    transition: background-color .5s;
+    transition: background-color .8s;
+    color: white;
+  }
+  #mySidenav{
+      width:250px;
+  }
+  #main{
+      margin-left: 250px;
   }
 
   .sidenav {
@@ -12,7 +19,7 @@ body {
     left: 0;
     background-color: #111;
     overflow-x: hidden;
-    transition: 0.5s;
+    transition: 0.8s;
     padding-top: 45px;
   }
   
@@ -38,7 +45,7 @@ body {
   }
   
   #main {
-    transition: margin-left .5s;
+    transition: margin-left .8s;
   }
   .formcard{
     background-color: white; 
