@@ -17,8 +17,8 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-def apology(issue,code):
-   return (str(issue)+" "+str(code))
+def apology(issue):
+   return (str(issue))
 # Ensure responses aren't cached
 @app.after_request
 def after_request(response):
@@ -50,14 +50,20 @@ def login():
    if request.method == 'POST':
       name = request.form.get('username')
       password = request.form.get('password')
+      
+      usererror = "Enter username"
+      passworderror = "Enter password"
+      invalid = "Invalid username and password"
 
-      if not name and not password:
-         return apology("please go back and enter appropriate details",404)
+      if not name:
+         return apology(issue=usererror)
+      elif not password:
+         return apology(issue=passworderror)
 
       user = db.execute("Select * from users where user_id=:us", us=name)
       
       if len(user) != 1 or not check_password_hash(user[0]['password'], password):
-         return apology("username and password does not match",400)
+         return apology(issue=invalid)
          
       session['user_id'] = user[0]['user_id']
       if user[0]['type'] == 'pat':
@@ -86,8 +92,9 @@ def doctor():
             check_map = db.execute("select user_id from map where user_id =:us",us=user_id)
 
             if len(check_map) != 0: 
-               db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,coord1 = lat,coord2 = lng)
-            db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
+               db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,lat = lat,lng = lng)
+            else:
+               db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
 
       user = db.execute('select * from users where user_id=:us',us = user_id)
       return render_template('doctor.html',user=user)
@@ -100,7 +107,6 @@ def doctor():
 @app.route('/patient',methods=['GET','POST'])
 def patient():
    if 'user_id' in session:
-
       user_id = session.get("user_id")
       user = db.execute('select * from users where user_id=:us',us = user_id)
       return render_template('patient.html', user=user)   
@@ -128,10 +134,8 @@ def profile():
 #          return render_template("profile.html", user=user, row=row)
    if 'user_id' in session:
       user_id = session['user_id']
-      print("this is session 3: ",session['user_id'])
       user = db.execute('select * from users where user_id=:us',us =user_id)
       row = db.execute("select * from info where user_id=:us", us=user_id)
-      print("this is session 4: ",session['user_id'])
       return render_template("profile.html", user=user, row=row)
    return redirect("/")   
 
@@ -256,7 +260,7 @@ def loc():
    loc = db.execute("select * from map")
 
    for ma in loc:
-      folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</strong>',tooltip="click").add_to(map)
+      folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',tooltip="click").add_to(map)
    
    map.save('templates/map.html')
    return render_template('map.html')
@@ -266,7 +270,7 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-    return apology(e.name, e.code)
+    return apology(e.name)
 
 
 # Listen for errors
