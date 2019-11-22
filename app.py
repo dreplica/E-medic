@@ -35,8 +35,11 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///emed.db")
-db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id VARCHAR(255) NOT NULL,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,date datetime default current_timestamp )")
+
+
+db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,hash INTEGER  NOT NULL ,date datetime default current_timestamp )")
 db.execute("create table if not exists map(id integer primary key autoincrement, user_id varchar(255),coord1 text not null, coord2 text not null)")
+db.execute('create table if not exists hash(hash integer primary key autoincrement,user_id TEXT NOT NULL,doc Text NOT NULL)')
 
 @app.route('/')
 def index():
@@ -81,13 +84,14 @@ def doctor():
          lat = request.args.get('lat')
          user_id = session['user_id']
          if lat:
-            user_id = session.get("user_id")
+            user_id = session['user_id']
             lng = request.args.get('lng')
             check_map = db.execute("select user_id from map where user_id =:us",us=user_id)
 
             if len(check_map) != 0: 
-               db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,coord1 = lat,coord2 = lng)
-            db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
+               db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,lat = lat,lng = lng)
+            else:
+               db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
 
       user = db.execute('select * from users where user_id=:us',us = user_id)
       return render_template('doctor.html',user=user)
@@ -99,13 +103,26 @@ def doctor():
 
 @app.route('/patient',methods=['GET','POST'])
 def patient():
-   if 'user_id' in session:
+   if request.method == 'GET':
+      if 'user_id' in session:
+         lat = request.args.get('lat')
+         user_id = session['user_id']
+         if lat:
+            user_id = session['user_id']
+            lng = request.args.get('lng')
+            check_map = db.execute("select user_id from map where user_id =:us",us=user_id)
 
-      user_id = session.get("user_id")
+            if len(check_map) != 0: 
+               db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,lat = lat,lng = lng)
+            else:
+               db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
+
       user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template('patient.html', user=user)   
+      return render_template('doctor.html',user=user)
 
-   return redirect('/') 
+   user_id = session["user_id"]
+   user = db.execute('select * from users where user_id=:us',us = user_id)
+   return render_template('patient.html', user=user)  
 
 
 @app.route('/chats')
@@ -236,18 +253,39 @@ def d_register():
 #message box side
 @app.route('/message',methods=['GET','POST'])
 def message():
+   rec = ''
+   if request.method == 'GET':
+      if 'user_id' in session:
+         doc = request.args.get('doc')
+         rec = doc
+         check_doc = db.execute('select * from hash where user_id =:us',us = session['user_id'])
+         #print('this is id',check_doc[0]['id'])
+         if len(check_doc) != 1:
+            db.execute('insert into hash (user_id,doc) values(:us,:doc)',us=session['user_id'],doc=rec)
+         hash = db.execute('select hash from hash where user_id =:us and doc=:doc',us = session['user_id'],doc=rec)
+         if len(hash) != 0:
+            print("hash is available")
+            message = db.execute('select * from message where hash =:hash',hash = hash[0]['hash'])
+            if len(message) != 0:
+               return render_template('message.html',mess = message)
+
    if request.method == 'POST':
       if 'user_id' in session:
          current = request.form.get('message')
-         rec = request.form.get('reciever')
-         user = db.execute('select * from users where user_id =:sess',sess = session['user_id'])
-         if len(user) != 0:
-           db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
-           mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
+         rec = request.form.get('rec')
+         print("this is rec :",rec)
+         user = db.execute('select hash from hash where user_id =:sess and doc =:rec',sess = session['user_id'],rec=rec)
+         print('first hash ',user)
+         if len(user) > 0:
+           db.execute('insert into message (msg,send,recieve,hash) values(:me,:se,:re,:ha)',me = current,se = session['user_id'],re =rec,ha=user[0]['hash'])
+           mess = db.execute('select send,recieve, msg from message where hash =:ha order by date',ha = user[0]['id'])
            return render_template('message.html',mess = mess)
-   if request.method == 'GET':
-      mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
-      return render_template('message.html',mess = mess)
+   hash = db.execute('select hash from hash where user_id =:sess and doc =:rec',sess = session['user_id'],rec=rec)
+   print('sec hash ',hash)
+   if len(hash) != 0:
+      mess = db.execute('select distinct recieve from message where hash =:ha order by date',ha = hash[0]['hash'])
+      return render_template('message.html',doc = mess)
+   return render_template('message.html',rec = rec)
 
 
 @app.route('/map',methods=['GET','POST'])
@@ -256,7 +294,15 @@ def loc():
    loc = db.execute("select * from map")
 
    for ma in loc:
-      folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</strong>',tooltip="click").add_to(map)
+      doc_check = db.execute('select type from users where user_id=:id',id=ma['user_id'])
+      if ma['user_id'] == session['user_id']:
+         folium.Marker([ma['coord1'],ma['coord2']],
+         tooltip="<span color:'green'>You</span>",
+         icon=folium.Icon(color='green')).add_to(map)
+      if doc_check[0]['type'] == 'doc':
+         folium.Marker([ma['coord1'],ma['coord2']],
+         popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
+         tooltip="click").add_to(map)
    
    map.save('templates/map.html')
    return render_template('map.html')
