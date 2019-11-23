@@ -6,56 +6,73 @@
             <p class="lead">This is your online work environment..</p>
         </div>
     </div>
-    <div class="container formcard" id="profile" style="display: block;">            
+    <div class="container formcard" id="profile" style="display: block;">         
         <div class="profile">
             <div style="text-align: center;">
-                <img src="../static/css/gray-beddings-3201761.jpg" style="border-radius: 50%;" width="200" height="200">
+                <img src="{{ url_for('static',filename=row[0]['photo'])}}" style="border-radius: 50%;" width="160" height="160" >
             </div>
-            <div style="text-align: center;"> 
-                <div>  
-                    <p class="name">{{ row[0].f_name }} {{ row[0].l_name }}</p>
-                </div>   
-                <div> 
+            <div class="text-success" style="text-align: center;"> 
+                <p>@{{ user[0].user_id }}</p>   
                 {% if user[0].type == 'pat' %}
                     <p>PATIENT</p>
                 {% else %}
                     <p>DOCTOR</p>
                 {% endif %}
-                </div>
             </div>
         </div>
-        <div class="">           
-            <p>Email: {{ user[0].email }}</p>
-            <p>Sex: {{ row[0].sex }}</p>
-            <p>Address: {{ row[0].location }}</p>
-            <p>Phone Number: {{ row[0].phone }}</p>
-            <p>Date of Birth: {{ row[0].dob }}</p>
-            <p>Marital Status: {{ row[0].m_stat }}</p>
-            <p>State: {{ row[0].state }}</p>
+        <div class="row">
+            <div class="col-md-4 text-success">
+                <p>Name</p>
+                <p>Email</p>
+                <p>Sex</p>
+                <p>Address</p>
+                <p>Phone Number</p>
+                <p>Date of Birth</p>
+                <p>Marital Status</p>
+                <p>State</p>
+            </div>           
+            <div class="col-md-8 text-secondary">
+                {%if user[0].type == 'doc' %}
+                <p>Dr. {{ row[0].f_name }} {{ row[0].l_name }}</p>
+                {% else %}
+                <p>{{ row[0].f_name }} {{ row[0].l_name }}</p>
+                {% endif %}
+                <p>{{ user[0].email }}</p>
+                <p>{{ row[0].sex }}</p>
+                <p>{{ row[0].location }}</p>
+                <p>{{ row[0].phone }}</p>
+                <p>{{ row[0].dob }}</p>
+                <p>{{ row[0].m_stat }}</p>
+                <p>{{ row[0].state }}</p>
+            </div>
         </div> 
         <button class="btn btn-success" id="update">Update profile</button>           
     </div>
     <div class="container formcard" style="display: none;" id="show">
         <h3>Update your profile</h3>
-        <form action="/update" method="POST">
+        <form action="/update" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" name="email" class="form-control" placeholder="New email address">
+                <input type="text" name="email" class="form-control" placeholder="New email address" required>
+            </div>
+            <div class="form-group">
+                <label for="password">New Password</label>
+                <input type="password" name="password" class="form-control" placeholder="New email address" required>
             </div>
             <div class="form-group">
                 <label for="phone">Phone Number</label>
-                <input type="text" name="num" class="form-control" placeholder="New phone numbeer">
+                <input type="text" name="num" class="form-control" placeholder="New phone numbeer" required>
             </div>
             <div class="form-group">
                 <label for="address">Address</label>
-                <textarea type="text" name="loc" class="form-control" placeholder="New home address"></textarea>
+                <textarea type="text" name="loc" class="form-control" placeholder="New home address" required></textarea>
             </div>
             <div class="form-group">
                 <label for="picture">Picture Upload</label>
-                <input type="file" name="picture" class="form-control">
+                <input type="file" name="picture" class="form-control" required>
             </div>
             <input type="submit" value="Update" class="btn btn-success">
-            <input type="submit" value="Cancel" class="btn btn-danger" id="cancel">
+            <input type="button" value="Cancel" class="btn btn-danger" id="cancel">
         </form>
     </div>
 {% endblock %}

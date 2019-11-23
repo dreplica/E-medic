@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = "static"
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # Configure application
 app = Flask(__name__)
@@ -41,7 +41,7 @@ db.execute("create table if not exists map(id integer primary key autoincrement,
 @app.route('/')
 def index():
 
-   return render_template("index.html",person = ['type','name'])
+   return render_template("index.html")
 
 
 @app.route('/login',methods=['GET','POST'])
@@ -68,16 +68,16 @@ def login():
       session['user_id'] = user[0]['user_id']
       if user[0]['type'] == 'pat':
          print(user[0]['type'])
-         return redirect('patient')#,history = consult)
+         return redirect('/patient')#,history = consult)
       else:
-         return redirect('doctor')
+         return redirect('/doctor')
    return render_template("login.html")
 
 
 @app.route('/logout')
 def logout():
    session.clear()
-   return redirect('/')
+   return redirect('/') 
 
 
 @app.route('/doctor',methods=['GET','POST'])
@@ -87,7 +87,7 @@ def doctor():
          lat = request.args.get('lat')
          user_id = session['user_id']
          if lat:
-            user_id = session.get("user_id")
+            user_id = session['user_id']
             lng = request.args.get('lng')
             check_map = db.execute("select user_id from map where user_id =:us",us=user_id)
 
@@ -97,11 +97,13 @@ def doctor():
                db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
 
       user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template('doctor.html',user=user)
+      row = db.execute("select * from info where user_id=:us", us=user_id)
+      return render_template('doctor.html',user=user, row=row)
 
    user_id = session['user_id']
    user = db.execute('select * from users where user_id=:us',us = user_id)
-   return render_template('doctor.html',user=user)
+   row = db.execute("select * from info where user_id=:us", us=user_id)
+   return render_template('doctor.html', user=user, row=row)
 
 
 @app.route('/patient',methods=['GET','POST'])
@@ -109,7 +111,8 @@ def patient():
    if 'user_id' in session:
       user_id = session.get("user_id")
       user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template('patient.html', user=user)   
+      row = db.execute("select * from info where user_id=:us", us=user_id)
+      return render_template('patient.html', user=user, row=row)   
 
    return redirect('/') 
 
@@ -131,13 +134,38 @@ def profile():
 #          row = db.execute("select * from info where user_id=:us", us=user_id)
 #          print(row)
 #          print("this is session 2: ",session['user_id'])
-#          return render_template("profile.html", user=user, row=row)
+#          return render_template("profile.html", user=user, row=row)   
    if 'user_id' in session:
       user_id = session['user_id']
       user = db.execute('select * from users where user_id=:us',us =user_id)
       row = db.execute("select * from info where user_id=:us", us=user_id)
       return render_template("profile.html", user=user, row=row)
-   return redirect("/")   
+   else:
+      return redirect("/")
+
+@app.route('/update', methods=['GET', 'POST'])      
+def update():    
+   if request.method =="POST":
+      if 'user_id' in session:
+         print('session carried')
+         email = request.form.get("email")
+         password = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
+         number = request.form.get("num")
+         address = request.form.get("loc")
+         fille = request.files['picture']
+         user_id = session['user_id']
+
+         if fille.filename == '':
+            fille.filename = 'none'
+         fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
+         
+         if not email or not password or not number or not address or not fille:
+            return apology("Your details where not filled correctly")
+         else:
+            db.execute("UPDATE users SET email=:email, password=:password WHERE user_id=:user_id", user_id=user_id, email=email, password=password)
+            db.execute("UPDATE info SET phone=:phone, location=:location, photo=:photo WHERE user_id=:user_id", user_id=user_id, phone=number, location=address, photo=fille.filename)
+            return redirect("/profile")
+   return render_template("profile.html")   
 
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
@@ -261,7 +289,8 @@ def loc():
 
    for ma in loc:
       folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',tooltip="click").add_to(map)
-   
+      print(ma['user_id'])
+      
    map.save('templates/map.html')
    return render_template('map.html')
 

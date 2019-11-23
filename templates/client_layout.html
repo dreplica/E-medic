@@ -8,20 +8,25 @@
 </head>
 <body>
 
-<nav id="mySidenav" class="sidenav">    
-  <a><h6 class="text-light" id="i"><strong><em>Welcome {{ user[0]['user_id'] }}</em></strong></h6></a> 
-  {% if user[0]['type'] == 'pat' %}
-    <a href="/patient">Home</a>
-  {% else %}
-    <a href="/doctor">Home</a> 
-  {% endif %}
-  <a href="">History</a>
-  <a href="/chats">Chats</a>
-  {% if user[0]['type'] == 'pat' %}
-    <a href="/map">Find Doc</a>
-  {% endif %}
-  <a href="/profile">Profile</a>
-  <a href="/logout" class="text-light"><strong><em></em>Log out</a>
+<nav class="sidenav">
+  <div style="text-align: center;margin-bottom: 20px;">
+    <img src="{{ url_for('static',filename=row[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
+    <h6 class="text-light" style="margin-top: 10px;"><strong><em>Welcome {{ user[0]['user_id'] }}</em></strong></h6>
+  </div>
+  <div>  
+    {% if user[0]['type'] == 'pat' %}
+      <a href="/patient">Home</a>
+    {% else %}
+      <a href="/doctor">Home</a> 
+    {% endif %}
+    <a href="">History</a>
+    <a href="/chats">Chats</a>
+    {% if user[0]['type'] == 'pat' %}
+      <a href="/map">Find Doc</a>
+    {% endif %}
+    <a href="/profile">Profile</a>
+    <a href="/logout" class="text-light"><strong><em></em>Log out</a>
+  </div>    
 </nav>
 
 <div id="main">
@@ -34,7 +39,7 @@
     </nav>
 
 {% block main %}{% endblock %} 
-
+</div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
     $(".his").click(function(){
@@ -43,19 +48,7 @@
     $(".prog").click(function(){
         $(".progdrop").toggle()
     })
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "250px";
-      document.getElementById("main").style.marginLeft = "250px";
-      document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-    }
-
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-      document.getElementById("main").style.marginLeft= "0";
-      document.body.style.backgroundColor = "white";
-    }
-
-    
+       
     document.getElementById('update').onclick=(e)=>{
       e.preventDefault();
       document.getElementById('profile').style.display = 'none';

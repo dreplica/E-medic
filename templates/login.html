@@ -1,20 +1,25 @@
 {% extends "layout.html" %}
-{% block main %} 
-    <div class="container formcard col-md-5" style="margin-top: 150px;">  
-        {{issue}}     
-       <form action="/login" method="post">
+{% block main %}
+    
+    <div class="formcard">       
+       <form action="/login" method="post" class="was-validated">
             <h3>Login here</h3>
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" name="username" placeholder="Enter Username">
+                <input type="text" class="form-control" name="username" placeholder="Enter Username" required>
+                <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Enter Password">
+                <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
+                <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
-            <input type="submit" class="btn btn-success" value="Submit" id='sub'> 
+            <input type="submit" class="btn btn-success" value="Submit"> 
+            <span style="font-size: 20px;">Dont't have an account yet <a href="/">Register</a></span>
        </form>
-    </div> 
+    </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
    
 {% endblock %}  

@@ -102,9 +102,8 @@
             $('.contact.active .preview').html('<span>You: </span>' + message);
             $(".messages").animate({ scrollTop: $(document).height() }, "fast");
         };
-
         $('.submit').click(function() {
-        newMessage();
+            newMessage();
         });
 
         $(window).on('keydown', function(e) {
