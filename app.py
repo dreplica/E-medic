@@ -7,16 +7,14 @@ from flask_session import Session
 import folium
 from werkzeug.utils import secure_filename
 from tempfile import mkdtemp
+from flask_socketio import SocketIO, send,join_room,leave_room
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = "static"
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 # Configure application
 app = Flask(__name__)
-# Ensure templates are auto-reloaded and picture folder
-app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 def apology(issue,code):
    return (str(issue)+" "+str(code))
 # Ensure responses aren't cached
@@ -27,11 +25,17 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+# Ensure templates are auto-reloaded and picture folder
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
+app.secret_key = 'mysecret key'
+
 Session(app)
+socketio = SocketIO(app)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///emed.db")
@@ -64,7 +68,7 @@ def login():
          
       session['user_id'] = user[0]['user_id']
       if user[0]['type'] == 'pat':
-         print(user[0]['type'])
+         print(user[0]['type']) 
          return redirect('patient')#,history = consult)
       else:
          return redirect('doctor')
@@ -116,33 +120,15 @@ def patient():
                db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,lat = lat,lng = lng)
             else:
                db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
-
-      user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template('doctor.html',user=user)
-
-   user_id = session["user_id"]
-   user = db.execute('select * from users where user_id=:us',us = user_id)
-   return render_template('patient.html', user=user)  
-
-
-@app.route('/chats')
-def chats():
+ 
    if 'user_id' in session:
-      user_id = session.get("user_id")
-      user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template("chats.html", user=user)
-   return redirect("/")   
+        user = db.execute('select user_id from users where user_id =:us',us=session['user_id'])
+        print(user)
+        return render_template('patient.html',user = user[0]['user_id'])
+   return render_template('patient.html', user=user)  
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-#    if request.method == 'GET':
-#          print(session['user_id'])
-#          user_id = request.args.get('user')
-#          user = db.execute('select * from users where user_id=:us',us = user_id)
-#          row = db.execute("select * from info where user_id=:us", us=user_id)
-#          print(row)
-#          print("this is session 2: ",session['user_id'])
-#          return render_template("profile.html", user=user, row=row)
    if 'user_id' in session:
       user_id = session['user_id']
       print("this is session 3: ",session['user_id'])
@@ -250,42 +236,19 @@ def d_register():
     return render_template('d_register.html',states=states)
 
 
-#message box side
+# #message box side
 @app.route('/message',methods=['GET','POST'])
 def message():
-   rec = ''
-   if request.method == 'GET':
-      if 'user_id' in session:
-         doc = request.args.get('doc')
-         rec = doc
-         check_doc = db.execute('select * from hash where user_id =:us',us = session['user_id'])
-         #print('this is id',check_doc[0]['id'])
-         if len(check_doc) != 1:
-            db.execute('insert into hash (user_id,doc) values(:us,:doc)',us=session['user_id'],doc=rec)
-         hash = db.execute('select hash from hash where user_id =:us and doc=:doc',us = session['user_id'],doc=rec)
-         if len(hash) != 0:
-            print("hash is available")
-            message = db.execute('select * from message where hash =:hash',hash = hash[0]['hash'])
-            if len(message) != 0:
-               return render_template('message.html',mess = message)
-
-   if request.method == 'POST':
-      if 'user_id' in session:
-         current = request.form.get('message')
-         rec = request.form.get('rec')
-         print("this is rec :",rec)
-         user = db.execute('select hash from hash where user_id =:sess and doc =:rec',sess = session['user_id'],rec=rec)
-         print('first hash ',user)
-         if len(user) > 0:
-           db.execute('insert into message (msg,send,recieve,hash) values(:me,:se,:re,:ha)',me = current,se = session['user_id'],re =rec,ha=user[0]['hash'])
-           mess = db.execute('select send,recieve, msg from message where hash =:ha order by date',ha = user[0]['id'])
-           return render_template('message.html',mess = mess)
-   hash = db.execute('select hash from hash where user_id =:sess and doc =:rec',sess = session['user_id'],rec=rec)
-   print('sec hash ',hash)
-   if len(hash) != 0:
-      mess = db.execute('select distinct recieve from message where hash =:ha order by date',ha = hash[0]['hash'])
-      return render_template('message.html',doc = mess)
-   return render_template('message.html',rec = rec)
+   
+     if "user_id" in session:
+        user = db.execute('select user_id,type from users where user_id =:us',us=session['user_id'])
+        print(user)
+        rooms = db.execute('select * from hash where user_id =:us or doc =:us',us = session['user_id'])
+        if request.method == 'GET': 
+           incoming = request.args.get('name')
+           return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'],redirected_user = incoming)
+        return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'])
+     return render_template('message.html')
 
 
 @app.route('/map',methods=['GET','POST'])
@@ -308,6 +271,31 @@ def loc():
    return render_template('map.html')
 
 
+#message broadcasting comes here
+@socketio.on('message')
+def message(data):
+
+   send(data)
+
+@socketio.on('join')
+def join(data):
+   
+   join_room(data['active_chat'])
+   send({'msg': data['user'] + ' has joined the consulting room', 
+             'room':data['active_chat']})
+
+@socketio.on('leave')
+def leave(data):
+
+   leave_room(data['active_chat'])
+   send({'msg': data['user'] + ' has left the consulting room',
+             'room': data['active_chat']})
+   
+
+
+
+
+
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
@@ -318,5 +306,8 @@ def errorhandler(e):
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
+
+if  __name__ == "__main__":
+   socketio.run(app,debug = True)
 
 

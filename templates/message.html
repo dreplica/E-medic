@@ -5,58 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel="stylesheet" type="text/css">
 </head>
 <body>
-    {{rec}}
-    <div class="container">
-        <div class="row">
-          <div class="col-lg-5 message" style="width:30%;height:400px;border:2px solid darkgrey">
-              {% for msg in mess %}
-                 {% if msg['send'] == 'david' %}
-                       <h2>{{msg['msg']}}</h2>
-                 {% endif %}
-                 {% if msg['recieve'] == 'david' %}
-                       <h1>{{msg['msg']}}</h1>
-                 {% endif %}
-              {% endfor %}
-          </div>
-             <div class="col-lg-5 chat" style='width:10%;height:400px;'>
-                 {% for people in doc %}
-                    <div class="docs">{{rec}}</div>
-                 {% endfor %}
-             </div>
-             <img src='../uploads/paul.jpg'
-                <div class="mform">
-                    <form action="/message" method="POST">
-                    <p style='display:none;' id='user'>{{rec}}</p>
-                    <textarea col='5' row='8' id="msg"></textarea>
-                    <input type="submit" value="send" id="send">
-                    </form>
-                </div>
-                {{mess}}
-         </div>
-    </div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script>
+    <div class="chat">
 
-    $('#send').click((e)=>{
-        e.preventDefault();
-        let msg = document.getElementById('msg').value
-        console.log("this is message :"+msg)
-        let user = document.getElementById('user').innerText
-        console.log("this is user :"+user)
-        $.ajax({
-            type:'POST',
-            url:'/message',
-            data:{
-                rec:user,
-                message:msg
-            },
-            success:()=>console.log("success")
-        })
-})
-    
-</script>
+        <div class="docs">
+            <h3>
+                {% if type == 'pat' %}
+                    Doctors
+                {% else %}
+                    patients
+                {% endif %}
+             </h3>
+
+            <div id="dchat">
+                <ul>
+                        {% for docs in rooms %}
+                            <li class="current_chats">
+                                    {% if type == 'doc' %}
+                                         {{docs['user_id']}}
+                                    {% else %}
+                                         {{docs['doc']}}
+                                    {% endif %}
+                           </li>
+                        {% endfor %}
+                        
+                </ul>
+            </div>
+        </div>
+
+        <div class="chat_screen">
+            <div id="message_board"></div>
+            <div id="send">
+                <div class="input"><input type="text" name="text" id='text'></div>
+                <div class="submit"><input type="submit" value="send" id='sent'></div>
+            </div>
+        </div>
+    </div>
+    {{user_id}}
+    <script>
+        var user = `{{user_id}}`
+        var from_redirect = `{{redirected_user}}`
+    </script>
+    <!-- socket io file -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" ></script>
+    <!-- our own made socket listener -->
+    <script type="text/javascript" src="{{url_for('static',filename='script/message.js')}}"></script>
+
 </body>
 </html>
