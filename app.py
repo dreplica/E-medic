@@ -17,8 +17,6 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-def apology(issue):
-   return (str(issue))
 # Ensure responses aren't cached
 @app.after_request
 def after_request(response):
@@ -56,14 +54,14 @@ def login():
       invalid = "Invalid username and password"
 
       if not name:
-         return apology(issue=usererror)
+         return render_template("login.html", issue1=usererror)
       elif not password:
-         return apology(issue=passworderror)
+         return render_template("login.html", issue2=passworderror)
 
       user = db.execute("Select * from users where user_id=:us", us=name)
       
       if len(user) != 1 or not check_password_hash(user[0]['password'], password):
-         return apology(issue=invalid)
+         return render_template("login.html", issue3=invalid)
          
       session['user_id'] = user[0]['user_id']
       if user[0]['type'] == 'pat':
@@ -127,14 +125,6 @@ def chats():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-#    if request.method == 'GET':
-#          print(session['user_id'])
-#          user_id = request.args.get('user')
-#          user = db.execute('select * from users where user_id=:us',us = user_id)
-#          row = db.execute("select * from info where user_id=:us", us=user_id)
-#          print(row)
-#          print("this is session 2: ",session['user_id'])
-#          return render_template("profile.html", user=user, row=row)   
    if 'user_id' in session:
       user_id = session['user_id']
       user = db.execute('select * from users where user_id=:us',us =user_id)
@@ -147,7 +137,6 @@ def profile():
 def update():    
    if request.method =="POST":
       if 'user_id' in session:
-         print('session carried')
          email = request.form.get("email")
          password = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
          number = request.form.get("num")
@@ -160,7 +149,7 @@ def update():
          fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
          
          if not email or not password or not number or not address or not fille:
-            return apology("Your details where not filled correctly")
+            return render_template("profile.html")
          else:
             db.execute("UPDATE users SET email=:email, password=:password WHERE user_id=:user_id", user_id=user_id, email=email, password=password)
             db.execute("UPDATE info SET phone=:phone, location=:location, photo=:photo WHERE user_id=:user_id", user_id=user_id, phone=number, location=address, photo=fille.filename)
@@ -169,100 +158,110 @@ def update():
 
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
-def p_register():
+def p_register():   
 
-    file = open('states.csv','r')
-    reader = csv.reader(file)
-    states = list(reader)
+   file = open('states.csv','r')
+   reader = csv.reader(file)
+   states = list(reader)
 
-    if request.method == 'POST':
-       userid = request.form.get('username')
-       email = request.form.get('email')
-       passw = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
-       typ = request.form.get('type')
-       date = datetime.datetime.now()
-       blood = request.form.get('blood')
-       geno = request.form.get('gene')
-       med = request.form.get('issues')
-       k_fn = request.form.get('firstname')
-       k_ln = request.form.get('lastname')
-       kp = request.form.get('knumber')
-       ke = request.form.get('kemail')
-       k_loc = request.form.get('kadd')
-       fname = request.form.get('fname')
-       lname = request.form.get('lname')
-       dob = request.form.get('dob')
-       sex = request.form.get('sex')
-       state = request.form.get('states')
-       addr = request.form.get('address')
-       pnum = request.form.get('pnum')
-       status = request.form.get('mstat')
-       idn = request.form.get('idname')
-       nid = request.form.get('idnum')
-       fille = request.files['photo']
-       session['user_id'] = request.form.get('username')
-      #  user = users(userid)
-       if fille.filename == '':
-          fille.filename = 'none'
+   if request.method == 'POST':   
+      userid = request.form.get('username')   
+      email = request.form.get('email')
+      passw = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
+      typ = request.form.get('type')
+      date = datetime.datetime.now()
+      blood = request.form.get('blood')
+      geno = request.form.get('gene')
+      med = request.form.get('issues')
+      k_fn = request.form.get('firstname')
+      k_ln = request.form.get('lastname')
+      kp = request.form.get('knumber')
+      ke = request.form.get('kemail')
+      k_loc = request.form.get('kadd')
+      fname = request.form.get('fname')
+      lname = request.form.get('lname')
+      dob = request.form.get('dob')
+      sex = request.form.get('sex')
+      state = request.form.get('states')
+      addr = request.form.get('address')
+      pnum = request.form.get('pnum')
+      status = request.form.get('mstat')
+      idn = request.form.get('idname')
+      nid = request.form.get('idnum')
+      fille = request.files['photo']
+      if fille.filename == '':
+         fille.filename = 'none'
+      fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
+      
+      msg = "Username already exist"
+      check = db.execute("SELECT user_id FROM users WHERE user_id=:username", username=userid)
+      if check:
+         return render_template("p_register.html", msg=msg)
 
-       fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
-       db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
-       db.execute("INSERT INTO pat_info (b_gr,g_gr,med_iss,kin_fn,kin_ln,kin_phone,kin_email,kin_loc,user_id) VALUES(:b,:g,:md,:kfn,:kln,:kp,:ke,:kl,:us)",
-                   b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
-       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
-                   u=userid,f=fname,l=lname,m=status,p=pnum, loc=addr, s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return render_template('patient.html')
-    return render_template('p_register.html',states=states) 
+      session['user_id'] = request.form.get('username')
+      # user = users(userid)     
+      db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
+      db.execute("INSERT INTO pat_info (b_gr,g_gr,med_iss,kin_fn,kin_ln,kin_phone,kin_email,kin_loc,user_id) VALUES(:b,:g,:md,:kfn,:kln,:kp,:ke,:kl,:us)",
+                  b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
+      db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
+                  u=userid,f=fname,l=lname,m=status,p=pnum, loc=addr, s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+      return render_template('patient.html')
+   return render_template('p_register.html',states=states) 
 
 
 #registration for doctors
 @app.route('/d_register',methods=['GET',"POST"])
 def d_register():
+   file = open('states.csv','r')
+   reader = csv.reader(file)
+   states = list(reader)  
+   
+   if request.method == 'POST':
+      userid = request.form.get('username')
+      email = request.form.get('email')
+      passw = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
+      typ = request.form.get('type')
+      date = datetime.datetime.now()
+      fname = request.form.get('fname')
+      lname = request.form.get('lname')
+      dob = request.form.get('dob')
+      sex = request.form.get('sex')
+      state = request.form.get('states')
+      addr = request.form.get('address')
+      pnum = request.form.get('pnum')
+      status = request.form.get('mstat')
+      l = request.form.get('year1')
+      e = request.form.get('year2')
+      idn = request.form.get('idname')
+      nid = request.form.get('idnum')
+      sp = request.form.get('speciality')
+      hf = request.form.get('hospital')
+      cert = request.form.get('certificate')
+      lp = request.form.get('link')
+      cp = request.form.get('country')
+      ms = request.form.get('school')
+      bc = request.form.get('board')
+   #  us = request.form.get('idnum')
+      fille = request.files['photo']
+      if fille.filename == '':
+         fille.filename = 'none'
+      fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
 
-    file = open('states.csv','r')
-    reader = csv.reader(file)
-    states = list(reader)
+      msg = "Username already exist"
+      check = db.execute("SELECT user_id FROM users WHERE user_id=:username", username=userid)
+      if check:
+         return render_template("p_register.html", msg=msg)
 
-    if request.method == 'POST':
-       userid = request.form.get('username')
-       email = request.form.get('email')
-       passw = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
-       typ = request.form.get('type')
-       date = datetime.datetime.now()
-       fname = request.form.get('fname')
-       lname = request.form.get('lname')
-       dob = request.form.get('dob')
-       sex = request.form.get('sex')
-       state = request.form.get('states')
-       addr = request.form.get('address')
-       pnum = request.form.get('pnum')
-       status = request.form.get('mstat')
-       l = request.form.get('year1')
-       e = request.form.get('year2')
-       idn = request.form.get('idname')
-       nid = request.form.get('idnum')
-       sp = request.form.get('speciality')
-       hf = request.form.get('hospital')
-       cert = request.form.get('certificate')
-       lp = request.form.get('link')
-       cp = request.form.get('country')
-       ms = request.form.get('school')
-       bc = request.form.get('board')
-      #  us = request.form.get('idnum')
-       fille = request.files['photo']
-       session['user_id'] = request.form.get('username')
-      #  user = users(userid)
-       if fille.filename == '':
-          fille.filename = 'none'
+      session['user_id'] = request.form.get('username')
+         #  user = users(userid)      
 
-       fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
-       db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
-       db.execute("INSERT INTO doc_info (lic_yr,exp_yr,specialty,hos_aff,cert,link_pub,con_prac,med_sch,b_cert,user_id) VALUES(:l,:e,:sp,:hf,:cert,:lp,:cp,:ms,:bc,:us)",
-                   l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
-       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
-                   u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-       return redirect('doctor')
-    return render_template('d_register.html',states=states)
+      db.execute("INSERT INTO users (user_id,email,password,type,date) VALUES(:us,:em,:pa,:ty,:da)",da = date,us = userid,em =email,pa=passw,ty=typ)
+      db.execute("INSERT INTO doc_info (lic_yr,exp_yr,specialty,hos_aff,cert,link_pub,con_prac,med_sch,b_cert,user_id) VALUES(:l,:e,:sp,:hf,:cert,:lp,:cp,:ms,:bc,:us)",
+                  l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
+      db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
+                  u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+      return redirect('doctor')
+   return render_template('d_register.html',states=states)
 
 
 #message box side
@@ -281,6 +280,14 @@ def message():
       mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
       return render_template('message.html',mess = mess)
 
+@app.route('/checker/<id>')
+def checker(id):
+   user = db.execute("SELECT user_id FROM users WHERE user_id=:username", username=id)
+   if user:
+      return 'Username already exists'
+   else:
+      return 'Username valid'
+
 
 @app.route('/map',methods=['GET','POST'])
 def loc():
@@ -293,17 +300,3 @@ def loc():
       
    map.save('templates/map.html')
    return render_template('map.html')
-
-
-def errorhandler(e):
-    """Handle error"""
-    if not isinstance(e, HTTPException):
-        e = InternalServerError()
-    return apology(e.name)
-
-
-# Listen for errors
-for code in default_exceptions:
-    app.errorhandler(code)(errorhandler)
-
-

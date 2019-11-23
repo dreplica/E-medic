@@ -1,18 +1,20 @@
-
 {% extends "layout.html" %}
 {% block main %} 
     <div class="formcard">         
         <form action="/d_register" method="post" enctype="multipart/form-data"> 
             <div id="ffirst">
                 <h3>Fill out the form</h3>
+                <span>{{msg}}</span>
                 <input type="hidden" name="type" value="doc">                
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="phone" name="username" class="form-control" placeholder="Enter username" required>
+                    <input type="phone" id="username" name="username" class="form-control" placeholder="Enter username" required>
+                    <span class="error"></span>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" name="email" class="form-control" placeholder="Enter email address" required>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter email address" required>
+                    
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -159,50 +161,69 @@
                 </div>
                 <input type="submit" class="btn btn-success" value="Submit" id="all">                
             </div>             
-        </form> 
-         
-        <script>
-            document.getElementById('add').onclick = (e)=>{
-                e.preventDefault()
-                let html1 = ''+
-                    '<h3>Add work experience</h3>'+
-                    '<div class="form-group">'+
-                    '<label>Where have you worked with (Please specify with date)</label>'+                    
-                    '<textarea class="form-control" name="work"></textarea>'+
-                    '</div>'+
-                    '<label>Date</label>'+
-                    '<input type="date" name="date" class="form-control">'+
-                    '</div>'+
-                    '<div class="form-group">'+
-                    '<label for="sperior">Name of Superior</label>'+
-                    '<input type="text" name="superior" class="form-control" placeholder="Superior name">'+
-                    '</div>'+
-                    '<div class="form-group">'+
-                    '<label for="address">Address</label>'+
-                    '<input type="text" name="address" class="form-control" placeholder="Enter address">'+
-                    '</div>'+
-                    '<div class="form-group">'+
-                    '<label for="contact">Contact</label>'+
-                    '<input type="text" name="contact" class="form-control" placeholder="Enter phone number">'+
-                    '</div>'
-                document.getElementById('fmain').insertAdjacentHTML('beforeend', html1);
-            }
-            document.getElementById('first').onclick=(e)=>{
-                e.preventDefault();
-                ffirst.style.display = 'none';
-                document.getElementById('fsec').style.display = 'block'
+        </form>             
+    </div>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('add').onclick = (e)=>{
+            e.preventDefault()
+            let html1 = ''+
+                '<h3>Add work experience</h3>'+
+                '<div class="form-group">'+
+                '<label>Where have you worked with (Please specify with date)</label>'+                    
+                '<textarea class="form-control" name="work"></textarea>'+
+                '</div>'+
+                '<label>Date</label>'+
+                '<input type="date" name="date" class="form-control">'+
+                '</div>'+
+                '<div class="form-group">'+
+                '<label for="sperior">Name of Superior</label>'+
+                '<input type="text" name="superior" class="form-control" placeholder="Superior name">'+
+                '</div>'+
+                '<div class="form-group">'+
+                '<label for="address">Address</label>'+
+                '<input type="text" name="address" class="form-control" placeholder="Enter address">'+
+                '</div>'+
+                '<div class="form-group">'+
+                '<label for="contact">Contact</label>'+
+                '<input type="text" name="contact" class="form-control" placeholder="Enter phone number">'+
+                '</div>'
+            document.getElementById('fmain').insertAdjacentHTML('beforeend', html1);
+        }
+        document.getElementById('first').onclick=(e)=>{
+            e.preventDefault();
+            ffirst.style.display = 'none';
+            document.getElementById('fsec').style.display = 'block'
 
-                document.getElementById('sec').onclick=(e)=>{
-                    e.preventDefault();
-                    fsec.style.display = 'none';
-                    document.getElementById('fthird').style.display = 'block'
+            document.getElementById('sec').onclick=(e)=>{
+                e.preventDefault();
+                fsec.style.display = 'none';
+                document.getElementById('fthird').style.display = 'block'
+            }
+            document.getElementById('third').onclick=(e)=>{
+                e.preventDefault();
+                fthird.style.display = 'none';
+                document.getElementById('ffourth').style.display = 'block'
+            }
+        }           
+        $('document').ready(function(){
+            $('#username').on('blur', function(){
+                let username = $('#username').val()
+                if (username == "") {
+                    return false
                 }
-                document.getElementById('third').onclick=(e)=>{
-                    e.preventDefault();
-                    fthird.style.display = 'none';
-                    document.getElementById('ffourth').style.display = 'block'
-                }
-            }      
-        </script>       
-    </div> 
-{% endblock %}    
+                $.ajax({
+                    url: "http://127.0.0.1:5000/checker/"+username,
+                    method: 'get',
+                    success: function(msg){
+                        console.log(msg)
+                        $(".error").html(msg);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        $(".error").html(textStatus + " " + errorThrown);
+                    }
+                });                
+            })
+        });  
+    </script> 
+{% endblock %}

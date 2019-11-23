@@ -3,18 +3,21 @@
     
     <div class="formcard">       
        <form action="/login" method="post" class="was-validated">
+            <span>{{ issue3 }}</span>
             <h3>Login here</h3>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" placeholder="Enter Username" required>
                 <div class="valid-feedback">Valid.</div>
                 <div class="invalid-feedback">Please fill out this field.</div>
+                <span>{{ issue1 }}</span>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
                 <div class="valid-feedback">Valid.</div>
                 <div class="invalid-feedback">Please fill out this field.</div>
+                <span>{{ issue2 }}</span>
             </div>
             <input type="submit" class="btn btn-success" value="Submit"> 
             <span style="font-size: 20px;">Dont't have an account yet <a href="/">Register</a></span>

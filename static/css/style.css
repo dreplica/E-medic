@@ -31,7 +31,7 @@ span {
     width:35%;
     margin-bottom: 35px;
     padding: 10px;
-    box-shadow: 5px 5px 20px  #aaaaaa;
+    box-shadow: 5px 5px 30px  #aaaaaa;
 }
 .formcard h3{
     text-align: center;
@@ -48,7 +48,14 @@ span {
     }
     .br{
         font-weight: bold;
-        padding: 30px ;
+        padding: 30px;
         position: relative;
     }
-  }
+    .formcard{
+        background-color: white;
+        opacity: 0.95;
+        margin:10%;
+        box-shadow: 5px 5px 30px  #aaaaaa;
+        width: 80%;         
+    }
+}
