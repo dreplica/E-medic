@@ -5,18 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link href="../static/script/css.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+
+        {% if type == 'pat' %}
+            <div id="recommendation" style="display:none;top: 100px; left:32%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
+                <form>
+                        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+                          <label for="exampleInputEmail1" style="margin:10px auto;">Whats your Issue today?</label>
+                          <input type="text" class="form-control"  placeholder="Enter issues here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                          <small id="emailHelp" class="form-text text-muted" style="margin:10px auto;">We'll never share your issues with anyone else.</small>
+                        </div>
+                        <div style="width:20%; margin:auto;">
+                         <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
+                        <button type="submit" class="btn btn-primary" id='close'>close</button>
+                        </div>
+                        
+                      </form>
+             </div>
+        {% else %}
+        <div id="recommendation" style="display:none;top: 100px; left:35%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
+                <form>
+                        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+                          <label for="exampleInputEmail1" style="margin:10px auto;">Recommendations</label>
+                          <input type="text" class="form-control"  placeholder="Enter Recommendations  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                        </div>
+                        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+                                <label for="exampleInputEmail1" style="margin:10px auto;">Drugs</label>
+                                <input type="text" class="form-control"  placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                              </div>
+                        <div style="width:20%; margin:auto;">
+                         <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
+                        <button type="submit" class="btn btn-primary" id='close'>close</button>
+                        </div>
+                        
+                      </form>
+             </div>
+        {% endif %}
+
+    
     <div class="chat">
 
         <div class="docs">
-            <h3>
+            <h3 style="text-align: center;">
+               
                 {% if type == 'pat' %}
                     Doctors
                 {% else %}
                     patients
                 {% endif %}
              </h3>
+            <hr>
 
             <div id="dchat">
                 <ul>
@@ -42,15 +82,18 @@
             </div>
         </div>
     </div>
-    {{user_id}}
     <script>
         var user = `{{user_id}}`
         var from_redirect = `{{redirected_user}}`
+        var recommendation = document.getElementById('recommendation')
+        document.getElementById('close').onclick = (e)=>{
+            e.preventDefault();
+            document.getElementById('recommendation').style.display = 'none'
+        }
     </script>
     <!-- socket io file -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" ></script>
     <!-- our own made socket listener -->
     <script type="text/javascript" src="{{url_for('static',filename='script/message.js')}}"></script>
-
 </body>
 </html>

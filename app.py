@@ -7,7 +7,7 @@ from flask_session import Session
 import folium
 from werkzeug.utils import secure_filename
 from tempfile import mkdtemp
-from flask_socketio import SocketIO, send,join_room,leave_room
+from flask_socketio import SocketIO, send,join_room,leave_room,emit
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 UPLOAD_FOLDER = "static"
@@ -15,15 +15,17 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 # Configure application
 app = Flask(__name__)
+
 def apology(issue,code):
    return (str(issue)+" "+str(code))
-# Ensure responses aren't cached
-@app.after_request
-def after_request(response):
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Expires"] = 0
-    response.headers["Pragma"] = "no-cache"
-    return response
+
+# # Ensure responses aren't cached
+# @app.after_request
+# def after_request(response):
+#     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+#     response.headers["Expires"] = 0
+#     response.headers["Pragma"] = "no-cache"
+#     return response
 
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -32,10 +34,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
-app.secret_key = 'mysecret key'
+# app.secret_key = 'mysecret key'
 
 Session(app)
-socketio = SocketIO(app)
+
+app.config['SECRET_KEY'] = 'mysecretkey'
+socketio = SocketIO(app,cors_allowed_origins="*") 
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///emed.db")
@@ -239,7 +243,7 @@ def d_register():
 # #message box side
 @app.route('/message',methods=['GET','POST'])
 def message():
-   
+
      if "user_id" in session:
         user = db.execute('select user_id,type from users where user_id =:us',us=session['user_id'])
         print(user)
@@ -274,8 +278,9 @@ def loc():
 #message broadcasting comes here
 @socketio.on('message')
 def message(data):
-
-   send(data)
+   print(data)
+   if data['username']:
+       send(data, broadcast=True)
 
 @socketio.on('join')
 def join(data):
@@ -307,7 +312,5 @@ def errorhandler(e):
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
-if  __name__ == "__main__":
-   socketio.run(app,debug = True)
-
-
+if __name__ == '__main__':
+      socketio.run(app,debug = True)
