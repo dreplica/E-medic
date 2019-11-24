@@ -280,13 +280,21 @@ def message():
       mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
       return render_template('message.html',mess = mess)
 
-@app.route('/checker/<id>')
-def checker(id):
+@app.route('/user_checker/<id>')
+def userChecker(id):
    user = db.execute("SELECT user_id FROM users WHERE user_id=:username", username=id)
    if user:
-      return 'Username already exists'
+      return '<p style="color:red">Username already exists</p>'
    else:
-      return 'Username valid'
+      return '<p style="color:green">Username valid</p>'
+
+@app.route('/email_checker/<id>')
+def emailChecker(id):
+   email = db.execute("SELECT email FROM users WHERE email=:email", email=id)
+   if email:
+      return '<p style="color:red">Email already exists</p>'
+   else:
+      return '<p style="color:green">Email valid</p>'   
 
 
 @app.route('/map',methods=['GET','POST'])

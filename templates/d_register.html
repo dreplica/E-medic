@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" class="form-control" placeholder="Enter email address" required>
-                    
+                    <span class="emailerr"></span>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -213,7 +213,7 @@
                     return false
                 }
                 $.ajax({
-                    url: "http://127.0.0.1:5000/checker/"+username,
+                    url: "http://127.0.0.1:5000/user_checker/"+username,
                     method: 'get',
                     success: function(msg){
                         console.log(msg)
@@ -221,6 +221,23 @@
                     },
                     error: function(jqXHR, textStatus, errorThrown){
                         $(".error").html(textStatus + " " + errorThrown);
+                    }
+                });                
+            })
+            $('#email').on('blur', function(){
+                let email = $('#email').val()
+                if (email == "") {
+                    return false
+                }
+                $.ajax({
+                    url: "http://127.0.0.1:5000/email_checker/"+email,
+                    method: 'get',
+                    success: function(msg){
+                        console.log(msg)
+                        $(".emailerr").html(msg);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        $(".emailerr").html(textStatus + " " + errorThrown);
                     }
                 });                
             })
