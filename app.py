@@ -2,7 +2,7 @@ import os
 import datetime
 import csv
 from cs50 import SQL
-from flask import Flask, flash, jsonify, redirect, render_template, request, session,url_for
+from flask import Flask, flash, jsonify, redirect, render_template, request, session,url_for, send_from_directory
 from flask_session import Session
 import folium
 from werkzeug.utils import secure_filename
@@ -46,9 +46,13 @@ db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCRE
 db.execute("create table if not exists map(id integer primary key autoincrement, user_id varchar(255),coord1 text not null, coord2 text not null)")
 db.execute('create table if not exists hash(hash integer primary key autoincrement,user_id TEXT NOT NULL,doc Text NOT NULL)')
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 @app.route('/')
 def index():
-
    return render_template("index.html")
 
 
@@ -289,7 +293,7 @@ def d_register():
                   l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                   u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-      return redirect('doctor')
+      return render_template('doctor.html')
    return render_template('d_register.html',states=states)
 
 
@@ -301,7 +305,7 @@ def message():
         user = db.execute('select user_id,type from users where user_id =:us',us=session['user_id'])
         row = db.execute("select * from info where user_id=:us", us=session['user_id'])
         print(user)
-        rooms = ''; 
+        rooms = '' 
         if request.method == 'GET': 
            incoming = request.args.get('name')
            check_doc = db.execute('select * from hash where user_id =:us and doc =:doc', us=session['user_id'], doc = incoming)
@@ -340,8 +344,7 @@ def loc():
          tooltip="<span color:'green'>You</span>",
          icon=folium.Icon(color='green')).add_to(map)
       if doc_check[0]['type'] == 'doc':
-         folium.Marker([ma['coord1'],ma['coord2']],
-         popup='<a href="\message?name='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
+         folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\message?name='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
          tooltip="click").add_to(map)
    map.save('templates/map.html')
    return render_template('map.html')
@@ -356,6 +359,7 @@ def consult():
          drug = request.form.get('drug')
          db.execute('insert into consultation (user_id,issue,recomm,drugs,doc) values(:name,:iss,:recco,:dr,:doc)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'])
          return redirect('/message')
+   return render_template("message.html")      
 
 #message broadcasting comes here
 @socketio.on('message')
