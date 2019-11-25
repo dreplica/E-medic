@@ -130,7 +130,7 @@ def patient():
                db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
 
          user = db.execute('select * from users where user_id=:us',us = user_id)
-         doc =  db.execute('select * from consultation  where user_id=:us',us = user_id)
+         doc =  db.execute('select * from consultation  where user_id=:us order',us = user_id)
          doc_one  = doc[-1]
          print('this is' ,doc)
          doc_info = db.execute('select * from info where user_id =:doc',doc = doc_one['doc'])

@@ -24,7 +24,7 @@
                       </form>
              </div>
         {% else %}
-        <button style="position: absolute; top:100px; left:10px;">Add Analysis</button>
+        <button style="position: absolute; top:100px; left:10px;" id='add_analysis'>Add Analysis</button>
         <div id="recommendation" style="display:none;top: 100px; left:35%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
                 <form method="POST" action="/consult">
                         <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
@@ -112,7 +112,6 @@
             var view = document.getElementById ('message_board')
             var text = document.getElementById('text')
             var active_chat = from_redirect;
-            localStorage['user'] = user;
 
 
             socket.on('message', data =>{
@@ -157,8 +156,6 @@
                         msg = `you're currently chatting with ${active_chat}`;
                         tellUser(msg)
                     }else{
-                        
-                        recommendation.style.display = 'block';
                         leaveRoom(active_chat)
                         joinRoom(newChat)
                         active_chat = newChat;
@@ -186,7 +183,20 @@
             }
     
     })
-    
+    let turned = false;
+    if (document.getElementById('add_analysis') != undefined){
+        add_analysis.onclick = (e)=>{
+             e.preventDefault();
+             if(turned  ==  false){
+             recommendation.style.display = 'block'
+             turned = true;
+             }else {
+                recommendation.style.display = 'none'
+                turned = false;
+             }
+            }
+             
+    }
     
     </script>
 </body>
