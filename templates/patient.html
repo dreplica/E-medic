@@ -39,6 +39,26 @@
             </div>
         </div>
     </div>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script>
+        var pos;
+        
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function(position) {
+               pos = {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude
+                };
+                console.log(pos)
+            })
+        }
+        setTimeout(()=> $.ajax({
+                    method:"GET",
+                    url:'/patient',
+                    data:pos,
+                    success:()=>console.log("posted :"+this.data)
+                    }),5000)
+        </script>
         <!--to here-->
 
 {% endblock %}

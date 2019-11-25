@@ -7,15 +7,14 @@ from flask_session import Session
 import folium
 from werkzeug.utils import secure_filename
 from tempfile import mkdtemp
+from flask_socketio import SocketIO, send,join_room,leave_room,emit
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 UPLOAD_FOLDER = "static"
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 # Configure application
 app = Flask(__name__)
-# Ensure templates are auto-reloaded and picture folder
-app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ensure responses aren't cached
 @app.after_request
@@ -25,16 +24,27 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+# Ensure templates are auto-reloaded and picture folder
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
+# app.secret_key = 'mysecret key'
+
 Session(app)
+
+app.config['SECRET_KEY'] = 'mysecretkey'
+socketio = SocketIO(app,cors_allowed_origins="*") 
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///emed.db")
-db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id VARCHAR(255) NOT NULL,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,date datetime default current_timestamp )")
+
+
+db.execute("CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY AUTOINCREMENT,msg TEXT NOT NULL,send VARCHAR(255) NOT NULL, recieve VARCHAR(255) NOT NULL,hash INTEGER  NOT NULL ,date datetime default current_timestamp )")
 db.execute("create table if not exists map(id integer primary key autoincrement, user_id varchar(255),coord1 text not null, coord2 text not null)")
+db.execute('create table if not exists hash(hash integer primary key autoincrement,user_id TEXT NOT NULL,doc Text NOT NULL)')
 
 @app.route('/')
 def index():
@@ -106,22 +116,22 @@ def doctor():
 
 @app.route('/patient',methods=['GET','POST'])
 def patient():
-   if 'user_id' in session:
-      user_id = session.get("user_id")
-      user = db.execute('select * from users where user_id=:us',us = user_id)
-      row = db.execute("select * from info where user_id=:us", us=user_id)
-      return render_template('patient.html', user=user, row=row)   
-
-   return redirect('/') 
-
-
-@app.route('/chats')
-def chats():
-   if 'user_id' in session:
-      user_id = session.get("user_id")
-      user = db.execute('select * from users where user_id=:us',us = user_id)
-      return render_template("chats.html", user=user)
-   return redirect("/")   
+   if request.method == 'GET':
+      if 'user_id' in session:
+         lat = request.args.get('lat')
+         user_id = session['user_id']
+         if lat:
+            user_id = session['user_id']
+            lng = request.args.get('lng')
+            check_map = db.execute("select user_id from map where user_id =:us",us=user_id)
+            if len(check_map) != 0: 
+               db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,lat = lat,lng = lng)
+            else:
+               db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
+         user = db.execute('select * from users where user_id=:us',us = user_id)
+         row = db.execute("select * from info where user_id=:us", us=user_id)
+         return render_template('patient.html', user=user, row=row)
+   return redirect("/")  
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -273,21 +283,23 @@ def d_register():
    return render_template('d_register.html',states=states)
 
 
-#message box side
+# #message box side
 @app.route('/message',methods=['GET','POST'])
 def message():
-   if request.method == 'POST':
-      if 'user_id' in session:
-         current = request.form.get('message')
-         rec = request.form.get('reciever')
-         user = db.execute('select * from users where user_id =:sess',sess = session['user_id'])
-         if len(user) != 0:
-           db.execute('insert into message (user_id,send,recieve,msg) values(:se,:re,:se,:me)',me = current,se = session['user_id'],re =rec)
-           mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
-           return render_template('message.html',mess = mess)
-   if request.method == 'GET':
-      mess = db.execute('select send,recieve, msg from message where send =:sess or recieve =:sess order by date',sess = session['user_id'])
-      return render_template('message.html',mess = mess)
+
+     if "user_id" in session:
+        user = db.execute('select user_id,type from users where user_id =:us',us=session['user_id'])
+        print(user)
+        rooms = ''; 
+        if request.method == 'GET': 
+           incoming = request.args.get('name')
+           check_doc = db.execute('select * from hash where user_id =:us and doc =:doc', us=session['user_id'], doc = incoming)
+           if len(check_doc) == 0:
+              db.execute('insert into hash (user_id,doc) values(:us,:doc)', us = session['user_id'],doc = incoming)
+           rooms =  db.execute('select * from hash where user_id =:us or doc =:us',us = session['user_id'])
+           return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'],redirected_user = incoming)
+        return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'])
+     return render_template('message.html')
 
 @app.route('/user_checker/<id>')
 def userChecker(id):
@@ -310,10 +322,56 @@ def emailChecker(id):
 def loc():
    map = folium.Map(location = [6.5244, 3.3792],zoom_start=12)
    loc = db.execute("select * from map")
-
    for ma in loc:
-      folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',tooltip="click").add_to(map)
-      print(ma['user_id'])
-      
+      doc_check = db.execute('select type from users where user_id=:id',id=ma['user_id'])
+      if ma['user_id'] == session['user_id']:
+         folium.Marker([ma['coord1'],ma['coord2']],
+         tooltip="<span color:'green'>You</span>",
+         icon=folium.Icon(color='green')).add_to(map)
+      if doc_check[0]['type'] == 'doc':
+         folium.Marker([ma['coord1'],ma['coord2']],
+         popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
+         tooltip="click").add_to(map)
    map.save('templates/map.html')
    return render_template('map.html')
+
+@app.route('/chats')
+def chat():
+   return render_template('chats.html',user = 'me')
+
+#message broadcasting comes here
+@socketio.on('message')
+def message(data):
+   print(data)
+   if data['username']:
+       send(data, broadcast=True)
+
+@socketio.on('join')
+def join(data):
+   
+   join_room(data['active_chat'])
+   send({'msg': data['user'] + ' has joined the consulting room', 
+             'room':data['active_chat']})
+
+@socketio.on('leave')
+def leave(data):
+
+   leave_room(data['active_chat'])
+   send({'msg': data['user'] + ' has left the consulting room',
+             'room': data['active_chat']})
+   
+#incase of errors from http or other related,this code below watch out for them
+def errorhandler(e):
+    """Handle error"""
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return apology(e.name, e.code)
+
+
+# Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)
+
+if __name__ == "__main__":
+   socketio.run(app,debug = True)
+
