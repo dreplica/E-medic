@@ -25,15 +25,26 @@
                       </form>
              </div>
         {% else %}
+        <button style="position: absolute; top:100px; left:10px;">Add Analysis</button>
         <div id="recommendation" style="display:none;top: 100px; left:35%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
-                <form>
+                <form method="POST" action="/message">
                         <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
-                          <label for="exampleInputEmail1" style="margin:10px auto;">Recommendations</label>
-                          <input type="text" class="form-control"  placeholder="Enter Recommendations  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                            <label for="exampleInputEmail1" style="margin:10px auto;">Patient</label>
+                            <input type="text" class="form-control" name='pname' placeholder="Enter patients name  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                          </div>
+
+                          <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+                                <label for="exampleInputEmail1" style="margin:10px auto;">Issue</label>
+                                <input type="text" class="form-control" name = 'issue' placeholder="Enter issues  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                              </div>
+
+                        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+                          <label for="exampleInputEmail1" style="margin:10px auto;">Analysis</label>
+                          <input type="text" class="form-control"  name='recommendation' placeholder="Enter Recommendations  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
                         </div>
                         <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                                 <label for="exampleInputEmail1" style="margin:10px auto;">Drugs</label>
-                                <input type="text" class="form-control"  placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                                <input type="text" class="form-control" name='drug' placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px">
                               </div>
                         <div style="width:20%; margin:auto;">
                          <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
@@ -77,8 +88,8 @@
         <div class="chat_screen">
             <div id="message_board"></div>
             <div id="send">
-                <div class="input"><input type="text" name="text" id='text'></div>
-                <div class="submit"><input type="submit" value="send" id='sent'></div>
+                <div class="input" style='width:70%;height:95px'><input type="text" name="text" id='text'  style='width:100%;height:75px'></div>
+                <div class="submit"  style='width:30%;height:100px'><input type="submit" value="send" id='sent' style='width:100%;height:80px'></div>
             </div>
         </div>
     </div>
@@ -94,6 +105,90 @@
     <!-- socket io file -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" ></script>
     <!-- our own made socket listener -->
-    <script type="text/javascript" src="{{url_for('static',filename='script/message.js')}}"></script>
+    <script type="text/javascript" >
+        document.addEventListener('DOMContentLoaded',function(){
+
+            //var socket = io.connect('http://localhost:5000');
+            var socket = io.connect('http://' + document.domain + ':' + location.port);//127.0.0.1:5000');
+            var view = document.getElementById ('message_board')
+            var text = document.getElementById('text')
+            var active_chat = from_redirect;
+            localStorage['user'] = user;
+
+
+            socket.on('message', data =>{
+                var p = document.createElement('p')
+                var br = document.createElement('br')
+               // alert(data.recipient+" " + user)
+                 p.innerHTML = data.text +'<span style=" color:blue;">  :'+data.username+'</span>'
+                 if(data.username == user)  p.style.textAlign = 'right';
+                 else p.style.textAlign = 'left';
+                  view.append(p)
+            })
+    
+            document.getElementById('sent').onclick = (e)=>{
+            console.log(` i am ${user}`)
+            console.log(active_chat)
+            if(active_chat == 'None')  return alert("you've not specified any one to chat with")
+             socket.send({'text':text.value,'username':user,'recipient':active_chat} )
+             text.value = '';
+             text.focus()
+         }
+    
+            document.querySelectorAll('.current_chats').forEach(list=>{
+                    if( list.innerHTML == from_redirect){
+                        list.style.background = 'darkgrey'
+                    }
+                    list.onclick=(e)=>{
+                    let newChat = list.innerHTML
+                    if( newChat == active_chat ){
+                        msg = `you're currently chatting with ${active_chat}`;
+                        tellUser(msg)
+                    }else{
+                        
+                        recommendation.style.display = 'block';
+                        leaveRoom(active_chat)
+                        joinRoom(newChat)
+                        active_chat = newChat;
+                        msg = `you're now chatting with ${active_chat} communicate hello  clearly`;
+                        view.innerHTML = "";
+                        tellUser(msg)
+                        
+                    }
+    
+                                 }
+                         })
+            leaveRoom = ()=>{
+                socket.emit({'username' :user, 'active_chat':active_chat})
+            }
+            
+            joinRoom = ()=>{
+                socket.emit({'username' :user, 'active_chat':active_chat})
+            }
+           
+            function tellUser(msg){
+                var p = document.createElement('p')
+                p.innerHTML = msg
+                console.log(p)
+                view.append(p)
+            }
+    
+    })
+    
+    // make ajax to post recommendation
+$.ajax({
+    method:'POST',
+    url:'/message',
+    data:{
+            pat:user_name.value,
+            recom:recommend.value,
+            drugs:drugs.value,
+            doc:user
+
+             },
+    success:()=>alert('recommendation for patient posted')
+})
+    
+    </script>
 </body>
 </html>

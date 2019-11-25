@@ -2,17 +2,15 @@ document.addEventListener('DOMContentLoaded',function(){
 
         //var socket = io.connect('http://localhost:5000');
         var socket = io.connect('http://' + document.domain + ':' + location.port);//127.0.0.1:5000');
-
+        console.log("htm; for all")
         var view = document.getElementById ('message_board')
         var text = document.getElementById('text')
         var active_chat = from_redirect;
 
         socket.on('message', data =>{
             var p = document.createElement('h1')
-            p.style.width = '30%';
             var br = document.createElement('br')
-            console.log(active_chat+"this is active")
-            if(data.username == user)
+            if(data.username !== active_chat) return false;
              p.innerHTML = data.text +'<span style=" color:blue;">  :'+data.username+'</span>'
             view.append(p) 
         })
@@ -32,7 +30,6 @@ document.addEventListener('DOMContentLoaded',function(){
                 }
                 list.onclick=(e)=>{
                 let newChat = list.innerHTML
-                console.log(newChat)
                 if( newChat == active_chat ){
                     msg = `you're currently chatting with ${active_chat}`;
                     tellUser(msg)
@@ -42,7 +39,7 @@ document.addEventListener('DOMContentLoaded',function(){
                     leaveRoom(active_chat)
                     joinRoom(newChat)
                     active_chat = newChat;
-                    msg = `you're now chatting with ${active_chat} communicate clearly`;
+                   // msg = `you're now chatting with ${active_chat} communicate hello  clearly`;
                     view.innerHTML = "";
                     tellUser(msg)
                     

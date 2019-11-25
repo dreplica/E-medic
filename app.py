@@ -19,13 +19,13 @@ app = Flask(__name__)
 def apology(issue,code):
    return (str(issue)+" "+str(code))
 
-# # Ensure responses aren't cached
-# @app.after_request
-# def after_request(response):
-#     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     response.headers["Expires"] = 0
-#     response.headers["Pragma"] = "no-cache"
-#     return response
+# Ensure responses aren't cached
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
 
 # Ensure templates are auto-reloaded and picture folder
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -124,11 +124,9 @@ def patient():
                db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,lat = lat,lng = lng)
             else:
                db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
- 
-   if 'user_id' in session:
-        user = db.execute('select user_id from users where user_id =:us',us=session['user_id'])
-        print(user)
-        return render_template('patient.html',user = user[0]['user_id'])
+         user = db.execute('select user_id from users where user_id =:us',us=session['user_id'])
+         print(user)
+         return render_template('patient.html',user = user[0]['user_id'])
    return render_template('patient.html', user=user)  
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -247,9 +245,13 @@ def message():
      if "user_id" in session:
         user = db.execute('select user_id,type from users where user_id =:us',us=session['user_id'])
         print(user)
-        rooms = db.execute('select * from hash where user_id =:us or doc =:us',us = session['user_id'])
+        rooms = ''; 
         if request.method == 'GET': 
            incoming = request.args.get('name')
+           check_doc = db.execute('select * from hash where user_id =:us and doc =:doc', us=session['user_id'], doc = incoming)
+           if len(check_doc) == 0:
+              db.execute('insert into hash (user_id,doc) values(:us,:doc)', us = session['user_id'],doc = incoming)
+           rooms =  db.execute('select * from hash where user_id =:us or doc =:us',us = session['user_id'])
            return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'],redirected_user = incoming)
         return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'])
      return render_template('message.html')
@@ -273,7 +275,9 @@ def loc():
    
    map.save('templates/map.html')
    return render_template('map.html')
-
+@app.route('/chats')
+def chat():
+   return render_template('chats.html',user = 'me')
 
 #message broadcasting comes here
 @socketio.on('message')
@@ -296,11 +300,7 @@ def leave(data):
    send({'msg': data['user'] + ' has left the consulting room',
              'room': data['active_chat']})
    
-
-
-
-
-
+#incase of errors from http or other related,this code below watch out for them
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
@@ -312,5 +312,5 @@ def errorhandler(e):
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
-if __name__ == '__main__':
-      socketio.run(app,debug = True)
+if __name__ == "__main__":
+   socketio.run(app,debug = True)
