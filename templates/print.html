@@ -10,13 +10,14 @@
 <body>
         <div class="jumbotron jumbotron-fluid" style='text-align: left !important;'>
                 <div class="container text-success">
-                    <h1 class="display-4"><em>E - Medicals</em></h1>
-                   
+                        <h1 class="display-4">E - Medicals  <small style="font-size:15px;">  Health for all ....</small></h1>
                 </div> 
             </div> 
-            <button class="btn btn-primary" style="margin:10px;" id="print">Print</button>
-            <table class="table table-striped">
-                    <thead>
+
+            <button class="btn btn-primary" style="margin:10px; position:relative;left:200px;" id="print">Print</button>
+
+            <table class="table table-striped" style='width:70%; margin:auto;'>
+                    <thead style='border-top:3px solid black; border-bottom:3px solid black; text-align:center;''>
                         <tr>
                         <th scope="col">Doctor</th>
                         <th scope="col">Treatment</th>
@@ -25,16 +26,16 @@
                         <th scope="col">Date</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
+                    <tbody style="border-left:3px solid black; text-align:center;">
                         {% for docs in consult %}
+                        <tr>
                             <td>Dr. {{docs['doc']}}</td>
-                            <td>{{docs['recommendation']}}</td>
+                            <td>{{docs['recomm']}}</td>
                             <td>{{docs['issue']}}</td>
-                            <td>{{docs['drug']}}</td>
-                            <td>{{docs['date']}}</td>
-                        {% endfor %}
+                            <td>{{docs['drugs']}}</td>
+                            <td>{{docs['date'][0:10]}}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table> 
 <script>

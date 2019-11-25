@@ -365,7 +365,8 @@ def consult():
          issue = request.form.get('issue')
          recomm = request.form.get('recommendation')
          drug = request.form.get('drug')
-         db.execute('insert into consultation (user_id,issue,recomm,drugs,doc) values(:name,:iss,:recco,:dr,:doc)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'])
+         date = datetime.datetime.now()
+         db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:da)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'],da = date)
          return redirect('/message')
    return render_template("message.html")      
 
@@ -402,5 +403,5 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__":
-   socketio.run(app,debug = True)
+   socketio.run(app, debug = True)
 
