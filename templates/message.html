@@ -11,7 +11,7 @@
 <body>
 
         {% if type == 'pat' %}
-            <div id="recommendation" style="display:none;top: 100px; left:32%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
+            <div id="recommendation1" style="display:none;top: 100px; left:32%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
                 <form>
                         <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                           <label for="exampleInputEmail1" style="margin:10px auto;">Whats your Issue today?</label>
@@ -105,7 +105,7 @@
         var recommendation = document.getElementById('recommendation')
         document.getElementById('close1').onclick = (e)=>{
             e.preventDefault();
-            document.getElementById('recommendation').style.display = 'none'
+            recommendation1.style.display = 'none'
         }
     </script>
     <!-- socket io file -->
@@ -144,7 +144,8 @@
                     socket.send({
                         'text':user + " current issues, is " +document.getElementById('issue').value,
                         'username':user,
-                        'recipient':active_chat})
+                        'recipient':active_chat
+                    })
                         close1.click()
                 }                            
             }
@@ -180,6 +181,7 @@
                 p.innerHTML = msg
                 console.log(p)
                 view.append(p)
+                recommendation1.style.display = 'block'
             }
      })
 
