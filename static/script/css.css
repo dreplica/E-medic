@@ -62,3 +62,12 @@ li:hover{
     flex-direction: row;
     justify-content: flex-start;
 }
+
+.left{
+    width:300px;
+    background:white;
+    border-radius:10%;
+    text:darkgrey;
+    border:1px solid darkgrey;
+    padding:5px;
+}
