@@ -289,6 +289,7 @@ def message():
 
      if "user_id" in session:
         user = db.execute('select user_id,type from users where user_id =:us',us=session['user_id'])
+        row = db.execute("select * from info where user_id=:us", us=session['user_id'])
         print(user)
         rooms = ''; 
         if request.method == 'GET': 
@@ -297,8 +298,8 @@ def message():
            if len(check_doc) == 0:
               db.execute('insert into hash (user_id,doc) values(:us,:doc)', us = session['user_id'],doc = incoming)
            rooms =  db.execute('select * from hash where user_id =:us or doc =:us',us = session['user_id'])
-           return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'],redirected_user = incoming)
-        return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'])
+           return render_template('message.html',user_id = user[0]['user_id'], row=row,rooms = rooms,type=user[0]['type'],redirected_user = incoming)
+        return render_template('message.html',user_id = user[0]['user_id'],row=row, rooms = rooms,type=user[0]['type'])
      return render_template('message.html')
 
 @app.route('/user_checker/<id>')
@@ -330,7 +331,7 @@ def loc():
          icon=folium.Icon(color='green')).add_to(map)
       if doc_check[0]['type'] == 'doc':
          folium.Marker([ma['coord1'],ma['coord2']],
-         popup='<a href="\profile?user='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
+         popup='<a href="\message?name='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
          tooltip="click").add_to(map)
    map.save('templates/map.html')
    return render_template('map.html')
@@ -341,7 +342,7 @@ def chat():
 
 #message broadcasting comes here
 @socketio.on('message')
-def message(data):
+def mess(data):
    print(data)
    if data['username']:
        send(data, broadcast=True)
@@ -365,7 +366,6 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-    return apology(e.name, e.code)
 
 
 # Listen for errors
