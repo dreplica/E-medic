@@ -134,25 +134,34 @@ def profile():
       return redirect("/")
 
 @app.route('/update', methods=['GET', 'POST'])      
-def update():    
+def update():
+   user_id = session['user_id']
+   pic = db.execute("select photo from info where user_id=:us", us=user_id)   
+   oldpass = db.execute("select password from users where user_id=:us", us=user_id)   
    if request.method =="POST":
       if 'user_id' in session:
          email = request.form.get("email")
-         password = generate_password_hash(request.form.get('password'),'pbkdf2:sha256',8)
          number = request.form.get("num")
+         mstat = request.form.get("mstat")
          address = request.form.get("loc")
-         fille = request.files['picture']
-         user_id = session['user_id']
+         fille = request.files['picture']         
+         password = request.form.get("password")
+       
+         if password == '':
+            newpass = oldpass[0]['password']   
+         else:
+            newpass = generate_password_hash(password,'pbkdf2:sha256',8)    
+        
+         if not fille.filename == '':
+            fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
 
-         if fille.filename == '':
-            fille.filename = 'none'
-         fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
-         
-         if not email or not password or not number or not address or not fille:
+         new_image = fille.filename if fille.filename else pic[0]['photo']
+
+         if not email or not number or not address or not new_image:
             return render_template("profile.html")
          else:
-            db.execute("UPDATE users SET email=:email, password=:password WHERE user_id=:user_id", user_id=user_id, email=email, password=password)
-            db.execute("UPDATE info SET phone=:phone, location=:location, photo=:photo WHERE user_id=:user_id", user_id=user_id, phone=number, location=address, photo=fille.filename)
+            db.execute("UPDATE users SET email=:email, password=:password WHERE user_id=:user_id", user_id=user_id, email=email, password=newpass)
+            db.execute("UPDATE info SET phone=:phone, location=:location, m_stat=:mstat, photo=:photo WHERE user_id=:user_id", user_id=user_id, phone=number, mstat=mstat, location=address, photo=new_image)
             return redirect("/profile")
    return render_template("profile.html")   
 

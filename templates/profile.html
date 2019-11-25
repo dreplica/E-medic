@@ -53,26 +53,47 @@
         <form action="/update" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" name="email" class="form-control" placeholder="New email address" required>
+                <input type="text" name="email" class="form-control" value={{user[0].email}} required>
             </div>
             <div class="form-group">
                 <label for="password">New Password</label>
-                <input type="password" name="password" class="form-control" placeholder="New password" required>
+                <input type="password" id="pass" name="password" class="form-control" placeholder="New password">
             </div>
             <div class="form-group">
                 <label for="phone">Phone Number</label>
-                <input type="text" name="num" class="form-control" placeholder="New phone numbeer" required>
+                <input type="text" name="num" class="form-control" value={{row[0].phone}} required>
+            </div>
+            <div class="form-group">
+                <label for="marital">Marital status</label>
+                <select class="custom-select" name="mstat" required>
+                    {%if row[0].m_stat == "married" %}
+                    <option value={{row[0].m_stat}}>{{row[0].m_stat}}</option>
+                    <option value="single">single</option>
+                    <option value="divorce">divorce</option>
+                    {%elif row[0].m_stat == "single" %}
+                    <option value={{row[0].m_stat}}>{{row[0].m_stat}}</option>
+                    <option value="married">married</option>
+                    <option value="divorce">divorce</option>
+                    {%else%}
+                    <option value={{row[0].m_stat}}>{{row[0].m_stat}}</option>
+                    <option value="single">single</option>
+                    <option value="married">married</option>
+                    {%endif%}
+                </select>
             </div>
             <div class="form-group">
                 <label for="address">Address</label>
-                <textarea type="text" name="loc" class="form-control" placeholder="New home address" required></textarea>
+                <input type="text" name="loc" class="form-control" value={{row[0].location}} required>
             </div>
             <div class="form-group">
                 <label for="picture">Picture Upload</label>
-                <input type="file" name="picture" class="form-control" required>
+                <input type="file" name="picture" class="form-control" value={{row[0]['photo']}}>
             </div>
             <input type="submit" value="Update" class="btn btn-success">
             <input type="button" value="Cancel" class="btn btn-danger" id="cancel">
+            <span>{{err}}</span>
         </form>
-    </div>
+    </div>    
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    
 {% endblock %}
