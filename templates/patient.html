@@ -1,77 +1,83 @@
 {% extends "client_layout.html" %}
 {% block main %}
 <!--from here-->
-    <div class="jumbotron jumbotron-fluid" style='text-align: left !important'>
-        <div class="container text-success">
-            <h1 class="display-4"><em>E - Medicals</em></h1>
-            <p class="lead">This is your online work environment..</p>
-        </div>
+<div class="jumbotron jumbotron-fluid" style='text-align: left !important'>
+    <div class="container text-success">
+        <h1 class="display-4"><em>E - Medicals</em></h1>
     </div>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-6 col-md-6">
-                <!-- Recent Activities Widget      -->
-                <button class="btn btn-success btn-lg his" style="width:100%;" type="button">
-                    History
-                </button>
-                <table class="table">
-                        <thead  class="table table-dark">
-                          <tr>
-                            <th scope="col">Doctor</th>
-                            <th scope="col">Treatment</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            {% for docs in doc %}
-                                <td>Dr.  {{docs['doc']}}</td>
-                                <td>{{docs['issue']}}</td>
-                             {% endfor %}
-                          </tr>
-                        </tbody>
-                      </table>
-                    
-            </div>
-            
-            <div class="col-lg-6 col-md-6">
-                <!-- Recent Activities Widget      -->
-                <button class="btn btn-success btn-lg prog" style="width:100%;" type="button">
-                    In progress
-                </button>
-               <div class="progress">
-                   <div>image here</div>
-                   <div>
-                       {{doc_info}}
-                       {% if doc_info %}
-                            <p>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</p>
-                            <p>Currently Treating you for {{doc_one['issue']}}</p>
-                       {% endif %}
-                   </div>
-               </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        {% if doc_info %}
+        <div class="col-lg-6 col-md-6">
+            <!-- Recent Activities Widget      -->
+            <h4 style="text-align: center;">History</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                    <th scope="col">Doctor</th>
+                    <th scope="col">Treatment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    {% for docs in doc %}
+                        <td>Dr. {{docs['doc']}}</td>
+                        <td>{{docs['issue']}}</td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+            </table>            
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <!-- Recent Activities Widget      -->
+            <h4 style="text-align: center;">In progress</h4>
+            <div class="progress">
+                <div>
+                {% if doc_info %}
+                    <img src="{{ url_for('static',filename=row[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
+                {% endif %}    
+                </div>
+                <div>
+                {% if doc_info %}
+                    <p>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</p>
+                    <p>Currently Treating you for {{doc_one['issue']}}</p>
+                {% endif %}
+                </div>
             </div>
         </div>
+        {% else %}
+        <div style="padding: 10px;">
+            <h2>No current treatment</h2>
+        </div>        
+        {%endif%}
     </div>
-    <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script>
-        var pos;
-        
-            if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition(function(position) {
-               pos = {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude
-                };
-                console.log(pos)
-            })
-        }
-        setTimeout(()=> $.ajax({
-                    method:"GET",
-                    url:'/patient',
-                    data:pos,
-                    success:()=>console.log("posted :"+this.data)
-                    }),5000)
-        </script>
-        <!--to here-->
+</div>
+<script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>
+    let type = `{{user[0]['type']}}`
+    console.log(type);    
+    if(type == 'doc'){
+        window.location = 'http://127.0.0.1:5000/doctor'
+    }
 
+    var pos;    
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+            pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            console.log(pos)
+        })
+    }
+    setTimeout(()=> $.ajax({
+        method:"GET",
+        url:'/patient',
+        data:pos,
+        success:()=>console.log("posted :"+this.data)
+    }),5000)
+
+    
+</script>
 {% endblock %}

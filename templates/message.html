@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Messages</title>
     <link href="../static/script/css.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -56,39 +57,45 @@
 
     
     <div class="chat">
-
         <div class="docs">
-            <h3 style="text-align: center;">
-               
-                {% if type == 'pat' %}
-                    Doctors
-                {% else %}
-                    patients
-                {% endif %}
-             </h3>
+            <div style="text-align: center;margin-bottom: 20px;">
+                <img src="{{ url_for('static',filename=row[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
+                <h5 style="margin-top: 10px;"><strong><em>Welcome {{ user_id }}</em></strong></h5>
+            </div>
             <hr>
-
+            <h5 style="text-align: center;">     
+            {% if type == 'pat' %}
+                Doctors
+            {% else %}
+                patients
+            {% endif %}
+            </h5>
             <div id="dchat">
                 <ul>
-                        {% for docs in rooms %}
-                            <li class="current_chats">
-                                    {% if type == 'doc' %}
-                                         {{docs['user_id']}}
-                                    {% else %}
-                                         {{docs['doc']}}
-                                    {% endif %}
-                           </li>
-                        {% endfor %}
-                        
+                {% for docs in rooms %}
+                    <li class="current_chats">
+                    {% if type == 'doc' %}
+                        {{docs['user_id']}}
+                    {% else %}
+                        {{docs['doc']}}
+                    {% endif %}
+                    </li>
+                {% endfor %}                
                 </ul>
             </div>
+            <div>
+                {% if type == 'pat' %}
+                <a href="/patient" class="btn btn-secondary">Back to Dashboard</a>
+                {%else%}
+                <a href="/doctor" class="btn btn-secondary">Back to Dashboard</a>
+                {%endif%}
+            </div>
         </div>
-
         <div class="chat_screen">
             <div id="message_board"></div>
             <div id="send">
-                <div class="input" style='width:70%;height:95px'><input type="text" name="text" id='text'  style='width:100%;height:75px'></div>
-                <div class="submit"  style='width:30%;height:100px'><input type="submit" value="send" id='sent' style='width:100%;height:80px'></div>
+                <input type="text" name="text" id='text' style='width:90%;'>
+                <button type="submit" class="btn btn-success" id='sent' style='width:10%;'>Send</button>
             </div>
         </div>
     </div>
@@ -106,7 +113,6 @@
     <!-- our own made socket listener -->
     <script type="text/javascript" >
         document.addEventListener('DOMContentLoaded',function(){
-
             //var socket = io.connect('http://localhost:5000');
             var socket = io.connect('http://' + document.domain + ':' + location.port);//127.0.0.1:5000');
             var view = document.getElementById ('message_board')
@@ -119,38 +125,34 @@
                 p.class = 'indoming_mess'
                 var br = document.createElement('br')
                // alert(data.recipient+" " + user)
-                 p.innerHTML = data.text +'<span style=" color:blue;">  :'+data.username+'</span>'
-                 if(data.username == user)  p.style.textAlign = 'right';
-                 else p.style.textAlign = 'left';
-                  view.append(p)
-            })
-    
+                p.innerHTML = data.text +'<span style=" color:blue;">  :'+data.username+'</span>'
+                if(data.username == user)  p.style.textAlign = 'right';
+                else p.style.textAlign = 'left';
+                view.append(p)
+            })    
             document.getElementById('sent').onclick = (e)=>{
-            console.log(` i am ${user}`)
-            console.log(active_chat)
-            if(active_chat == 'None')  return alert("you've not specified any one to chat with")
-             socket.send({'text':text.value,'username':user,'recipient':active_chat} )
-             text.value = '';
-             text.focus()
-         }
-
-           if (document.getElementById('sub') != undefined){
-               sub.onclick = (e)=>{
+                console.log(` i am ${user}`)
+                console.log(active_chat)
+                if(active_chat == 'None')  return alert("you've not specified any one to chat with")
+                    socket.send({'text':text.value,'username':user,'recipient':active_chat} )
+                    text.value = '';
+                    text.focus()
+                }
+                if (document.getElementById('sub') != undefined){
+                    sub.onclick = (e)=>{
                     e.preventDefault();
                     socket.send({
                         'text':user + " current issues, is " +document.getElementById('issue').value,
                         'username':user,
                         'recipient':active_chat})
                         close1.click()
-                    }
-                    
-           }
-
+                }                            
+            }
             document.querySelectorAll('.current_chats').forEach(list=>{
-                    if( list.innerHTML == from_redirect){
-                        list.style.background = 'darkgrey'
-                    }
-                    list.onclick=(e)=>{
+                if( list.innerHTML == from_redirect){
+                    list.style.background = 'darkgrey'
+                }
+                list.onclick=(e)=>{
                     let newChat = list.innerHTML
                     if( newChat == active_chat ){
                         msg = `you're currently chatting with ${active_chat}`;
@@ -161,12 +163,10 @@
                         active_chat = newChat;
                         msg = `you're now chatting with ${active_chat} communicate hello  clearly`;
                         view.innerHTML = "";
-                        tellUser(msg)
-                        
+                        tellUser(msg)                
                     }
-    
-                                 }
-                         })
+                }
+            })
             leaveRoom = ()=>{
                 socket.emit({'username' :user, 'active_chat':active_chat})
             }
@@ -181,8 +181,8 @@
                 console.log(p)
                 view.append(p)
             }
-    
-    })
+     })
+
     let turned = false;
     if (document.getElementById('add_analysis') != undefined){
         add_analysis.onclick = (e)=>{

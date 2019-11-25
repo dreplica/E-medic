@@ -130,12 +130,14 @@ def patient():
                db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
 
          user = db.execute('select * from users where user_id=:us',us = user_id)
-         doc =  db.execute('select * from consultation  where user_id=:us order',us = user_id)
-         doc_one  = doc[-1]
-         print('this is' ,doc)
+         row = db.execute("select * from info where user_id=:us", us=user_id)
+         doc =  db.execute('select * from consultation where user_id=:us',us = user_id)
+         
+         if len(doc) == 0:
+            return render_template('patient.html', user=user, row=row)
+         doc_one  = doc[-1]   
          doc_info = db.execute('select * from info where user_id =:doc',doc = doc_one['doc'])
-         if len(doc_info) != 0:
-             row = db.execute("select * from info where user_id=:us", us=user_id)
+         if len(doc_info) != 0:             
              return render_template('patient.html', user=user, row=row, doc = doc, doc_one = doc_one, doc_info = doc_info)
          else:
             return render_template('patient.html', user=user, row=row)
@@ -297,6 +299,7 @@ def message():
 
      if "user_id" in session:
         user = db.execute('select user_id,type from users where user_id =:us',us=session['user_id'])
+        row = db.execute("select * from info where user_id=:us", us=session['user_id'])
         print(user)
         rooms = ''; 
         if request.method == 'GET': 
@@ -305,8 +308,8 @@ def message():
            if len(check_doc) == 0:
               db.execute('insert into hash (user_id,doc) values(:us,:doc)', us = session['user_id'],doc = incoming)
            rooms =  db.execute('select * from hash where user_id =:us or doc =:us',us = session['user_id'])
-           return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'],redirected_user = incoming)
-        return render_template('message.html',user_id = user[0]['user_id'],rooms = rooms,type=user[0]['type'])
+           return render_template('message.html',user_id = user[0]['user_id'], row=row,rooms = rooms,type=user[0]['type'],redirected_user = incoming)
+        return render_template('message.html',user_id = user[0]['user_id'],row=row, rooms = rooms,type=user[0]['type'])
      return render_template('message.html')
 
 @app.route('/user_checker/<id>')
@@ -356,7 +359,7 @@ def consult():
 
 #message broadcasting comes here
 @socketio.on('message')
-def message(data):
+def mess(data):
    print(data)
    if data['username']:
        send(data, broadcast=True)
