@@ -1,11 +1,11 @@
-.img img{
+body{
+    background-image: url('../css/francisco-venancio-M4Xloxsg0Gw-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     width:100%;
     opacity: 0.8;
-}
-.img{
-    width:100%;
-    height: auto;
-    position: absolute;
+    height: 100vh;
 }
 .br{
     position: fixed;
@@ -24,12 +24,14 @@ span {
     font-weight: bold;
 }
 .formcard{
-    background-color: white; 
-    top: 10%;
-    margin-bottom: 50px;
+    background-color: white;
+    opacity: 0.95;
+    margin-top: 7%;
+    margin-left: 35%;
+    width:35%;
+    margin-bottom: 35px;
     padding: 10px;
-    width: 35%;
-    box-shadow: 5px 5px 20px  #aaaaaa;
+    box-shadow: 5px 5px 30px  #aaaaaa;
 }
 .formcard h3{
     text-align: center;
@@ -46,7 +48,14 @@ span {
     }
     .br{
         font-weight: bold;
-        padding: 30px ;
+        padding: 30px;
         position: relative;
     }
-  }
+    .formcard{
+        background-color: white;
+        opacity: 0.95;
+        margin:10%;
+        box-shadow: 5px 5px 30px  #aaaaaa;
+        width: 80%;         
+    }
+}
