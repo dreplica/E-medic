@@ -9,7 +9,7 @@
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="phone" id="username" name="username" class="form-control" placeholder="Enter username" required>
-                    <span class="error"></span>
+                    <span class="error">Username must be not be less than six character long</span>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -18,13 +18,15 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required>
+                    <span class="passerr">Password should be not be less than 6 characters long</span>
                 </div>
                 <div class="form-group">
                     <label for="confirm">Confirm Password</label>
-                    <input type="password" name="confirm" class="form-control" placeholder="Enter Password" required>
+                    <input type="password" id="confirm" name="confirm" class="form-control" placeholder="Enter Password" required>
+                    <span class="confirm"></span>
                 </div>
-                <input type="submit" class="btn btn-success" value="Submit" id="first">                
+                <input type="submit" class="btn btn-success" value="Next" id="first">                
             </div>
              
             <div id="fsec" style="display: none;">                 
@@ -89,7 +91,7 @@
                     <label for="photo">Upload photo</label>
                     <input type="file" name="photo" class="form-control" required>
                 </div>    
-                    <input type="submit" class="btn btn-success" value="Submit" id="sec">
+                    <input type="submit" class="btn btn-success" value="Next" id="sec">
             </div>  
             <div id="fthird" style="display: none;">                 
                 <h3>Medical Information</h3>
@@ -131,7 +133,7 @@
                     <label for="board">Board certified</label>
                     <input type="text" name="board" class="form-control" placeholder="Board certified" required>
                 </div> 
-                <input type="submit" class="btn btn-success" value="Submit" id="third">                
+                <input type="submit" class="btn btn-success" value="Next" id="third">                
             </div>
             
             <div id="ffourth" style="display: none;">               
@@ -189,58 +191,96 @@
                 '<input type="text" name="contact" class="form-control" placeholder="Enter phone number">'+
                 '</div>'
             document.getElementById('fmain').insertAdjacentHTML('beforeend', html1);
-        }
-        document.getElementById('first').onclick=(e)=>{
-            e.preventDefault();
-            ffirst.style.display = 'none';
-            document.getElementById('fsec').style.display = 'block'
-
-            document.getElementById('sec').onclick=(e)=>{
-                e.preventDefault();
-                fsec.style.display = 'none';
-                document.getElementById('fthird').style.display = 'block'
-            }
-            document.getElementById('third').onclick=(e)=>{
-                e.preventDefault();
-                fthird.style.display = 'none';
-                document.getElementById('ffourth').style.display = 'block'
-            }
-        }           
-        $('document').ready(function(){
+        } 
+               
+        $('document').ready(function(){            
             $('#username').on('blur', function(){
                 let username = $('#username').val()
-                if (username == "") {
-                    return false
+                if (username  == "") {
+                    $(".error").html('<p style="color:red;">Username cant be empty</p>');
+                }                
+                else if(username.length < 6){
+                    $(".error").html('<p style="color:red;">Username not long enough</p>');
                 }
-                $.ajax({
-                    url: "http://127.0.0.1:5000/user_checker/"+username,
-                    method: 'get',
-                    success: function(msg){
-                        console.log(msg)
-                        $(".error").html(msg);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown){
-                        $(".error").html(textStatus + " " + errorThrown);
-                    }
-                });                
+                else{
+                    $.ajax({
+                        url: "http://127.0.0.1:5000/user_checker/"+username,
+                        method: 'get',
+                        success: function(msg){
+                            $(".error").html(msg);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            $(".error").html(textStatus + " " + errorThrown);
+                        }
+                    });                
+                }
             })
             $('#email').on('blur', function(){
                 let email = $('#email').val()
                 if (email == "") {
-                    return false
+                    $(".emailerr").html('<p style="color:red;">email cant be empty</p>');
                 }
-                $.ajax({
-                    url: "http://127.0.0.1:5000/email_checker/"+email,
-                    method: 'get',
-                    success: function(msg){
-                        console.log(msg)
-                        $(".emailerr").html(msg);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown){
-                        $(".emailerr").html(textStatus + " " + errorThrown);
-                    }
-                });                
+                else{
+                    $.ajax({
+                        url: "http://127.0.0.1:5000/email_checker/"+email,
+                        method: 'get',
+                        success: function(msg){
+                            $(".emailerr").html(msg);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            $(".emailerr").html(textStatus + " " + errorThrown);
+                        }
+                    }); 
+                }                   
+            })           
+            $('#password').on('blur', function(){ 
+                var password = $('#password').val()               
+                if (password == "") {
+                    $(".passerr").html('<p style="color:red;">Password cant be empty</p>');
+                }
+                else if (password.length < 6) {
+                    $(".passerr").html('<p style="color:red;">Password not long enough</p>');
+                }
+                else{
+                    $(".passerr").html('<p style="color:green;">Password is ok</p>');
+                }
             })
+            $('#confirm').on('blur', function(){
+                var password = $('#password').val() 
+                var confirm = $('#confirm').val() 
+                if (confirm == "") {
+                    $(".confirm").html('<p style="color:red;">Password cant be empty</p>');
+                }
+                else if (confirm != password) {
+                    $(".confirm").html('<p style="color:red;">Passwords do not match</p>');
+                }
+                else{
+                    $(".confirm").html('<p style="color:green;">Password is ok</p>');
+                }
+            })
+            document.getElementById('first').onclick=(e)=>{
+                e.preventDefault();
+                usererror = document.querySelector('.error').children[0].style.color 
+                emailerr = document.querySelector('.emailerr').children[0].style.color
+                passerr = document.querySelector('.passerr').children[0].style.color
+                confirm = document.querySelector('.confirm').children[0].style.color
+                if ((usererror == "green") && (emailerr == "green") && (passerr == "green") && (confirm == "green")) {
+                    ffirst.style.display = 'none';
+                    document.getElementById('fsec').style.display = 'block'
+                }else{
+                    ffirst.style.display = 'block';
+                }
+                document.getElementById('sec').onclick=(e)=>{
+                    e.preventDefault();
+                    fsec.style.display = 'none';
+                    document.getElementById('fthird').style.display = 'block'
+                }
+                document.getElementById('third').onclick=(e)=>{
+                    e.preventDefault();
+                    fthird.style.display = 'none';
+                    document.getElementById('ffourth').style.display = 'block'
+                }
+            } 
         });  
     </script> 
 {% endblock %}

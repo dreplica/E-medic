@@ -246,7 +246,7 @@ def p_register():
                   b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                   u=userid,f=fname,l=lname,m=status,p=pnum, loc=addr, s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-      return render_template('patient.html')
+      return redirect('/patient')
    return render_template('p_register.html',states=states) 
 
 
@@ -301,7 +301,7 @@ def d_register():
                   l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                   u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
-      return render_template('doctor.html')
+      return redirect('/doctor')
    return render_template('d_register.html',states=states)
 
 
@@ -363,9 +363,12 @@ def consult():
       if 'user_id' in session:
          name = request.form.get('pname')
          issue = request.form.get('issue')
+         date = datetime.datetime.now()
          recomm = request.form.get('recommendation')
          drug = request.form.get('drug')
-         db.execute('insert into consultation (user_id,issue,recomm,drugs,doc) values(:name,:iss,:recco,:dr,:doc)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'])
+
+         print(issue)
+         db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:date)',name =name, iss = issue, recco = recomm, dr = drug,date=date,doc = session['user_id'])
          return redirect('/message')
    return render_template("message.html")      
 
@@ -402,5 +405,5 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__":
-   socketio.run(app,debug = True)
+   socketio.run(app,debug = True, host='0.0.0.0', port=5200)
 
