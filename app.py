@@ -143,6 +143,14 @@ def patient():
             return render_template('patient.html', user=user, row=row)
    return redirect("/")  
 
+@app.route('/print',methods=['GET','POST'])
+def printt():
+   if 'user_id'  in session:
+      consult = db.execute('select * from consultation where user_id =:us', us=session['user_id'])
+      user = db.execute('select * from users where user_id=:us',us =session['user_id'])
+      row = db.execute("select * from info where user_id=:us", us=session['user_id'])
+      return render_template('print.html' ,consult = consult,user = user,row = row)
+
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
    if 'user_id' in session:

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>print</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+        <div class="jumbotron jumbotron-fluid" style='text-align: left !important;'>
+                <div class="container text-success">
+                    <h1 class="display-4"><em>E - Medicals</em></h1>
+                   
+                </div> 
+            </div> 
+            <button class="btn btn-primary" style="margin:10px;" id="print">Print</button>
+            <table class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">Doctor</th>
+                        <th scope="col">Treatment</th>
+                        <th scope="col">Issue</th>
+                        <th scope="col">Prescribed Drugs</th>
+                        <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        {% for docs in consult %}
+                            <td>Dr. {{docs['doc']}}</td>
+                            <td>{{docs['recommendation']}}</td>
+                            <td>{{docs['issue']}}</td>
+                            <td>{{docs['drug']}}</td>
+                            <td>{{docs['date']}}</td>
+                        {% endfor %}
+                        </tr>
+                    </tbody>
+                </table> 
+<script>
+    document.getElementById('print').onclick =(e)=>{
+        document.getElementById('print').style.display = 'none';
+       setTimeout(()=>{
+           window.print()
+           document.getElementById('print').style.display = 'block';
+        },2000)
+     }
+
+</script>
+</body>
+</html>
