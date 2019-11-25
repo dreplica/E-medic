@@ -14,7 +14,7 @@
         <form>
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                 <label for="exampleInputEmail1" style="margin:10px auto;">Whats your Issue today?</label>
-                <input type="text" class="form-control"  id='issue' placeholder="Enter issues here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                <input type="text" class="form-control"  id='issue' placeholder="Enter issues here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
                 <small id="emailHelp" class="form-text text-muted" style="margin:10px auto;">We'll never share your issues with anyone else.</small>
             </div>
             <div style="width:20%; margin:auto;">
@@ -23,25 +23,24 @@
             </div>
         </form>
     </div>
-    {% else %} 
-    <button class="btn btn-secondary" style="width:100%;margin-bottom: 10px;" id='add_analysis'>Add Analysis</button>                      
+    {% else %}     
     <div id="recommendation" style="display:none;top: 100px; left:35%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
         <form method="POST" action="/consult">
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                 <label for="exampleInputEmail1" style="margin:10px auto;">Patient</label>
-                <input type="text" class="form-control" name='pname' placeholder="Enter patients name  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                <input type="text" class="form-control" name='pname' placeholder="Enter patients name  here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
             </div>
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                 <label for="exampleInputEmail1" style="margin:10px auto;">Issue</label>
-                <input type="text" class="form-control" name = 'issue' placeholder="Enter issues  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                <input type="text" class="form-control" name = 'issue' placeholder="Enter issues  here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
             </div>
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                 <label for="exampleInputEmail1" style="margin:10px auto;">Analysis</label>
-                <input type="text" class="form-control"  name='recommendation' placeholder="Enter Recommendations  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                <input type="text" class="form-control"  name='recommendation' placeholder="Enter Recommendations  here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
             </div>
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                     <label for="exampleInputEmail1" style="margin:10px auto;">Drugs</label>
-                    <input type="text" class="form-control" name='drug' placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                    <input type="text" class="form-control" name='drug' placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
             </div>
             <div style="width:20%; margin:auto;">
                 <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
@@ -64,7 +63,7 @@
                 patients
             {% endif %}
             </h5>
-            <div id="dchat">
+            <div id="dchat" style="width:100%;">
                 <ul>
                 {% for docs in rooms %}
                     <li class="current_chats">
@@ -77,10 +76,11 @@
                 {% endfor %}                
                 </ul>
             </div>
-            <div>
+            <div style="padding: 10px;" class="but">
                 {% if type == 'pat' %}                
                 <a href="/patient" class="btn btn-secondary" style="width:100%;margin-bottom: 10px;">Back to Dashboard</a>
                 {%else%}
+                <button class="btn btn-secondary" style="width:100%;margin-bottom: 10px;" id='add_analysis'>Add Analysis</button>                      
                 <a href="/doctor" class="btn btn-secondary" style="width:100%;margin-bottom: 10px;">Back to Dashboard</a>
                 {%endif%}
             </div>
@@ -97,9 +97,12 @@
         var user = `{{user_id}}`
         var from_redirect = `{{redirected_user}}`
         var recommendation = document.getElementById('recommendation')
-        document.getElementById('close').onclick = (e)=>{
+        var recommendation1 = document.getElementById('recommendation1')
+        document.getElementById('close1').onclick = (e)=>{
             e.preventDefault();
-            recommendation.style.display = 'none'
+            if(recommendation != undefined){
+                recommendation.style.display = 'none'
+            }else recommendation1.style.display = 'none'
         }
     </script>
     <!-- socket io file -->
@@ -116,7 +119,7 @@
 
             socket.on('message', data =>{
                 var p = document.createElement('p')
-                p.class = 'indoming_mess'
+                p.class = 'incoming_mess'
                 var br = document.createElement('br')
                // alert(data.recipient+" " + user)
                 p.innerHTML = data.text +'<span style=" color:blue;">  :'+data.username+'</span>'
@@ -184,10 +187,10 @@
             add_analysis.onclick = (e)=>{
                 e.preventDefault();
                 if(turned  ==  false){
-                    recommendation1.style.display = 'block'
+                    recommendation.style.display = 'block'
                     turned = true;
                 }else {
-                    recommendation1.style.display = 'none'
+                    recommendation.style.display = 'none'
                     turned = false;
                 }
             }            
