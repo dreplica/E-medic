@@ -128,9 +128,19 @@ def patient():
                db.execute("UPDATE map SET coord1 =:lat,coord2 =:lng where user_id =:us",us=user_id,lat = lat,lng = lng)
             else:
                db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
+
          user = db.execute('select * from users where user_id=:us',us = user_id)
          row = db.execute("select * from info where user_id=:us", us=user_id)
-         return render_template('patient.html', user=user, row=row)
+         doc =  db.execute('select * from consultation where user_id=:us',us = user_id)
+         
+         if len(doc) == 0:
+            return render_template('patient.html', user=user, row=row)
+         doc_one  = doc[-1]   
+         doc_info = db.execute('select * from info where user_id =:doc',doc = doc_one['doc'])
+         if len(doc_info) != 0:             
+             return render_template('patient.html', user=user, row=row, doc = doc, doc_one = doc_one, doc_info = doc_info)
+         else:
+            return render_template('patient.html', user=user, row=row)
    return redirect("/")  
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -336,9 +346,16 @@ def loc():
    map.save('templates/map.html')
    return render_template('map.html')
 
-@app.route('/chats')
-def chat():
-   return render_template('chats.html',user = 'me')
+@app.route('/consult', methods=['GET','POST'])
+def consult():
+   if request.method == 'POST':
+      if 'user_id' in session:
+         name = request.form.get('pname')
+         issue = request.form.get('issue')
+         recomm = request.form.get('recommendation')
+         drug = request.form.get('drug')
+         db.execute('insert into consultation (user_id,issue,recomm,drugs,doc) values(:name,:iss,:recco,:dr,:doc)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'])
+         return redirect('/message')
 
 #message broadcasting comes here
 @socketio.on('message')
