@@ -9,8 +9,8 @@
     <link href="../static/script/css.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    {% if type == 'pat' %}
-    <div id="recommendation1" style="display:none;top: 100px; left:32%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;"></div>
+    {% if type == 'pat' %}    
+    <div id="recommendation1" style="display:none;top: 100px; left:32%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
         <form>
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                 <label for="exampleInputEmail1" style="margin:10px auto;">Whats your Issue today?</label>
@@ -24,19 +24,17 @@
         </form>
     </div>
     {% else %} 
-    <button style="position: absolute; top:100px; left:10px;" id='add_analysis'>Add Analysis</button>   
+    <button class="btn btn-secondary" style="width:100%;margin-bottom: 10px;" id='add_analysis'>Add Analysis</button>                      
     <div id="recommendation" style="display:none;top: 100px; left:35%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
         <form method="POST" action="/consult">
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                 <label for="exampleInputEmail1" style="margin:10px auto;">Patient</label>
                 <input type="text" class="form-control" name='pname' placeholder="Enter patients name  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
-                </div>
-
-                <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
-                    <label for="exampleInputEmail1" style="margin:10px auto;">Issue</label>
-                    <input type="text" class="form-control" name = 'issue' placeholder="Enter issues  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
-                    </div>
-
+            </div>
+            <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+                <label for="exampleInputEmail1" style="margin:10px auto;">Issue</label>
+                <input type="text" class="form-control" name = 'issue' placeholder="Enter issues  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+            </div>
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                 <label for="exampleInputEmail1" style="margin:10px auto;">Analysis</label>
                 <input type="text" class="form-control"  name='recommendation' placeholder="Enter Recommendations  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
@@ -44,14 +42,14 @@
             <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                     <label for="exampleInputEmail1" style="margin:10px auto;">Drugs</label>
                     <input type="text" class="form-control" name='drug' placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px">
-                    </div>
+            </div>
             <div style="width:20%; margin:auto;">
                 <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
-            <button type="submit" class="btn btn-primary" id='close1'>close</button>
+                <button type="submit" class="btn btn-primary" id='close1'>close</button>
             </div>            
         </form>
     </div>
-    {% endif %}    
+    {% endif %}   
     <div class="chat">
         <div class="docs">
             <div style="text-align: center;margin-bottom: 20px;">
@@ -80,10 +78,10 @@
                 </ul>
             </div>
             <div>
-                {% if type == 'pat' %}
-                <a href="/patient" class="btn btn-secondary">Back to Dashboard</a>
+                {% if type == 'pat' %}                
+                <a href="/patient" class="btn btn-secondary" style="width:100%;margin-bottom: 10px;">Back to Dashboard</a>
                 {%else%}
-                <a href="/doctor" class="btn btn-secondary">Back to Dashboard</a>
+                <a href="/doctor" class="btn btn-secondary" style="width:100%;margin-bottom: 10px;">Back to Dashboard</a>
                 {%endif%}
             </div>
         </div>
@@ -99,9 +97,9 @@
         var user = `{{user_id}}`
         var from_redirect = `{{redirected_user}}`
         var recommendation = document.getElementById('recommendation')
-        document.getElementById('close1').onclick = (e)=>{
+        document.getElementById('close').onclick = (e)=>{
             e.preventDefault();
-            document.getElementById('recommendation1').style.display = 'none'
+            recommendation.style.display = 'none'
         }
     </script>
     <!-- socket io file -->
@@ -140,8 +138,9 @@
                     socket.send({
                         'text':user + " current issues, is " +document.getElementById('issue').value,
                         'username':user,
-                        'recipient':active_chat})
-                        close1.click()
+                        'recipient':active_chat
+                    })
+                    close1.click()
                 }                            
             }
             document.querySelectorAll('.current_chats').forEach(list=>{
@@ -159,8 +158,7 @@
                         active_chat = newChat;
                         msg = `you're now chatting with ${active_chat} communicate hello  clearly`;
                         view.innerHTML = "";
-                        tellUser(msg) 
-                        recommendation1.style.display = 'block'               
+                        tellUser(msg)               
                     }
                 }
             })
@@ -177,6 +175,7 @@
                 p.innerHTML = msg
                 console.log(p)
                 view.append(p)
+                recommendation1.style.display = 'block'
             }
     
         })
@@ -185,10 +184,10 @@
             add_analysis.onclick = (e)=>{
                 e.preventDefault();
                 if(turned  ==  false){
-                recommendation.style.display = 'block'
-                turned = true;
+                    recommendation1.style.display = 'block'
+                    turned = true;
                 }else {
-                    recommendation.style.display = 'none'
+                    recommendation1.style.display = 'none'
                     turned = false;
                 }
             }            

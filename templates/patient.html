@@ -32,18 +32,15 @@
         <div class="col-lg-6 col-md-6">
             <!-- Recent Activities Widget      -->
             <h4 style="text-align: center;">In progress</h4>
-            <div class="progress">
-                <div>
+            <div class="progress" style="height: auto;">
                 {% if doc_info %}
+                <div>                
                     <img src="{{ url_for('static',filename=row[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
-                {% endif %}    
                 </div>
-                <div>
-                {% if doc_info %}
-                    <p>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</p>
-                    <p>Currently Treating you for {{doc_one['issue']}}</p>
-                {% endif %}
-                </div>
+                <p>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</p>
+                <p>Currently Treating you for {{doc_one['issue']}}</p>
+            </div>
+            {% endif %}
             </div>
         </div>
         {% else %}
