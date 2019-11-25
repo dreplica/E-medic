@@ -15,13 +15,23 @@
                 <button class="btn btn-success btn-lg his" style="width:100%;" type="button">
                     History
                 </button>
-                <ul class="list-group hisdrop" style="width:100%;">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
+                <table class="table">
+                        <thead  class="table table-dark">
+                          <tr>
+                            <th scope="col">Doctor</th>
+                            <th scope="col">Treatment</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            {% for docs in doc %}
+                                <td>Dr.  {{docs['doc']}}</td>
+                                <td>{{docs['issue']}}</td>
+                             {% endfor %}
+                          </tr>
+                        </tbody>
+                      </table>
+                    
             </div>
             
             <div class="col-lg-6 col-md-6">
@@ -29,13 +39,15 @@
                 <button class="btn btn-success btn-lg prog" style="width:100%;" type="button">
                     In progress
                 </button>
-                <ul class="list-group progdrop" style="width:100%;">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
+               <div class="progress">
+                   <div>image here</div>
+                   <div>
+                       {% if doc_info %}
+                            <p>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</p>
+                            <p>Currently Treating you for {{doc_one['issue']}}</p>
+                       {% endif %}
+                   </div>
+               </div>
             </div>
         </div>
     </div>

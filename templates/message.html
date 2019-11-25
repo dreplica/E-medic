@@ -14,20 +14,19 @@
                 <form>
                         <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                           <label for="exampleInputEmail1" style="margin:10px auto;">Whats your Issue today?</label>
-                          <input type="text" class="form-control"  placeholder="Enter issues here" style="width:90%;height:50px;margin:10px auto; padding:10px">
+                          <input type="text" class="form-control"  id='issue' placeholder="Enter issues here" style="width:90%;height:50px;margin:10px auto; padding:10px">
                           <small id="emailHelp" class="form-text text-muted" style="margin:10px auto;">We'll never share your issues with anyone else.</small>
                         </div>
                         <div style="width:20%; margin:auto;">
-                         <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
-                        <button type="submit" class="btn btn-primary" id='close'>close</button>
+                         <button type="submit" class="btn btn-primary" id='sub'>Submit</button>
+                        <button type="submit" class="btn btn-primary" id='close1'>close</button>
                         </div>
-                        
                       </form>
              </div>
         {% else %}
         <button style="position: absolute; top:100px; left:10px;">Add Analysis</button>
         <div id="recommendation" style="display:none;top: 100px; left:35%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
-                <form method="POST" action="/message">
+                <form method="POST" action="/consult">
                         <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
                             <label for="exampleInputEmail1" style="margin:10px auto;">Patient</label>
                             <input type="text" class="form-control" name='pname' placeholder="Enter patients name  here" style="width:90%;height:50px;margin:10px auto; padding:10px">
@@ -48,7 +47,7 @@
                               </div>
                         <div style="width:20%; margin:auto;">
                          <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
-                        <button type="submit" class="btn btn-primary" id='close'>close</button>
+                        <button type="submit" class="btn btn-primary" id='close1'>close</button>
                         </div>
                         
                       </form>
@@ -97,7 +96,7 @@
         var user = `{{user_id}}`
         var from_redirect = `{{redirected_user}}`
         var recommendation = document.getElementById('recommendation')
-        document.getElementById('close').onclick = (e)=>{
+        document.getElementById('close1').onclick = (e)=>{
             e.preventDefault();
             document.getElementById('recommendation').style.display = 'none'
         }
@@ -135,7 +134,19 @@
              text.value = '';
              text.focus()
          }
-    
+
+           if (document.getElementById('sub') != undefined){
+               sub.onclick = (e)=>{
+                    e.preventDefault();
+                    socket.send({
+                        'text':user + " current issues, is " +document.getElementById('issue').value,
+                        'username':user,
+                        'recipient':active_chat})
+                        close1.click()
+                    }
+                    
+           }
+
             document.querySelectorAll('.current_chats').forEach(list=>{
                     if( list.innerHTML == from_redirect){
                         list.style.background = 'darkgrey'
@@ -176,19 +187,6 @@
     
     })
     
-    // make ajax to post recommendation
-$.ajax({
-    method:'POST',
-    url:'/message',
-    data:{
-            pat:user_name.value,
-            recom:recommend.value,
-            drugs:drugs.value,
-            doc:user
-
-             },
-    success:()=>alert('recommendation for patient posted')
-})
     
     </script>
 </body>

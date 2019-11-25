@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.5.1/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://rawcdn.githack.com/python-visualization/folium/master/folium/templates/leaflet.awesome.rotate.css"/>
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_79cc82b1f839484f8c05269a111338be {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_79cc82b1f839484f8c05269a111338be" ></div>
+        
+</body>
+<script>    
+    
+            var map_79cc82b1f839484f8c05269a111338be = L.map(
+                "map_79cc82b1f839484f8c05269a111338be",
+                {
+                    center: [6.5244, 3.3792],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_5931987eafd242bc840d0d88062f7f13 = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_79cc82b1f839484f8c05269a111338be);
+        
+    
+            var marker_9508ad36537a4d53bc50bb088c2aa300 = L.marker(
+                [6.438908085362881, 3.524548752408584],
+                {}
+            ).addTo(map_79cc82b1f839484f8c05269a111338be);
+        
+    
+        var popup_e336112aa93b4a28a21aef6fa7875836 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_5cf4ee9624ad408c922fe5bbcf8b8f5a = $(`<div id="html_5cf4ee9624ad408c922fe5bbcf8b8f5a" style="width: 100.0%; height: 100.0%;"><a href="\message?name=ere">Dr. ere</a></div>`)[0];
+            popup_e336112aa93b4a28a21aef6fa7875836.setContent(html_5cf4ee9624ad408c922fe5bbcf8b8f5a);
+        
+
+        marker_9508ad36537a4d53bc50bb088c2aa300.bindPopup(popup_e336112aa93b4a28a21aef6fa7875836)
+        ;
+
+        
+    
+    
+            marker_9508ad36537a4d53bc50bb088c2aa300.bindTooltip(
+                `<div>
+                     click
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_2b5854688c334fa8ad308e75740d231b = L.marker(
+                [6.439108399999999, 3.5244244],
+                {}
+            ).addTo(map_79cc82b1f839484f8c05269a111338be);
+        
+    
+            var icon_26f150cb847e46dfba5dafc9a426e837 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "green", "prefix": "glyphicon"}
+            );
+            marker_2b5854688c334fa8ad308e75740d231b.setIcon(icon_26f150cb847e46dfba5dafc9a426e837);
+        
+    
+            marker_2b5854688c334fa8ad308e75740d231b.bindTooltip(
+                `<div>
+                     <span color:'green'>You</span>
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_d803fcbf5b7345a4b82e0d9f5fac5a99 = L.marker(
+                [6.439095399999999, 3.5244182000000004],
+                {}
+            ).addTo(map_79cc82b1f839484f8c05269a111338be);
+        
+    
+        var popup_267893b65375439eab8ac5cb3ccd0a6b = L.popup({"maxWidth": "100%"});
+
+        
+            var html_d203ab9297344fb8afe2a70e7e659970 = $(`<div id="html_d203ab9297344fb8afe2a70e7e659970" style="width: 100.0%; height: 100.0%;"><a href="\message?name=dreplica">Dr. dreplica</a></div>`)[0];
+            popup_267893b65375439eab8ac5cb3ccd0a6b.setContent(html_d203ab9297344fb8afe2a70e7e659970);
+        
+
+        marker_d803fcbf5b7345a4b82e0d9f5fac5a99.bindPopup(popup_267893b65375439eab8ac5cb3ccd0a6b)
+        ;
+
+        
+    
+    
+            marker_d803fcbf5b7345a4b82e0d9f5fac5a99.bindTooltip(
+                `<div>
+                     click
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
