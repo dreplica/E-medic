@@ -472,7 +472,7 @@ def consult():
          drug = request.form.get('drug')
          date = datetime.datetime.now()
          db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:da)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'],da = date)
-         return redirect('/message')
+         return redirect('/reply')
    return render_template("reply.html")      
 
 #message broadcasting comes here

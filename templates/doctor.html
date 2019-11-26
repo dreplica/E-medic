@@ -18,6 +18,7 @@
                     <tr>
                     <th scope="col">Patient</th>
                     <th scope="col">Treatment</th>
+                    <th scope='col'>Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,6 +26,7 @@
                     {% for pats in pat %}
                         <td>{{pats['user_id']}}</td>
                         <td>{{pats['issue']}}</td>
+                        <td>{{pats['date'][0:10]}}</td>
                     {% endfor %}
                     </tr>
                 </tbody>
@@ -33,14 +35,14 @@
         <div class="col-lg-6 col-md-6">
             <!-- Recent Activities Widget      -->
             <h4 style="text-align: center;">In progress</h4>
-            <div class="progress" style="height: auto;">
+            <div class="progress" style="height: auto; padding:15px">
                 {% if pat_info %}
                 <div>                
                     <img src="{{ url_for('static',filename=pat_info[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
                 </div>
-                <div>
-                <p>{{pat_info[0]['f_name']}} {{pat_info[0]['l_name']}}</p>
-                <p>Currently being treated for {{pat_one['issue']}}</p>
+                <div style="margin:15px 20px;">
+                    <h3>{{pat_info[0]['f_name']}} {{pat_info[0]['l_name']}}</h3>
+                    <h5 style="margin:10px 0px">Currently treated for: <strong> {{pat_one['issue']}}</strong></h5>
                 </div>
             </div>
             {% endif %}
@@ -48,7 +50,9 @@
         </div>
         {% else %}
         <div style="padding: 10px;">
-            <h2>No current Patient</h2>
+            <div class="alert alert-success" role="alert">
+                No current Patients
+              </div>
         </div>        
         {%endif%}
     </div>
