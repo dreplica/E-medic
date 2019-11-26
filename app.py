@@ -93,7 +93,7 @@ def reply():
               hash = db.execute('select hash from hash where user_id =:us and doc =:doc',us =request.args.get('name'), doc = session['user_id'] )
               if len(hash) == 0:
                  db.execute('insert into hash (user_id,doc) values(:us,:doc)', us=request.args.get('name'),doc = session['user_id'])
-                 return redirect('/reply?name='+request.args.get('name'))
+                # return redirect('/reply?name='+request.args.get('name'))
               msg = db.execute('select * from message where hash =:h',h = hash[0]['hash'])
               return jsonify({'msg' :msg, 'user' :session['user_id'],'hash':hash[0]['hash']})
 
@@ -101,15 +101,24 @@ def reply():
                hash = db.execute('select hash from hash where user_id =:us and doc =:doc',us = session['user_id'],doc =request.args.get('name') )
                if len(hash) == 0:
                  db.execute('insert into hash (user_id,doc) values(:us,:doc)', us=session['user_id'],doc = request.args.get('name'))
-                 return redirect('/reply?name='+request.args.get('name'))
+                # return redirect('/reply?name='+request.args.get('name'))
                msg = db.execute('select * from message where hash =:h',h = hash[0]['hash'])
                return jsonify({'msg' :msg, 'user' :session['user_id'],'hash':hash[0]['hash']})
+
+   if request.args.get('doc'):#if there is a refernce or click on a doctor, open the message to commmunicate with doc
+         print('hello i am here')
+         hash = db.execute('select hash from hash where user_id =:us and doc =:doc',us = session['user_id'],doc =request.args.get('doc') )
+         if len(hash) == 0:
+                 db.execute('insert into hash (user_id,doc) values(:us,:doc)', us=session['user_id'],doc = request.args.get('doc'))
+         friends =  db.execute('select doc from hash where user_id =:us',us = session['user_id'])
+         print(friends)
+         return render_template('reply.html', friends = friends, typ = typ[0]['type'],user = session['user_id'])
 
    else:#else just open the message and pass data files
       if typ[0]['type'] == 'pat':#check if the person is a patient'
              friends =  db.execute('select doc from hash where user_id =:us',us = session['user_id'])
              print(friends)
-             return render_template('reply.html', friends = friends, typ = typ,user = session['user_id'])
+             return render_template('reply.html', friends = friends, typ = typ[0]['type'],user = session['user_id'])
       else:#check if the person is a doc
              print("a docotr")
              friends =  db.execute('select user_id from hash where doc =:doc',doc = session['user_id'])
@@ -427,7 +436,7 @@ def loc():
          tooltip="<span color:'green'>You</span>",
          icon=folium.Icon(color='green')).add_to(map)
       if doc_check[0]['type'] == 'doc':
-         folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\message?name='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
+         folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="/reply?doc='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
          tooltip="click").add_to(map)
    map.save('templates/map.html')
    return render_template('map.html')
@@ -443,7 +452,7 @@ def consult():
          date = datetime.datetime.now()
          db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:da)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'],da = date)
          return redirect('/message')
-   return render_template("message.html")      
+   return render_template("reply.html")      
 
 #message broadcasting comes here
 @socketio.on('message')

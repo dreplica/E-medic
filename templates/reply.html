@@ -48,7 +48,48 @@
             <h1 class="display-4">E - Medicals  <small style="font-size:15px;">  Health for all ....</small></h1>
     </div>
 </div>
+<!-- button -->
 
+{% if typ == 'pat' %}    
+<div class="position" style="width:20%; margin:auto;">            
+<a href="/patient" class="btn btn-secondary" style="width:100%;margin-bottom: 10px;"> &larr; Dashboard</a>
+</div>
+{%else%}
+<div class="position" style="width:30%; margin:auto; display:flex;flex-direction:row;justify-content:space-around">  
+<button class="btn btn-secondary" style="width:30%;margin-bottom: 10px;" id='add_analysis'>Add Analysis</button>                      
+<a href="/doctor" class="btn btn-secondary" style="width:30%;margin-bottom: 10px;">  &larr; Dashboard</a>
+</div>
+{%endif%}
+</div>
+<!-- message that pops up for patient and doc on chat -->
+{% if typ == 'doc' %}    
+<div id="recommendation" style="position:fixed; top:30%;display:none;left:35%; background:rgb(184, 177, 177);padding:10px;width:40%; z-index:100; position:absolute;">
+    <form method="POST" action="/consult">
+        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+            <label for="exampleInputEmail1" style="margin:10px auto;">Patient</label>
+            <input type="text" class="form-control" name='pname' placeholder="Enter patients name  here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
+        </div>
+        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+            <label for="exampleInputEmail1" style="margin:10px auto;">Issue</label>
+            <input type="text" class="form-control" name = 'issue' placeholder="Enter issues  here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
+        </div>
+        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+            <label for="exampleInputEmail1" style="margin:10px auto;">Analysis</label>
+            <input type="text" class="form-control"  name='recommendation' placeholder="Enter Recommendations  here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
+        </div>
+        <div class="form-group"  style="display: flex;flex-direction:column;margin-bottom:10px">
+                <label for="exampleInputEmail1" style="margin:10px auto;">Drugs</label>
+                <input type="text" class="form-control" name='drug' placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
+        </div>
+        <div style="width:50%; margin:auto;">
+            <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
+            <button type="submit" class="btn btn-primary" id='close1'>close</button>
+        </div>            
+    </form>
+</div>
+{% endif %}   
+
+<!-- container for the chat -->
 <div class="container" style="height: 600px;">
 <div class="row outer_container">
         <div class="col-lg-10 col-md-8 col-sm-6 col-xs-4" style="margin:auto; display:flex; flex-direction:row;">
@@ -96,10 +137,30 @@
 
 <!-- ajax code here -->
 <script>
+let turned = false;
+if (document.getElementById('add_analysis') != undefined){
+        add_analysis.onclick = (e)=>{
+            e.preventDefault();
+            if(turned  ==  false){
+                recommendation.style.display = 'block'
+                turned = true;
+            }else {
+                recommendation.style.display = 'none'
+                turned = false;
+            }
+        }            
+    }    
 
+
+ document.getElementById('close1').onclick = (e)=>{
+    e.preventDefault();
+    if(recommendation != undefined)recommendation.style.display = 'none';
+}
+ 
     //make an onclick post for the button
     //the button is suppose to send a post request
     //post request for reciever is the user whose class is set to true
+
 
 $('#us').val(`{{user}}`)
 let user = `{{user}}`
@@ -107,6 +168,7 @@ let user = `{{user}}`
  let rec = ''
  let check = false
  let main_doc = ''
+ let type = `{{typ}}`
 
  //console.log(send)
     $('#send').on('click',(e)=>{
@@ -137,6 +199,7 @@ let user = `{{user}}`
     //to be displayed on the message board
 document.querySelectorAll('.friend').forEach((friend)=>{
         friend.onclick = (e)=>{
+            
             $('#re').val($(e.target).text())
             board = $('#message_box')
             check = true
