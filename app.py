@@ -127,21 +127,7 @@ def reply():
              friends =  db.execute('select user_id from hash where doc =:doc',doc = session['user_id'])
              print(friends)
              return render_template('reply.html', friends = friends, typ = typ[0]['type'],user = session['user_id'])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+             
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -484,14 +470,8 @@ def consult():
          date = datetime.datetime.now()
          recomm = request.form.get('recommendation')
          drug = request.form.get('drug')
-<<<<<<< HEAD
-
-         print(issue)
-         db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:date)',name =name, iss = issue, recco = recomm, dr = drug,date=date,doc = session['user_id'])
-=======
          date = datetime.datetime.now()
          db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:da)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'],da = date)
->>>>>>> c00050b5f8d39d3dd951ea943ebedf6a1e7a80c8
          return redirect('/message')
    return render_template("reply.html")      
 
@@ -504,7 +484,6 @@ def mess(data):
 
 @socketio.on('join')
 def join(data):
-   
    join_room(data['active_chat'])
    send({'msg': data['user'] + ' has joined the consulting room', 
              'room':data['active_chat']})
@@ -527,9 +506,5 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-   socketio.run(app,debug = True, host='0.0.0.0', port=5200)
-=======
    socketio.run(app, debug = True)
->>>>>>> c00050b5f8d39d3dd951ea943ebedf6a1e7a80c8
 
