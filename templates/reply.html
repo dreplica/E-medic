@@ -1,45 +1,96 @@
-{% extends "client_layout.html" %}
-{% block main %}
-<!--from here-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Consult</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .friend:hover{
+                    background: darkgray;
+        }
+
+        #message_box{
+            border-radius: 5%;
+            padding: 15px;
+            margin: 0px;
+        }
+
+        .icons{
+            display: flex;
+            flex-direction: row;
+            justify-items: flex-start;
+        }
+
+
+        .chatt{
+            padding:10px;
+            background: lightgrey;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+
+        }
+
+        .left{
+            justify-items: left;
+        }
+        .left{
+            justify-items: right;
+        }
+    </style>
+</head>
+<body>
+    
 <div class="jumbotron jumbotron-fluid" style='text-align: left !important'>
     <div class="container text-success">
             <h1 class="display-4">E - Medicals  <small style="font-size:15px;">  Health for all ....</small></h1>
     </div>
 </div>
-<div class="container-fluid">
 
-    <div class="friends">
-        <ul>
-        {% for friend in friends %}
-            {% if typ == 'doc' %}
-                <li class="friend">{{friend['user_id']}}</li>
-                go
-            {% else %}
-                 <li class="friend">{{friend['doc']}}</li>
-            {% endif %}
-        {% endfor %}
-        </ul>
-    </div>
-
-    <div id="message_box" style='width:400px; height: 400px; overflow:auto;'>
-    </div>
-
-    <form action="/reply" method="POST">
-            <div class="form-group mb-2">
-        <input type="text" name="msg" id='msg'>
-        <input type="hidden" value="" id='us'>
-        <input type="hidden" value="" id='re'>
-        <input type="hidden" value="" id='hash'>
-        <input type='submit' value='send' id='send'>
-            <div class="form-group mx-sm-3 mb-2">
-              <label for="inputPassword2" class="sr-only">Password</label>
-              <input type="password" class="form-control" id="inputPassword2" placeholder="Password">
+<div class="container" style="height: 600px;">
+<div class="row outer_container">
+        <div class="col-lg-10 col-md-8 col-sm-6 col-xs-4" style="margin:auto; display:flex; flex-direction:row;">
+            <div class="friends col-lg-3 col-md-5 col-sm-4 col-xs-4" >
+                 <ul class="list-group" style="height: 500px;">
+                    <li class="list-group-item active"  style="text-align: center; ">
+                        {% if typ == 'doc' %}
+                            Patients
+                        {% else %}
+                            Doctors
+                        {% endif %}
+                    </li>
+                {% for friend in friends %}
+                    {% if typ == 'doc' %}
+                        <li class="list-group-item friend">{{friend['user_id']}}</li>
+                    {% else %}
+                        <li class="list-group-item friend">{{friend['doc']}}</li>
+                    {% endif %}
+                {% endfor %}
+                </ul> 
+         
             </div>
-            <button type="submit" class="btn btn-primary mb-2" value='send' id='send'>Confirm identity</button>
- </form>
-   
-      
-    </form>
+
+            <div class="chat-area col-lg-7 col-md-7 col-sm-6 col-xs-6"  style="border: 1px solid black;">
+                        <div id="message_box" style='width:95%; height: 500px; overflow:auto;'>
+                        </div>
+
+                <form action="/reply" method="POST" style="width:100%;">
+                            <div class="form-group mb-2">
+                                <input type="hidden" value="" id='us'>
+                                <input type="hidden" value="" id='re'>
+                                <input type="hidden" value="" id='hash'>
+                                </div>
+                                <div class="form-group mx-sm-3 mb-2 icons">
+                                <input type="text" name='msg' class="form-control" id="msg" style="width:65%;border-radius:0px;" placeholder="Message">
+                                <button type="submit" class="btn btn-primary mb-2" value='send' id='send' style="width:30% ;; border-radius:0px;" >Send</button>
+                            </div>
+                        </form>
+            </div>
+   </div>
+</div>
+</div>
 
 <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
@@ -62,6 +113,7 @@ let user = `{{user}}`
         e.preventDefault();
         let out = $("#msg").val()
 
+        
         $.ajax({
             method:'POST',
             url:'/reply',
@@ -73,7 +125,9 @@ let user = `{{user}}`
             },
             type:'application/json',
             success:()=>{
-                out.value = '';
+                out.value = ' ';
+                msg.value = ''
+                msg.focus()
                 console.log(out,send,rec,hash)
                     }
         })
@@ -92,10 +146,10 @@ document.querySelectorAll('.friend').forEach((friend)=>{
                     url:'/reply?name='+friend.innerHTML,
                     success:(data)=>{
                             console.log(data)
-                            $('#message_box').html(data.msg.map(x=>(x['send'] == user?`<p style='border:2px solid black; text-align:rigth;width:50%;'>`+ 
+                            $('#message_box').html(data.msg.map(x=>(x['send'] == user?`<div class="chat left"><p style="border:2px solid black;" class="left">`+ 
                                                                                                                         x['msg']+"</p>":
-                                                                                                                        `<p style='width:50%; text-align:left;'>`
-                                                                                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span>"));
+                                                                                                                        `<div class="chat right"><p style="width:50%;" class="right">`
+                                                                                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span></div>"));
                             $('#hash').val(data.hash)
                     }
                 })
@@ -115,10 +169,10 @@ document.querySelectorAll('.friend').forEach((friend)=>{
                     success:(data)=>{
                              if(data.msg){
                                  $('#message_box').html(data.msg.
-                                                            map(x=>(x['send'] == user?`<p style='border:2px solid black; text-align:rigth;width:50%;'>`+ 
+                                                            map(x=>(x['send'] == user?`<div class="chat left"><p style="border:2px solid black;">`+ 
                                                              x['msg']+"</p>":
-                                                            `<p style='width:50%; text-align:left;'>`
-                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span>"))
+                                                            `<div class="chat right"><p style="width:50%;">`
+                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span></div>"))
                                $('#message_box').animate({scrollTop: document.getElementById('message_box').scrollHeight},"fast");
                                                                                                                                  }
                                  
@@ -128,5 +182,5 @@ document.querySelectorAll('.friend').forEach((friend)=>{
 },1500)
 
 </script>
-
-{% endblock %}
+</body>
+</html>
