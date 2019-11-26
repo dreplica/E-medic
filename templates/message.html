@@ -93,7 +93,10 @@
             </div>
         </div>
     </div>
-    <script>
+    <!-- socket io file -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" ></script>
+    <!-- our own made socket listener -->
+    <script type="text/javascript" >
         var user = `{{user_id}}`
         var from_redirect = `{{redirected_user}}`
         var recommendation = document.getElementById('recommendation')
@@ -104,11 +107,6 @@
                 recommendation.style.display = 'none'
             }else recommendation1.style.display = 'none'
         }
-    </script>
-    <!-- socket io file -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" ></script>
-    <!-- our own made socket listener -->
-    <script type="text/javascript" >
         document.addEventListener('DOMContentLoaded',function(){
             //var socket = io.connect('http://localhost:5000');
             var socket = io.connect('http://' + document.domain + ':' + location.port);//127.0.0.1:5000');
@@ -128,8 +126,6 @@
                 view.append(p)
             })    
             document.getElementById('sent').onclick = (e)=>{
-                console.log(` i am ${user}`)
-                console.log(active_chat)
                 if(active_chat == 'None')  return alert("you've not specified any one to chat with")
                     socket.send({'text':text.value,'username':user,'recipient':active_chat} )
                     text.value = '';
@@ -176,7 +172,6 @@
             function tellUser(msg){
                 var p = document.createElement('p')
                 p.innerHTML = msg
-                console.log(p)
                 view.append(p)
                 recommendation1.style.display = 'block'
             }

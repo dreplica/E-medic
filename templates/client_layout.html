@@ -49,28 +49,6 @@
     </nav>
 
 {% block main %}{% endblock %} 
-</div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script>
-    $(".his").click(function(){
-        $(".hisdrop").toggle()
-    })
-    $(".prog").click(function(){
-        $(".progdrop").toggle()
-    })
-       
-    document.getElementById('update').onclick=(e)=>{
-      e.preventDefault();
-      document.getElementById('profile').style.display = 'none';
-      document.getElementById('show').style.display = 'block'
-    }
-    document.getElementById('cancel').onclick=(e)=>{
-      e.preventDefault();
-      document.getElementById('show').style.display = 'none';
-      document.getElementById('profile').style.display = 'block'
-    }
-    
-    </script>
-   
+</div>   
 </body>
 </html> 
