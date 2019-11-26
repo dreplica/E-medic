@@ -1,0 +1,132 @@
+{% extends "client_layout.html" %}
+{% block main %}
+<!--from here-->
+<div class="jumbotron jumbotron-fluid" style='text-align: left !important'>
+    <div class="container text-success">
+            <h1 class="display-4">E - Medicals  <small style="font-size:15px;">  Health for all ....</small></h1>
+    </div>
+</div>
+<div class="container-fluid">
+
+    <div class="friends">
+        <ul>
+        {% for friend in friends %}
+            {% if typ == 'doc' %}
+                <li class="friend">{{friend['user_id']}}</li>
+                go
+            {% else %}
+                 <li class="friend">{{friend['doc']}}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div id="message_box" style='width:400px; height: 400px; overflow:auto;'>
+    </div>
+
+    <form action="/reply" method="POST">
+            <div class="form-group mb-2">
+        <input type="text" name="msg" id='msg'>
+        <input type="hidden" value="" id='us'>
+        <input type="hidden" value="" id='re'>
+        <input type="hidden" value="" id='hash'>
+        <input type='submit' value='send' id='send'>
+            <div class="form-group mx-sm-3 mb-2">
+              <label for="inputPassword2" class="sr-only">Password</label>
+              <input type="password" class="form-control" id="inputPassword2" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary mb-2" value='send' id='send'>Confirm identity</button>
+ </form>
+   
+      
+    </form>
+
+<script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+<!-- ajax code here -->
+<script>
+
+    //make an onclick post for the button
+    //the button is suppose to send a post request
+    //post request for reciever is the user whose class is set to true
+
+$('#us').val(`{{user}}`)
+let user = `{{user}}`
+ let hash = ''
+ let rec = ''
+ let check = false
+ let main_doc = ''
+
+ //console.log(send)
+    $('#send').on('click',(e)=>{
+        e.preventDefault();
+        let out = $("#msg").val()
+
+        $.ajax({
+            method:'POST',
+            url:'/reply',
+            data:{
+                msg:out,
+                sender:$('#us').val(),
+                receiver:$('#re').val(),
+                hash:$('#hash').val()
+            },
+            type:'application/json',
+            success:()=>{
+                out.value = '';
+                console.log(out,send,rec,hash)
+                    }
+        })
+    })
+
+    // on clicking any friend, make a get request for that user;
+    //to be displayed on the message board
+document.querySelectorAll('.friend').forEach((friend)=>{
+        friend.onclick = (e)=>{
+            $('#re').val($(e.target).text())
+            board = $('#message_box')
+            check = true
+            main_doc = friend.innerHTML;
+                $.ajax({
+                    method:'GET',
+                    url:'/reply?name='+friend.innerHTML,
+                    success:(data)=>{
+                            console.log(data)
+                            $('#message_box').html(data.msg.map(x=>(x['send'] == user?`<p style='border:2px solid black; text-align:rigth;width:50%;'>`+ 
+                                                                                                                        x['msg']+"</p>":
+                                                                                                                        `<p style='width:50%; text-align:left;'>`
+                                                                                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span>"));
+                            $('#hash').val(data.hash)
+                    }
+                })
+            }
+    })
+
+    //to make post every milli second
+   // console.log('this is it' +$('#re').val())
+   
+ let timing = setInterval((e)=>{ 
+                
+                if( check == true){
+                    $.ajax({
+
+                    method:'GET',
+                    url:'/reply?name='+main_doc,
+                    success:(data)=>{
+                             if(data.msg){
+                                 $('#message_box').html(data.msg.
+                                                            map(x=>(x['send'] == user?`<p style='border:2px solid black; text-align:rigth;width:50%;'>`+ 
+                                                             x['msg']+"</p>":
+                                                            `<p style='width:50%; text-align:left;'>`
+                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span>"))
+                               $('#message_box').animate({scrollTop: document.getElementById('message_box').scrollHeight},"fast");
+                                                                                                                                 }
+                                 
+                    }
+                })
+    }
+},1500)
+
+</script>
+
+{% endblock %}
