@@ -151,12 +151,12 @@ if (document.getElementById('add_analysis') != undefined){
         }            
     }    
 
-
- document.getElementById('close1').onclick = (e)=>{
-    e.preventDefault();
-    if(recommendation != undefined)recommendation.style.display = 'none';
-}
- 
+    if (document.getElementById('close1') != undefined){
+            document.getElementById('close1').onclick = (e)=>{
+                e.preventDefault();
+                if(recommendation != undefined)recommendation.style.display = 'none';
+            }
+        }
     //make an onclick post for the button
     //the button is suppose to send a post request
     //post request for reciever is the user whose class is set to true
@@ -199,7 +199,6 @@ let user = `{{user}}`
     //to be displayed on the message board
 document.querySelectorAll('.friend').forEach((friend)=>{
         friend.onclick = (e)=>{
-            
             $('#re').val($(e.target).text())
             board = $('#message_box')
             check = true
@@ -209,10 +208,10 @@ document.querySelectorAll('.friend').forEach((friend)=>{
                     url:'/reply?name='+friend.innerHTML,
                     success:(data)=>{
                             console.log(data)
-                            $('#message_box').html(data.msg.map(x=>(x['send'] == user?`<div class="chat left"><p style="border:2px solid black;" class="left">`+ 
+                            $('#message_box').html(data.msg.map(x=>(x['send'] == user?`<div class="chat left" style="margin:5px; padding:8px; border-radius:10px; background:lightblue; color:black; width:50%; text-align:left"><p>`+ 
                                                                                                                         x['msg']+"</p>":
-                                                                                                                        `<div class="chat right"><p style="width:50%;" class="right">`
-                                                                                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span></div>"));
+                                                                                                                        `<div class="chat right" style="margin:5px; padding:8px; margin-left:180px; border-radius:10px; background:lightblue; color:black; width:50%; text-align:right"><p>`
+                                                                                                                            + x['msg']+"</p>")+"<span style='color:black'>:"+x['send']+"</span></div>"));
                             $('#hash').val(data.hash)
                     }
                 })
@@ -232,10 +231,10 @@ document.querySelectorAll('.friend').forEach((friend)=>{
                     success:(data)=>{
                              if(data.msg){
                                  $('#message_box').html(data.msg.
-                                                            map(x=>(x['send'] == user?`<div class="chat left"><p style="border:2px solid black;">`+ 
-                                                             x['msg']+"</p>":
-                                                            `<div class="chat right"><p style="width:50%;">`
-                                                            + x['msg']+"</p>")+"<span>"+x['send']+"</span></div>"))
+                                                            map(x=>(x['send'] == user?`<div class="chat left" style="margin:5px; padding:8px; border-radius:10px; background:lightblue; color:black; width:50%; text-align:left"><p>`+ 
+                                                                x['msg']+"</p>":
+                                                                `<div class="chat right" style="margin:5px; padding:8px; margin-left:180px; border-radius:10px; background:lightblue; color:black; width:50%; text-align:right"><p>`
+                                                                    + x['msg']+"</p>")+"<span style='color:black'>:"+x['send']+"</span></div>"))
                                $('#message_box').animate({scrollTop: document.getElementById('message_box').scrollHeight},"fast");
                                                                                                                                  }
                                  
