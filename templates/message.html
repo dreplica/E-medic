@@ -17,7 +17,7 @@
                 <input type="text" class="form-control"  id='issue' placeholder="Enter issues here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
                 <small id="emailHelp" class="form-text text-muted" style="margin:10px auto;">We'll never share your issues with anyone else.</small>
             </div>
-            <div style="width:20%; margin:auto;">
+            <div style="width:50%; margin:auto;">
                 <button type="submit" class="btn btn-primary" id='sub'>Submit</button>
                 <button type="submit" class="btn btn-primary" id='close1'>close</button>
             </div>
@@ -42,7 +42,7 @@
                     <label for="exampleInputEmail1" style="margin:10px auto;">Drugs</label>
                     <input type="text" class="form-control" name='drug' placeholder="Enter Drugs here" style="width:90%;height:50px;margin:10px auto; padding:10px" required>
             </div>
-            <div style="width:20%; margin:auto;">
+            <div style="width:50%; margin:auto;">
                 <button type="submit" class="btn btn-primary" id='submit'>Submit</button>
                 <button type="submit" class="btn btn-primary" id='close1'>close</button>
             </div>            
@@ -108,16 +108,16 @@
             }else recommendation1.style.display = 'none'
         }
         document.addEventListener('DOMContentLoaded',function(){
+
             //var socket = io.connect('http://localhost:5000');
-            var socket = io.connect('http://' + document.domain + ':' + location.port);//127.0.0.1:5000');
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
             var view = document.getElementById ('message_board')
             var text = document.getElementById('text')
             var active_chat = from_redirect;
 
 
             socket.on('message', data =>{
-                var p = document.createElement('p')
-                p.class = 'left'
+                var p = document.createElement('p') 
                 var br = document.createElement('br')
                // alert(data.recipient+" " + user)
                 p.innerHTML = data.text +'<span style=" color:blue;">  :'+data.username+'</span>'

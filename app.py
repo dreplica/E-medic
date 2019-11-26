@@ -59,6 +59,90 @@ def index():
    return render_template("index.html")
 
 
+# we are goin to make a jquery ajax post here and another for ajax get
+#on recieving data, it should upload it to the database with a 
+#immediately a user sends a message it should be recieved and sent back to the reciever
+
+#on get it should just search database and update the user message box
+#every one second it makes a get request to db fo recent message
+@app.route('/reply', methods=['GET','POST'])
+def reply():
+   if not 'user_id' in session:
+      return redirect('/')
+   number = 0#to watch out for post
+   hash = '' #to watch out for incoming message hash
+   typ = db.execute('select type from users where user_id =:us',us=session['user_id'] )#to  watch out for user typ
+   print(typ)
+   if request.method == 'POST':
+      msg = request.form.get('msg')
+      send = request.form.get('sender')
+      rec = request.form.get('receiver')
+      hash = request.form.get('hash')
+      db.execute('insert into message (msg,send,recieve,hash,date) values(:m,:s,:r,:h,:d)',m = msg,s = send,r = rec,h = hash,d = datetime.datetime.now())
+      #if send != session['user_id']:
+      number += 1
+#still have to work here as i have not specified
+   if request.args.get('check') == 1:
+      print('hello send me the message')
+      if number != 0:#if theres a post, return it to the jquery get 
+         msg = db.execute('select * from message where hash =:h', h = hash)
+         number = 0;
+         return jsonify({'msg': msg[-1], 'user': session['user_id'],'hash':hash})
+
+   if request.args.get('name'):#if there is a refernce or click on a doctor, open the docs message 
+         check_name = db.execute('select type from users where user_id =:us',us=request.args.get('name') )#check for the type,
+
+         if check_name[0]['type'] == 'pat':#check if the name is a patient
+              hash = db.execute('select hash from hash where user_id =:us and doc =:doc',us =request.args.get('name'), doc = session['user_id'] )
+              if len(hash) == 0:
+                 db.execute('insert into hash (user_id,doc) values(:us,:doc)', us=request.args.get('name'),doc = session['user_id'])
+                # return redirect('/reply?name='+request.args.get('name'))
+              msg = db.execute('select * from message where hash =:h',h = hash[0]['hash'])
+              return jsonify({'msg' :msg, 'user' :session['user_id'],'hash':hash[0]['hash']})
+
+         else:#check if the name is a doc
+               hash = db.execute('select hash from hash where user_id =:us and doc =:doc',us = session['user_id'],doc =request.args.get('name') )
+               if len(hash) == 0:
+                 db.execute('insert into hash (user_id,doc) values(:us,:doc)', us=session['user_id'],doc = request.args.get('name'))
+                # return redirect('/reply?name='+request.args.get('name'))
+               msg = db.execute('select * from message where hash =:h',h = hash[0]['hash'])
+               return jsonify({'msg' :msg, 'user' :session['user_id'],'hash':hash[0]['hash']})
+
+   if request.args.get('doc'):#if there is a refernce or click on a doctor, open the message to commmunicate with doc
+         print('hello i am here')
+         hash = db.execute('select hash from hash where user_id =:us and doc =:doc',us = session['user_id'],doc =request.args.get('doc') )
+         if len(hash) == 0:
+                 db.execute('insert into hash (user_id,doc) values(:us,:doc)', us=session['user_id'],doc = request.args.get('doc'))
+         friends =  db.execute('select doc from hash where user_id =:us',us = session['user_id'])
+         print(friends)
+         return render_template('reply.html', friends = friends, typ = typ[0]['type'],user = session['user_id'])
+
+   else:#else just open the message and pass data files
+      if typ[0]['type'] == 'pat':#check if the person is a patient'
+             friends =  db.execute('select doc from hash where user_id =:us',us = session['user_id'])
+             print(friends)
+             return render_template('reply.html', friends = friends, typ = typ[0]['type'],user = session['user_id'])
+      else:#check if the person is a doc
+             print("a docotr")
+             friends =  db.execute('select user_id from hash where doc =:doc',doc = session['user_id'])
+             print(friends)
+             return render_template('reply.html', friends = friends, typ = typ[0]['type'],user = session['user_id'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.route('/login',methods=['GET','POST'])
 def login():
    session.clear()
@@ -386,7 +470,7 @@ def loc():
          tooltip="<span color:'green'>You</span>",
          icon=folium.Icon(color='green')).add_to(map)
       if doc_check[0]['type'] == 'doc':
-         folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="\message?name='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
+         folium.Marker([ma['coord1'],ma['coord2']],popup='<a href="/reply?doc='+ma['user_id']+'">Dr. '+ma['user_id']+'</a>',
          tooltip="click").add_to(map)
    map.save('templates/map.html')
    return render_template('map.html')
@@ -400,11 +484,16 @@ def consult():
          date = datetime.datetime.now()
          recomm = request.form.get('recommendation')
          drug = request.form.get('drug')
+<<<<<<< HEAD
 
          print(issue)
          db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:date)',name =name, iss = issue, recco = recomm, dr = drug,date=date,doc = session['user_id'])
+=======
+         date = datetime.datetime.now()
+         db.execute('insert into consultation (user_id,issue,recomm,drugs,doc,date) values(:name,:iss,:recco,:dr,:doc,:da)',name =name, iss = issue, recco = recomm, dr = drug,doc = session['user_id'],da = date)
+>>>>>>> c00050b5f8d39d3dd951ea943ebedf6a1e7a80c8
          return redirect('/message')
-   return render_template("message.html")      
+   return render_template("reply.html")      
 
 #message broadcasting comes here
 @socketio.on('message')
@@ -438,5 +527,9 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__":
+<<<<<<< HEAD
    socketio.run(app,debug = True, host='0.0.0.0', port=5200)
+=======
+   socketio.run(app, debug = True)
+>>>>>>> c00050b5f8d39d3dd951ea943ebedf6a1e7a80c8
 

@@ -3,7 +3,7 @@
 <!--from here-->
 <div class="jumbotron jumbotron-fluid" style='text-align: left !important'>
     <div class="container text-success">
-        <h1 class="display-4"><em>E - Medicals</em></h1>
+            <h1 class="display-4">E - Medicals  <small style="font-size:15px;">  Health for all ....</small></h1>
     </div>
 </div>
 <div class="container-fluid">
@@ -14,32 +14,41 @@
             <h4 style="text-align: center;">History</h4>
             <table class="table table-striped">
                 <thead>
-                    <tr>
+                    <tr style="border-bottom:3px solid black; text-align:center;">
                     <th scope="col">Doctor</th>
                     <th scope="col">Treatment</th>
+                    <th scope="col">Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    
                     {% for docs in doc %}
-                        <td>Dr. {{docs['doc']}}</td>
-                        <td>{{docs['issue']}}</td>
+                        <tr style=" text-align:center;">
+                            <td>Dr. {{docs['doc']}}</td>
+                            <td>{{docs['issue']}}</td> 
+                            <td>{{docs['date'][0:10]}}</td>
+                        </tr>
                     {% endfor %}
-                    </tr>
+                   
                 </tbody>
             </table>            
         </div>
         <div class="col-lg-6 col-md-6">
             <!-- Recent Activities Widget      -->
             <h4 style="text-align: center;">In progress</h4>
-            <div class="progress" style="height: auto;">
+            <div class="progress" style="height: auto; padding:15px; ">
                 {% if doc_info %}
                 <div>                
                     <img src="{{ url_for('static',filename=doc_info[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
                 </div>
-                <div>
-                <p>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</p>
-                <p>Currently Treating you for {{doc_one['issue']}}</p>
+                <div style="margin:15px 20px;">
+                <h3>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</h3>
+                <h5 style="margin:10px 0px">Currently treating you for: <strong> {{doc_one['issue']}}</strong></h5>
+                <a href="" style="margin:20px 0px;padding:10px;background:lightgreen;" id='link'>Contact</a>
+
+                        <script>
+                                link.href = '/reply?doc='+`{{doc_info[0]['user_id']}}`
+                        </script>
                 </div>
             </div>
             {% endif %}
