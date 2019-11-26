@@ -35,7 +35,7 @@
             <div class="progress" style="height: auto;">
                 {% if doc_info %}
                 <div>                
-                    <img src="{{ url_for('static',filename=row[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
+                    <img src="{{ url_for('static',filename=doc_info[0]['photo'])}}" style="border-radius: 50%;" width="100" height="100" >
                 </div>
                 <div>
                 <p>Dr. {{doc_info[0]['f_name']}} {{doc_info[0]['l_name']}}</p>
@@ -54,8 +54,7 @@
 </div>
 <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>
-    let type = `{{user[0]['type']}}`
-    console.log(type);    
+    let type = `{{user[0]['type']}}`    
     if(type == 'doc'){
         window.location = 'http://127.0.0.1:5000/doctor'
     }
@@ -67,7 +66,6 @@
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            console.log(pos)
         })
     }
     setTimeout(()=> $.ajax({

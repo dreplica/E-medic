@@ -175,8 +175,12 @@
             })
             $('#email').on('blur', function(){
                 let email = $('#email').val()
+                let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
                 if (email == "") {
                     $(".emailerr").html('<p style="color:red;">email cant be empty</p>');
+                }                
+                else if(!email.match(mailformat)){
+                    $(".emailerr").html('<p style="color:red;">You have entered an invalid email address!</p>');
                 }
                 else{
                     $.ajax({

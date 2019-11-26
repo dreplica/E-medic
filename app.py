@@ -10,6 +10,9 @@ from tempfile import mkdtemp
 from flask_socketio import SocketIO, send,join_room,leave_room,emit
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 UPLOAD_FOLDER = "static"
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
@@ -94,10 +97,10 @@ def logout():
 
 @app.route('/doctor',methods=['GET','POST'])
 def doctor(): 
-   if request.method == 'GET':
+   if request.method == 'GET':      
       if 'user_id' in session:
-         lat = request.args.get('lat')
          user_id = session['user_id']
+         lat = request.args.get('lat')         
          if lat:
             user_id = session['user_id']
             lng = request.args.get('lng')
@@ -108,14 +111,20 @@ def doctor():
             else:
                db.execute('INSERT INTO map(user_id,coord1,coord2)values(:us,:la,:lng)',us = user_id,la = lat,lng = lng)
 
-      user = db.execute('select * from users where user_id=:us',us = user_id)
-      row = db.execute("select * from info where user_id=:us", us=user_id)
-      return render_template('doctor.html',user=user, row=row)
+         user = db.execute('select * from users where user_id=:us',us = user_id)
+         row = db.execute("select * from info where user_id=:us", us=user_id)
+         pat =  db.execute("select * from consultation where doc=:us", us = user_id)
 
-   user_id = session['user_id']
-   user = db.execute('select * from users where user_id=:us',us = user_id)
-   row = db.execute("select * from info where user_id=:us", us=user_id)
-   return render_template('doctor.html', user=user, row=row)
+         if len(pat) == 0:
+            return render_template('doctor.html',user=user, row=row)
+         pat_one = pat[-1]
+         pat_info = db.execute("select * from info where user_id =:pat", pat = pat_one['user_id'])
+         if len(pat_info) != 0:
+            return render_template('doctor.html',user=user, row=row, pat=pat, pat_one = pat_one, pat_info=pat_info)    
+         else:
+            return render_template('doctor.html', user=user, row=row)
+   
+   return redirect('/')
 
 
 @app.route('/patient',methods=['GET','POST'])
@@ -197,6 +206,21 @@ def update():
             return redirect("/profile")
    return render_template("profile.html")   
 
+def sendEmail(to, subject, message):
+   message = Mail(
+      from_email='info@mediccare.com.ng',
+      to_emails=to,
+      subject='Sending with Twilio SendGrid is Fun',
+      html_content=message or '<strong>and easy to do anywhere, even with Python</strong>')
+   try:
+      sg = SendGridAPIClient(os.environ.get('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'))
+      response = sg.send(message)
+      print(response.status_code)
+      print(response.body)
+      print(response.headers)
+   except Exception as e:
+      print(str(e))
+
 # registration for patients
 @app.route('/p_register',methods=['GET',"POST"])
 def p_register():   
@@ -233,6 +257,10 @@ def p_register():
       if fille.filename == '':
          fille.filename = 'none'
       fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
+
+      subject = "Account Activation"
+      message = f"<h3>Dear {fname} {lname}</h3><br>\
+               <p>You registered to our website and your account has been activated please visit our site</p>"
       
       msg = "Username already exist"
       check = db.execute("SELECT user_id FROM users WHERE user_id=:username", username=userid)
@@ -246,6 +274,7 @@ def p_register():
                   b=blood,g=geno,md=med,kfn=k_fn,kln = k_ln,kp=kp,ke = ke,kl=k_loc,us = userid)
       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                   u=userid,f=fname,l=lname,m=status,p=pnum, loc=addr, s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+      sendEmail(email, subject, message)
       return redirect('/patient')
    return render_template('p_register.html',states=states) 
 
@@ -288,6 +317,10 @@ def d_register():
          fille.filename = 'none'
       fille.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fille.filename)))
 
+      subject = "Account Activation"
+      message = f"<h3>Dear {fname} {lname}</h3><br>\
+               <p>You registered to our website and your account has been activated please visit our site</p>"
+
       msg = "Username already exist"
       check = db.execute("SELECT user_id FROM users WHERE user_id=:username", username=userid)
       if check:
@@ -301,6 +334,7 @@ def d_register():
                   l=l,e=e,sp=sp,hf=hf,cert =cert,lp=lp,cp = cp,ms=ms,bc =bc,us = userid)
       db.execute("INSERT INTO info (user_id,f_name,l_name,m_stat,phone,location,state,sex,dob,id_name,id_no,photo) Values (:u,:f,:l,:m,:p,:loc,:s,:sx,:dob,:id,:idn,:pic)",
                   u=userid,f=fname,l=lname,m=status,p=pnum,loc=addr,s =state, sx=sex,dob=dob,id=idn,idn=nid,pic=fille.filename)
+      sendEmail(email, subject, message)            
       return redirect('/doctor')
    return render_template('d_register.html',states=states)
 
@@ -398,7 +432,6 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-
 
 # Listen for errors
 for code in default_exceptions:
