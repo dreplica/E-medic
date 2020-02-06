@@ -12,3 +12,11 @@ online communications with certified doctors around them.
 - upon accepting a patient you are credited as a doctor.
 - patients can request for home services as well and also 
   get drugs from reputable pharmacist based on request.
+
+
+# tools Used
+- python flask.
+- Jquery
+- Bootstrap
+- Sqlite
+- jinja
